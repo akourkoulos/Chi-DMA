@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestRegSpace_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="DataPkg" />
+            <top_module name="TestRegSpace" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="200001fs"></ZoomEndTime>
+      <Cursor1Time time="44593fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="253"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="19" />
+   <wvobject fp_name="/TestRegSpace/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/WE_1" type="array">
+      <obj_property name="ElementShortName">WE_1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">WE_1[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/WE_2" type="array">
+      <obj_property name="ElementShortName">WE_2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">WE_2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/AddrIn_1" type="array">
+      <obj_property name="ElementShortName">AddrIn_1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrIn_1[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/AddrIn_2" type="array">
+      <obj_property name="ElementShortName">AddrIn_2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrIn_2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DataIn_1" type="array">
+      <obj_property name="ElementShortName">DataIn_1</obj_property>
+      <obj_property name="ObjectShortName">DataIn_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DataIn_2" type="array">
+      <obj_property name="ElementShortName">DataIn_2</obj_property>
+      <obj_property name="ObjectShortName">DataIn_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DataOut_1" type="array">
+      <obj_property name="ElementShortName">DataOut_1</obj_property>
+      <obj_property name="ObjectShortName">DataOut_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DataOut_2" type="array">
+      <obj_property name="ElementShortName">DataOut_2</obj_property>
+      <obj_property name="ObjectShortName">DataOut_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/MuxOut_WE" type="array">
+      <obj_property name="ElementShortName">MuxOut_WE[7:0][4:0]</obj_property>
+      <obj_property name="ObjectShortName">MuxOut_WE[7:0][4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DecoderOut_1" type="array">
+      <obj_property name="ElementShortName">DecoderOut_1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">DecoderOut_1[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/DecoderOut_2" type="array">
+      <obj_property name="ElementShortName">DecoderOut_2[7:0]</obj_property>
+      <obj_property name="ObjectShortName">DecoderOut_2[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/MuxOut_Data" type="array">
+      <obj_property name="ElementShortName">MuxOut_Data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">MuxOut_Data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/SigDescOut" type="array">
+      <obj_property name="ElementShortName">SigDescOut[7:0]</obj_property>
+      <obj_property name="ObjectShortName">SigDescOut[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/NumOfDesc" type="array">
+      <obj_property name="ElementShortName">NumOfDesc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NumOfDesc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/NumOfRegInDesc" type="array">
+      <obj_property name="ElementShortName">NumOfRegInDesc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NumOfRegInDesc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/UUT/RegSpaceAddrWidth" type="array">
+      <obj_property name="ElementShortName">RegSpaceAddrWidth[31:0]</obj_property>
+      <obj_property name="ObjectShortName">RegSpaceAddrWidth[31:0]</obj_property>
+   </wvobject>
+</wave_config>

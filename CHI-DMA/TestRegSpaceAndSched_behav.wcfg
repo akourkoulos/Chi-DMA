@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestRegSpaceAndSched_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="TestRegSpaceAndSched" />
+            <top_module name="\$unit_Descriptor_sv " />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="33333fs"></ZoomStartTime>
+      <ZoomEndTime time="473334fs"></ZoomEndTime>
+      <Cursor1Time time="400000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="238"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="31" />
+   <wvobject fp_name="/TestRegSpaceAndSched/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/WE" type="logic">
+      <obj_property name="ElementShortName">WE</obj_property>
+      <obj_property name="ObjectShortName">WE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/SrcAddrIn" type="array">
+      <obj_property name="ElementShortName">SrcAddrIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcAddrIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/DstAddrIn" type="array">
+      <obj_property name="ElementShortName">DstAddrIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DstAddrIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/BytesToSendIn" type="array">
+      <obj_property name="ElementShortName">BytesToSendIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BytesToSendIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/ReadData" type="array">
+      <obj_property name="ElementShortName">ReadData[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ReadData[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/DoneRead" type="logic">
+      <obj_property name="ElementShortName">DoneRead</obj_property>
+      <obj_property name="ObjectShortName">DoneRead</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/DoneWrite" type="logic">
+      <obj_property name="ElementShortName">DoneWrite</obj_property>
+      <obj_property name="ObjectShortName">DoneWrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/SrcAddrOut" type="array">
+      <obj_property name="ElementShortName">SrcAddrOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcAddrOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/DstAddrOut" type="array">
+      <obj_property name="ElementShortName">DstAddrOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DstAddrOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/BytesToReadOut" type="array">
+      <obj_property name="ElementShortName">BytesToReadOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BytesToReadOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/BytesToWriteOut" type="array">
+      <obj_property name="ElementShortName">BytesToWriteOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BytesToWriteOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/WriteData" type="array">
+      <obj_property name="ElementShortName">WriteData[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WriteData[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/FULL" type="logic">
+      <obj_property name="ElementShortName">FULL</obj_property>
+      <obj_property name="ObjectShortName">FULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/StartRead" type="logic">
+      <obj_property name="ElementShortName">StartRead</obj_property>
+      <obj_property name="ObjectShortName">StartRead</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/StartWrite" type="logic">
+      <obj_property name="ElementShortName">StartWrite</obj_property>
+      <obj_property name="ObjectShortName">StartWrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/finish" type="logic">
+      <obj_property name="ElementShortName">finish</obj_property>
+      <obj_property name="ObjectShortName">finish</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/Next" type="logic">
+      <obj_property name="ElementShortName">Next</obj_property>
+      <obj_property name="ObjectShortName">Next</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/SigBytesToSend" type="array">
+      <obj_property name="ElementShortName">SigBytesToSend[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SigBytesToSend[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/SigSrcAddr" type="array">
+      <obj_property name="ElementShortName">SigSrcAddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SigSrcAddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/mySched/SentBytesIn" type="array">
+      <obj_property name="ElementShortName">SentBytesIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SentBytesIn[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/mySched/SentBytesOut" type="array">
+      <obj_property name="ElementShortName">SentBytesOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SentBytesOut[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/mySched/counter" type="array">
+      <obj_property name="ElementShortName">counter[7:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/myRegSpace/SentBytesIn" type="array">
+      <obj_property name="ElementShortName">SentBytesIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SentBytesIn[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/myRegSpace/SentBytesOut" type="array">
+      <obj_property name="ElementShortName">SentBytesOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SentBytesOut[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/mySched/SrcAddrFIFO/MyQueue" type="array">
+      <obj_property name="ElementShortName">MyQueue[2:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[2:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/mySched/DstAddrFIFO/MyQueue" type="array">
+      <obj_property name="ElementShortName">MyQueue[2:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[2:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /BytesToSendOut" type="array">
+      <obj_property name="ElementShortName">BytesToSendOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BytesToSendOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /SentBytesOut" type="array">
+      <obj_property name="ElementShortName">SentBytesOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SentBytesOut[31:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestScheduler_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="DataPkg" />
+            <top_module name="TestScheduler" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="82500fs"></ZoomStartTime>
+      <ZoomEndTime time="295501fs"></ZoomEndTime>
+      <Cursor1Time time="260000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="233"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="22" />
+   <wvobject fp_name="/TestScheduler/UUT/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescDataIn" type="array">
+      <obj_property name="ElementShortName">DescDataIn</obj_property>
+      <obj_property name="ObjectShortName">DescDataIn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/WE" type="array">
+      <obj_property name="ElementShortName">WE[4:0]</obj_property>
+      <obj_property name="ObjectShortName">WE[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/FIFO_Addr" type="array">
+      <obj_property name="ElementShortName">FIFO_Addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_Addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Empty" type="logic">
+      <obj_property name="ElementShortName">Empty</obj_property>
+      <obj_property name="ObjectShortName">Empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Dequeue" type="logic">
+      <obj_property name="ElementShortName">Dequeue</obj_property>
+      <obj_property name="ObjectShortName">Dequeue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Valid" type="logic">
+      <obj_property name="ElementShortName">Valid</obj_property>
+      <obj_property name="ObjectShortName">Valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Ready" type="logic">
+      <obj_property name="ElementShortName">Ready</obj_property>
+      <obj_property name="ObjectShortName">Ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/StartRead" type="logic">
+      <obj_property name="ElementShortName">StartRead</obj_property>
+      <obj_property name="ObjectShortName">StartRead</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/ReadyRead" type="logic">
+      <obj_property name="ElementShortName">ReadyRead</obj_property>
+      <obj_property name="ObjectShortName">ReadyRead</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DoneWrite" type="logic">
+      <obj_property name="ElementShortName">DoneWrite</obj_property>
+      <obj_property name="ObjectShortName">DoneWrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/ReadyWrite" type="logic">
+      <obj_property name="ElementShortName">ReadyWrite</obj_property>
+      <obj_property name="ObjectShortName">ReadyWrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/NextCountIn" type="array">
+      <obj_property name="ElementShortName">NextCountIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NextCountIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/counter" type="array">
+      <obj_property name="ElementShortName">counter[31:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DoneWriteAddr" type="array">
+      <obj_property name="ElementShortName">DoneWriteAddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DoneWriteAddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescDataOut" type="array">
+      <obj_property name="ElementShortName">DescDataOut</obj_property>
+      <obj_property name="ObjectShortName">DescDataOut</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescAddrOut" type="array">
+      <obj_property name="ElementShortName">DescAddrOut[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DescAddrOut[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescAddrPointer" type="array">
+      <obj_property name="ElementShortName">DescAddrPointer[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DescAddrPointer[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DataReadWrite" type="array">
+      <obj_property name="ElementShortName">DataReadWrite</obj_property>
+      <obj_property name="ObjectShortName">DataReadWrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/FinishedDescAddr" type="array">
+      <obj_property name="ElementShortName">FinishedDescAddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FinishedDescAddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/FinishedDescValid" type="logic">
+      <obj_property name="ElementShortName">FinishedDescValid</obj_property>
+      <obj_property name="ObjectShortName">FinishedDescValid</obj_property>
+   </wvobject>
+</wave_config>

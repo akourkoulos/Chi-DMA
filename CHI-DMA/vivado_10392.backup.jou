@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Mon Jul 11 00:30:23 2022
+# Process ID: 10392
+# Current directory: C:/Users/Aggelos/Desktop/vivado/CHI-DMA
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent8704 C:\Users\Aggelos\Desktop\vivado\CHI-DMA\CHI-DMA.xpr
+# Log file: C:/Users/Aggelos/Desktop/vivado/CHI-DMA/vivado.log
+# Journal file: C:/Users/Aggelos/Desktop/vivado/CHI-DMA\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/Aggelos/Desktop/vivado/CHI-DMA/CHI-DMA.xpr
+update_compile_order -fileset sources_1
