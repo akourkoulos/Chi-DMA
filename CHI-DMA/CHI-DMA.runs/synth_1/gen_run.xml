@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1659290136">
+<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1661796617">
   <File Type="PA-TCL" Name="Scheduler.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="Scheduler_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="Scheduler_reports.tcl"/>
   <File Type="RDS-RDS" Name="Scheduler.vds"/>
   <File Type="RDS-UTIL" Name="Scheduler_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="Scheduler_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="Scheduler.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="Scheduler_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="Scheduler_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/my_package.sv">
@@ -17,6 +20,22 @@
     </File>
     <File Path="$PSRCDIR/sources_1/new/Scheduler.sv">
       <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/Descriptor.sv">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/RegSpace.sv">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -54,26 +73,10 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/RegSpace.sv">
-      <FileInfo>
-        <Attr Name="AutoDisabled" Val="1"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
     <File Path="$PSRCDIR/sources_1/new/RSParameters.vh">
       <FileInfo>
         <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
-    <File Path="$PSRCDIR/sources_1/new/Descriptor.sv">
-      <FileInfo>
-        <Attr Name="AutoDisabled" Val="1"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>

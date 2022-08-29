@@ -22,57 +22,65 @@ import DataPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 module TestScheduler#(
-  RegSpaceAddrWidth = 32,
-  NumOfRegInDesc    = 5 ,
-  CHI_Word_Width    = 32,
-  CounterWidth      = 32,
-  Done_Status       = 1 ,
-  Chunk             = 64
-);
-    reg                               RST              ;
-    reg                               Clk              ;
-    Data_packet                       DescDataIn       ;
-    reg                               Ready            ;
-    reg       [RegSpaceAddrWidth-1:0] FIFO_Addr        ;
-    reg                               Empty            ;
-    reg                               ReadyRead        ;
-    reg                               DoneWrite        ;
-    reg       [RegSpaceAddrWidth-1:0] DoneWriteAddr    ;
-    Data_packet                       DescDataOut      ;
-    wire      [NumOfRegInDesc   -1:0] WE               ;
-    wire      [RegSpaceAddrWidth-1:0] DescAddrOut      ;
-    wire                              Valid            ;
-    wire      [RegSpaceAddrWidth-1:0] DescAddrPointer  ;
-    wire                              Dequeue          ;
-    Data_packet                       DataReadWrite    ;
-    wire                              StartRead        ;
-    wire      [RegSpaceAddrWidth-1:0] FinishedDescAddr ;
-    wire                              FinishedDescValid;
-    wire                              ReadyWrite       ;
+ RegSpaceAddrWidth = 32 ,
+ NumOfRegInDesc    = 5  ,
+ CHI_Word_Width    = 32 ,
+ CounterWidth      = 32 ,
+ Done_Status       = 1  ,
+ Idle_Status       = 0  ,
+ Chunk             = 64 ,
+ MEMAddrWidth      = 32 ,
+ StateWidth        = 8   
+ );
+    reg                                RST               ;
+    reg                                Clk               ;
+    Data_packet                        DescDataIn        ;
+    reg                                ReadyRegSpace     ;
+    reg                                ReadyFIFO         ;
+    reg        [RegSpaceAddrWidth-1:0] FIFO_Addr         ;
+    reg                                Empty             ;
+    reg                                CmdFIFOFULL       ;
+    Data_packet                        DescDataOut       ;
+    wire       [NumOfRegInDesc   -1:0] WE                ;
+    wire       [RegSpaceAddrWidth-1:0] RegSpaceAddrOut   ;
+    wire                               ValidRegSpace     ;
+    wire                               Dequeue           ;
+    wire                               ValidFIFO         ;
+    wire       [RegSpaceAddrWidth-1:0] DescAddrPointer   ;
+    wire                               Read              ;
+    wire       [MEMAddrWidth     -1:0] ReadAddr          ;
+    wire       [MEMAddrWidth     -1:0] ReadLength        ;
+    wire       [MEMAddrWidth     -1:0] WriteAddr         ;
+    wire       [MEMAddrWidth     -1:0] WriteLength       ;
+    wire       [RegSpaceAddrWidth-1:0] FinishedDescAddr  ;
+    wire                               FinishedDescValid ;
+    
     // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns
     localparam period = 20;  
 
     Scheduler UUT (
-    .RST               (RST               ) ,
-    .Clk               (Clk               ) ,
-    .DescDataIn        (DescDataIn        ) ,
-    .Ready             (Ready             ) ,
-    .FIFO_Addr         (FIFO_Addr         ) ,
-    .Empty             (Empty             ) ,
-    .ReadyRead         (ReadyRead         ) ,
-    .DoneWrite         (DoneWrite         ) ,
-    .DoneWriteAddr     (DoneWriteAddr     ) ,
-    .DescDataOut       (DescDataOut       ) , 
-    .WE                (WE                ) ,
-    .DescAddrOut       (DescAddrOut       ) ,
-    .Valid             (Valid             ) ,
-    .DescAddrPointer   (DescAddrPointer   ) ,
-    .Dequeue           (Dequeue           ) ,
-    .DataReadWrite     (DataReadWrite     ) ,
-    .StartRead         (StartRead         ) , 
-    .FinishedDescAddr  (FinishedDescAddr  ) ,    
-    .FinishedDescValid (FinishedDescValid ) , 
-    .ReadyWrite        (ReadyWrite        ) 
+    .RST                (RST              ) ,
+    .Clk                (Clk              ) ,
+    .DescDataIn         (DescDataIn       ) ,
+    .ReadyRegSpace      (ReadyRegSpace    ) ,
+    .ReadyFIFO          (ReadyFIFO        ) ,
+    .FIFO_Addr          (FIFO_Addr        ) ,
+    .Empty              (Empty            ) ,
+    .CmdFIFOFULL        (CmdFIFOFULL      ) ,
+    .DescDataOut        (DescDataOut      ) ,
+    .WE                 (WE               ) , 
+    .RegSpaceAddrOut    (RegSpaceAddrOut  ) ,
+    .ValidRegSpace      (ValidRegSpace    ) ,
+    .Dequeue            (Dequeue          ) ,
+    .ValidFIFO          (ValidFIFO        ) ,
+    .DescAddrPointer    (DescAddrPointer  ) ,
+    .Read               (Read             ) ,
+    .ReadAddr           (ReadAddr         ) , 
+    .ReadLength         (ReadLength       ) ,    
+    .WriteAddr          (WriteAddr        ) , 
+    .WriteLength        (WriteLength      ) ,
+     .FinishedDescAddr  (FinishedDescAddr ) ,
+     .FinishedDescValid (FinishedDescValid)
     );
     
     always 
@@ -88,97 +96,58 @@ module TestScheduler#(
     always @(posedge Clk)
         begin
     
-        RST                    =  1             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 0              ;     
-        Ready                  = 0              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 1              ;    
-        ReadyRead              = 0              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;    
+         RST           =  1             ;       
+         DescDataIn    = 'd10           ;
+         ReadyRegSpace = 'd100          ;    
+         ReadyFIFO     = 'd100          ;     
+         FIFO_Addr     = 0              ;     
+         Empty         = 0              ;       
+         CmdFIFOFULL   = 0              ;
         
         #(period*2); // wait for period begin
         #(period); // wait for period begin
-
-        RST                    =  0             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 'd10           ;     
-        Ready                  = 0              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 0              ;    
-        ReadyRead              = 1              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;
         
+         RST           =  1             ;       
+         DescDataIn    = 'd10           ;
+         ReadyRegSpace = 0              ;    
+         ReadyFIFO     = 0              ;     
+         FIFO_Addr     = 'd2            ;     
+         Empty         = 0              ;       
+         CmdFIFOFULL   = 0              ;
+      
         #(period*2); // wait for period begin
-
-        RST                    =  0             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 'd42           ;     
-        Ready                  = 1              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 0              ;    
-        ReadyRead              = 1              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;
         
+         RST           =  1             ;       
+         DescDataIn    = 'd10           ;
+         ReadyRegSpace = 1              ;    
+         ReadyFIFO     = 0              ;     
+         FIFO_Addr     = 'd2            ;     
+         Empty         = 0              ;       
+         CmdFIFOFULL   = 0              ;
+      
         #(period*2); // wait for period begin
-
-        RST                    =  0             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 'd74           ;     
-        Ready                  = 0              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 0              ;    
-        ReadyRead              = 0              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;
         
+         RST           =  1             ;       
+         DescDataIn    = 'd10           ;
+         ReadyRegSpace = 1              ;    
+         ReadyFIFO     = 0              ;     
+         FIFO_Addr     = 'd2            ;     
+         Empty         = 0              ;       
+         CmdFIFOFULL   = 0              ;
+      
+        #(period*2); // wait for period begin
+         
+         RST           =  1             ;       
+         DescDataIn    = 'd10           ;
+         ReadyRegSpace = 1              ;    
+         ReadyFIFO     = 0              ;     
+         FIFO_Addr     = 'd2            ;     
+         Empty         = 0              ;       
+         CmdFIFOFULL   = 1              ;
+      
         #(period*2); // wait for period begin
         
         
-        RST                    =  0             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 'd74           ;     
-        Ready                  = 1              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 0              ;    
-        ReadyRead              = 1              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;
-        
-        #(period*2); // wait for period begin        
-        
-        RST                    =  0             ;     
-        DescDataIn             = {default : 0 } ;     
-        DescDataIn.SrcAddr     = 'd10           ;
-        DescDataIn.DstAddr     = 'd100          ;    
-        DescDataIn.BytesToSend = 'd100          ;     
-        DescDataIn.SentBytes   = 'd74           ;     
-        Ready                  = 0              ;    
-        FIFO_Addr              = 'd10           ;    
-        Empty                  = 1             ;    
-        ReadyRead              = 0              ;    
-        DoneWrite              = 0              ;    
-        DoneWriteAddr          = 'd0            ;
-        
-        #(period*2); // wait for period begin
         $stop;
         end
     
