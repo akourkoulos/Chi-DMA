@@ -2,56 +2,374 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Mon Aug 29 16:38:12 2022
-# Process ID: 4908
+# Start of session at: Tue Aug 30 11:42:45 2022
+# Process ID: 15304
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent5088 C:\Users\Aggelos\Desktop\github\Chi-DMA\CHI-DMA\CHI-DMA.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent9260 C:\Users\Aggelos\Desktop\github\Chi-DMA\CHI-DMA\CHI-DMA.xpr
 # Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/vivado.log
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA\vivado.jou
 #-----------------------------------------------------------
 start_gui
 open_project C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.xpr
-INFO: [Project 1-313] Project file moved from 'C:/Users/Aggelos/Desktop/vivado/CHI-DMA' since last save.
 Scanning sources...
 Finished scanning sources
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'F:/VivadoInstallation/vivadoInst/Vivado/2019.2/data/ip'.
-open_project: Time (s): cpu = 00:00:27 ; elapsed = 00:00:14 . Memory (MB): peak = 893.184 ; gain = 233.625
+open_project: Time (s): cpu = 00:00:24 ; elapsed = 00:00:10 . Memory (MB): peak = 916.461 ; gain = 223.363
 update_compile_order -fileset sources_1
-set_property top Scheduler [current_fileset]
-update_compile_order -fileset sources_1
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 20:44:00 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 20:50:47 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 20:52:52 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 20:56:33 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 20:58:47 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 21:00:45 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 21:08:53 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-reset_run synth_1
-launch_runs synth_1 -jobs 4
-[Mon Aug 29 21:10:17 2022] Launched synth_1...
-Run output will be captured here: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/runme.log
-exit
-INFO: [Common 17-206] Exiting Vivado at Mon Aug 29 21:25:43 2022...
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'TestFIFO' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj TestFIFO_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module FIFO_Addr
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestFIFO.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module TestFIFO
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xelab -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestFIFO_behav xil_defaultlib.TestFIFO xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestFIFO_behav xil_defaultlib.TestFIFO xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.FIFO_Addr
+Compiling module xil_defaultlib.TestFIFO
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot TestFIFO_behav
+
+****** Webtalk v2019.2 (64-bit)
+  **** SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+  **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+source C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Tue Aug 30 11:53:33 2022. For additional details about this file, please refer to the WebTalk help file at F:/VivadoInstallation/vivadoInst/Vivado/2019.2/doc/webtalk_introduction.html.
+webtalk_transmit: Time (s): cpu = 00:00:00 ; elapsed = 00:00:05 . Memory (MB): peak = 113.621 ; gain = 23.801
+INFO: [Common 17-206] Exiting Webtalk at Tue Aug 30 11:53:33 2022...
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:09 . Memory (MB): peak = 930.473 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '9' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "TestFIFO_behav -key {Behavioral:sim_1:Functional:TestFIFO} -tclbatch {TestFIFO.tcl} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpace_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestScheduler_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpaceAndSched_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestDescriptor_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestFIFO_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.2
+Time resolution is 1 ps
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpace_behav.wcfg
+WARNING: Simulation object /TestRegSpace/period was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/RST was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/Clk was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/WE_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/WE_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/AddrIn_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/AddrIn_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataIn_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataIn_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataOut_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataOut_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/MuxOut_WE was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DecoderOut_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DecoderOut_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/MuxOut_Data was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/SigDescOut was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/NumOfDesc was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/NumOfRegInDesc was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/RegSpaceAddrWidth was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestScheduler_behav.wcfg
+WARNING: Simulation object /TestScheduler/UUT/Clk was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/RST was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DescDataIn was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/WE was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/FIFO_Addr was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/Empty was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/Dequeue was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/Valid was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/Ready was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/StartRead was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/ReadyRead was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DoneWrite was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/ReadyWrite was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/NextCountIn was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/counter was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DoneWriteAddr was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DescDataOut was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DescAddrOut was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DescAddrPointer was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DataReadWrite was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/FinishedDescAddr was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/FinishedDescValid was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpaceAndSched_behav.wcfg
+WARNING: Simulation object /TestRegSpaceAndSched/Clk was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/RST was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/WE was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/SrcAddrIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DstAddrIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToSendIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/ReadData was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DoneRead was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DoneWrite was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/SrcAddrOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DstAddrOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToReadOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToWriteOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/WriteData was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/FULL was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/StartRead was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/StartWrite was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/finish was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/Next was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/SigBytesToSend was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/SigSrcAddr was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/period was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SentBytesIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SentBytesOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/counter was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/SentBytesIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/SentBytesOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SrcAddrFIFO/MyQueue was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/DstAddrFIFO/MyQueue was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /BytesToSendOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /SentBytesOut was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestDescriptor_behav.wcfg
+WARNING: Simulation object /TestDescriptor/Clk was not found in the design.
+WARNING: Simulation object /TestDescriptor/RST was not found in the design.
+WARNING: Simulation object /TestDescriptor/WE was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescAddrIn was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescDataIn was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescDataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/period was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DescReg was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/MuxDataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/MuxWEOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DecWEOut was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestFIFO_behav.wcfg
+source TestFIFO.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+xsim: Time (s): cpu = 00:00:40 ; elapsed = 00:00:17 . Memory (MB): peak = 951.152 ; gain = 11.066
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'TestFIFO_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:42 ; elapsed = 00:00:29 . Memory (MB): peak = 951.152 ; gain = 20.680
+set_property top TestScheduler [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+update_compile_order -fileset sim_1
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+close_sim: Time (s): cpu = 00:00:16 ; elapsed = 00:00:21 . Memory (MB): peak = 1121.863 ; gain = 0.000
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'TestScheduler' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj TestScheduler_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module Scheduler
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestScheduler.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module TestScheduler
+run_program: Time (s): cpu = 00:00:01 ; elapsed = 00:00:05 . Memory (MB): peak = 1121.863 ; gain = 0.000
+INFO: [USF-XSim-69] 'compile' step finished in '6' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xelab -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestScheduler_behav xil_defaultlib.TestScheduler xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestScheduler_behav xil_defaultlib.TestScheduler xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package xil_defaultlib.DataPkg
+Compiling module xil_defaultlib.Scheduler
+Compiling module xil_defaultlib.TestScheduler
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot TestScheduler_behav
+
+****** Webtalk v2019.2 (64-bit)
+  **** SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+  **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+source C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestScheduler_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestScheduler_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Tue Aug 30 11:55:09 2022. For additional details about this file, please refer to the WebTalk help file at F:/VivadoInstallation/vivadoInst/Vivado/2019.2/doc/webtalk_introduction.html.
+webtalk_transmit: Time (s): cpu = 00:00:00 ; elapsed = 00:00:08 . Memory (MB): peak = 113.527 ; gain = 23.801
+INFO: [Common 17-206] Exiting Webtalk at Tue Aug 30 11:55:09 2022...
+run_program: Time (s): cpu = 00:00:01 ; elapsed = 00:00:18 . Memory (MB): peak = 1121.863 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '17' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "TestScheduler_behav -key {Behavioral:sim_1:Functional:TestScheduler} -tclbatch {TestScheduler.tcl} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpace_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestScheduler_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpaceAndSched_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestDescriptor_behav.wcfg} -view {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestFIFO_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.2
+Time resolution is 1 ps
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpace_behav.wcfg
+WARNING: Simulation object /TestRegSpace/period was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/RST was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/Clk was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/WE_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/WE_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/AddrIn_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/AddrIn_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataIn_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataIn_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataOut_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DataOut_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/MuxOut_WE was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DecoderOut_1 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/DecoderOut_2 was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/MuxOut_Data was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/SigDescOut was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/NumOfDesc was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/NumOfRegInDesc was not found in the design.
+WARNING: Simulation object /TestRegSpace/UUT/RegSpaceAddrWidth was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestScheduler_behav.wcfg
+WARNING: Simulation object /TestScheduler/UUT/Valid was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/Ready was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/StartRead was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/ReadyRead was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DoneWrite was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/ReadyWrite was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DoneWriteAddr was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DescAddrOut was not found in the design.
+WARNING: Simulation object /TestScheduler/UUT/DataReadWrite was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestRegSpaceAndSched_behav.wcfg
+WARNING: Simulation object /TestRegSpaceAndSched/Clk was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/RST was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/WE was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/SrcAddrIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DstAddrIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToSendIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/ReadData was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DoneRead was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DoneWrite was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/SrcAddrOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/DstAddrOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToReadOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/BytesToWriteOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/WriteData was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/FULL was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/StartRead was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/StartWrite was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/finish was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/Next was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/SigBytesToSend was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/SigSrcAddr was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/period was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SentBytesIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SentBytesOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/counter was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/SentBytesIn was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/SentBytesOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/SrcAddrFIFO/MyQueue was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/mySched/DstAddrFIFO/MyQueue was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /BytesToSendOut was not found in the design.
+WARNING: Simulation object /TestRegSpaceAndSched/UUT/myRegSpace/\descnum[0].myDisc /SentBytesOut was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestDescriptor_behav.wcfg
+WARNING: Simulation object /TestDescriptor/Clk was not found in the design.
+WARNING: Simulation object /TestDescriptor/RST was not found in the design.
+WARNING: Simulation object /TestDescriptor/WE was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescAddrIn was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescDataIn was not found in the design.
+WARNING: Simulation object /TestDescriptor/DescDataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/period was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DescReg was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/MuxDataOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/MuxWEOut was not found in the design.
+WARNING: Simulation object /TestDescriptor/UUT/DecWEOut was not found in the design.
+open_wave_config C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestFIFO_behav.wcfg
+WARNING: Simulation object /TestFIFO/RST was not found in the design.
+WARNING: Simulation object /TestFIFO/Clk was not found in the design.
+WARNING: Simulation object /TestFIFO/Inp was not found in the design.
+WARNING: Simulation object /TestFIFO/Enqueue was not found in the design.
+WARNING: Simulation object /TestFIFO/Dequeue was not found in the design.
+WARNING: Simulation object /TestFIFO/Outp was not found in the design.
+WARNING: Simulation object /TestFIFO/FULL was not found in the design.
+WARNING: Simulation object /TestFIFO/Empty was not found in the design.
+WARNING: Simulation object /TestFIFO/RegSpaceAddrWidth was not found in the design.
+WARNING: Simulation object /TestFIFO/NumOfDesc was not found in the design.
+WARNING: Simulation object /TestFIFO/period was not found in the design.
+WARNING: Simulation object /TestFIFO/UUT/MyQueue was not found in the design.
+WARNING: Simulation object /TestFIFO/UUT/state was not found in the design.
+source TestScheduler.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+$stop called at time : 260 ns : File "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestScheduler.sv" Line 180
+xsim: Time (s): cpu = 00:00:26 ; elapsed = 00:00:15 . Memory (MB): peak = 1121.863 ; gain = 0.000
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'TestScheduler_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:29 ; elapsed = 00:00:39 . Memory (MB): peak = 1121.863 ; gain = 0.000
+relaunch_sim
+suspend_sim: Time (s): cpu = 00:00:03 ; elapsed = 00:00:16 . Memory (MB): peak = 1121.863 ; gain = 0.000
+Command: launch_simulation -simset sim_1 -mode behavioral
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'TestScheduler' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj TestScheduler_vlog.prj"
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+Command: launch_simulation -simset sim_1 -mode behavioral
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim'
+"xelab -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestScheduler_behav xil_defaultlib.TestScheduler xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestScheduler_behav xil_defaultlib.TestScheduler xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+INFO: [USF-XSim-69] 'elaborate' step finished in '5' seconds
+Vivado Simulator 2019.2
+Time resolution is 1 ps
+$stop called at time : 260 ns : File "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestScheduler.sv" Line 180
+relaunch_xsim_kernel: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1121.863 ; gain = 0.000
+relaunch_sim: Time (s): cpu = 00:00:11 ; elapsed = 00:00:32 . Memory (MB): peak = 1121.863 ; gain = 0.000
+save_wave_config {C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/TestScheduler_behav.wcfg}
+relaunch_sim

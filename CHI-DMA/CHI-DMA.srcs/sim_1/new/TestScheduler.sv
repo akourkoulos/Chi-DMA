@@ -30,6 +30,7 @@ module TestScheduler#(
  Idle_Status       = 0  ,
  Chunk             = 64 ,
  MEMAddrWidth      = 32 ,
+ RegWidth          = 32 , // width of a Reg in Descriptor 
  StateWidth        = 8   
  );
     reg                                RST               ;
@@ -96,58 +97,139 @@ module TestScheduler#(
     always @(posedge Clk)
         begin
     
-         RST           =  1             ;       
+         RST           = 1              ;       
          DescDataIn    = 'd10           ;
-         ReadyRegSpace = 'd100          ;    
-         ReadyFIFO     = 'd100          ;     
+         ReadyRegSpace = 1              ;    
+         ReadyFIFO     = 0              ;     
          FIFO_Addr     = 0              ;     
-         Empty         = 0              ;       
+         Empty         = 1              ;       
          CmdFIFOFULL   = 0              ;
         
         #(period*2); // wait for period begin
         #(period); // wait for period begin
         
-         RST           =  1             ;       
-         DescDataIn    = 'd10           ;
-         ReadyRegSpace = 0              ;    
-         ReadyFIFO     = 0              ;     
-         FIFO_Addr     = 'd2            ;     
-         Empty         = 0              ;       
-         CmdFIFOFULL   = 0              ;
+         RST                    =  0             ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd158          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 0              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
         
-         RST           =  1             ;       
-         DescDataIn    = 'd10           ;
-         ReadyRegSpace = 1              ;    
-         ReadyFIFO     = 0              ;     
-         FIFO_Addr     = 'd2            ;     
-         Empty         = 0              ;       
-         CmdFIFOFULL   = 0              ;
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd158          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
         
-         RST           =  1             ;       
-         DescDataIn    = 'd10           ;
-         ReadyRegSpace = 1              ;    
-         ReadyFIFO     = 0              ;     
-         FIFO_Addr     = 'd2            ;     
-         Empty         = 0              ;       
-         CmdFIFOFULL   = 0              ;
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd158          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
          
-         RST           =  1             ;       
-         DescDataIn    = 'd10           ;
-         ReadyRegSpace = 1              ;    
-         ReadyFIFO     = 0              ;     
-         FIFO_Addr     = 'd2            ;     
-         Empty         = 0              ;       
-         CmdFIFOFULL   = 1              ;
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd190          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+      
+        #(period*2); // wait for period begin
+         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd100          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 1              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 1              ;
       
         #(period*2); // wait for period begin
         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd100          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+      
+       #(period*2); // wait for period begin
         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd132          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd164          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
+         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd164          ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyRegSpace          = 1              ;    
+         ReadyFIFO              = 1              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
         $stop;
         end
     

@@ -37,6 +37,7 @@ module Scheduler#(
   Idle_Status       = 0  ,
   Chunk             = 64 ,
   MEMAddrWidth      = 32 ,
+  RegWidth          = 32 , // width of a Reg in Descriptor 
   StateWidth        = 8 
 )(
     input  logic                              RST               ,
@@ -72,8 +73,7 @@ module Scheduler#(
     reg        [CounterWidth      -1 : 0] counter           ;  // count the bytes that have been sent to change chunk 
     
     wire       [CounterWidth      -1 : 0] NextCountIn       ;
-    wire       [CHI_Word_Width    -1 : 0] SigWordLength     ;
-
+    wire       [RegWidth          -1 : 0] SigWordLength     ;
     reg        [1                    : 0] WEControl         ; // FSM Signals
     reg                                   CountWESig        ;
     reg                                   RegWESig          ;
@@ -107,90 +107,97 @@ module Scheduler#(
    
    //FSM's next_state
    always_comb begin : next_state_logic
-     case(next_state)
-       IdleState      : begin                           
-                          if(!Empty & ReadyRegSpace)  // FIFO is not empty so there is a Descripotr to serve and there is RegSpace to read it
-                            next_state = ReadState ;
-                          else                        // There is not Descriptor to serve or RegSpace Control
-                            next_state = IdleState ;
-                        end
-       ReadState      : begin
-                          if((DescDataIn.BytesToSend == DescDataOut.SentBytes & !CmdFIFOFULL) | !ReadyRegSpace) // Every Bytes of a Descriptor is sending
-                            next_state = IdleState ;
-                          else if (NextCountIn >= Chunk & !CmdFIFOFULL & ReadyRegSpace) // A chunk of one Descripotr have been served
-                            next_state = WriteBackState ;
-                          else
-                            next_state = IdleState ;            // Chunk is not over and there are more Bytes of the current Descriptor to be sent 
-                        end
-       WriteBackState : begin
-                          if(ReadyFIFO & ReadyRegSpace)         // Descriptor Addr pointer wrote back to FIFO and there is Control of RegSpace to read next Descriptor                                            
-                            next_state = ReadState ;
-                          else if (ReadyFIFO & !ReadyRegSpace)  // Descriptor Addr pointer wrote back to FIFO and there is not Control of RegSpace to read next Descriptor                                        
-                            next_state = IdleState ;
-                          else
-                            next_state = WriteBackState ;       // FIFO's control has not obtained yet                                                                                                            
-                        end 
-       default        : next_state = IdleState;
+     case(state)
+       IdleState :
+         begin                           
+           if(!Empty & ReadyRegSpace)  // FIFO is not empty so there is a Descripotr to serve and there is RegSpace to read it
+             next_state = ReadState ;
+           else                        // There is not Descriptor to serve or RegSpace Control
+             next_state = IdleState ;
+         end
+       ReadState :
+         begin
+           if((DescDataIn.BytesToSend == DescDataOut.SentBytes & !CmdFIFOFULL) | !ReadyRegSpace) // Every Bytes of a Descriptor is sending
+             next_state = IdleState ;
+           else if (NextCountIn >= Chunk & !CmdFIFOFULL & ReadyRegSpace) // A chunk of one Descripotr have been served
+             next_state = WriteBackState ;
+           else
+             next_state = ReadState ;            // Chunk is not over and there are more Bytes of the current Descriptor to be sent 
+         end
+       WriteBackState : 
+         begin
+           if(ReadyFIFO & ReadyRegSpace)         // Descriptor Addr pointer wrote back to FIFO and there is Control of RegSpace to read next Descriptor                                            
+             next_state = ReadState ;
+           else if (ReadyFIFO & !ReadyRegSpace)  // Descriptor Addr pointer wrote back to FIFO and there is not Control of RegSpace to read next Descriptor                                        
+             next_state = IdleState ;
+           else
+             next_state = WriteBackState ;       // FIFO's control has not obtained yet                                                                                                            
+         end 
+       default : next_state = IdleState;
      endcase   
    end
    
    //FSM's signals
   always_comb begin
     case(state)
-       IdleState       : begin                      // If not Empty request control of RegSpace else do nothing
-                           WEControl     = 0                ;
-                           CountWESig    = 0                ;
-                           Dequeue       = 0                ;
-                           ValidFIFO     = 0                ;
-                           RegWESig      = 0                ;
-                           Read          = 0                ;
-                           ValidRegSpace = (!Empty) ? 1 : 0 ;
-                         end
-       ReadState       : begin         // Schedule a Read transaction when posible
-                           if(CmdFIFOFULL | ValidRegSpace)begin  // If comand FIFO is FULL or there is not control of RegSpace Wait
-                             WEControl    = 0 ;
-                             CountWESig   = 0 ;
-                             Dequeue      = 0 ;
-                             ValidFIFO    = 0 ;
-                             RegWESig     = 1 ;
-                             Read         = 0 ;
-                           end
-                           else begin
-                             if(DescDataIn.BytesToSend == DescDataOut.SentBytes | NextCountIn >= Chunk)begin // If a Descriptor or a Chunk is finished schedule the last transaction and dequeue the pointer from FIFO
-                               WEControl    = 1 ;
-                               CountWESig   = 1 ;
-                               Dequeue      = 1 ;
-                               ValidFIFO    = 0 ;
-                               RegWESig     = 1 ;
-                               Read         = 1 ;
-                             end
-                             else begin           // keep schedule read transactions
-                               WEControl    = 1 ;
-                               CountWESig   = 1 ;
-                               Dequeue      = 0 ;
-                               ValidFIFO    = 0 ;
-                               RegWESig     = 1 ;
-                               Read         = 1 ;
-                             end
-                           end
-                         end
-       WriteBackState : begin                   // Request control of FIFO to re-write the dequeued address pointer back in the queue
-                          WEControl    = 0 ;
-                          CountWESig   = 0 ;
-                          Dequeue      = 0 ;
-                          ValidFIFO    = 1 ;
-                          RegWESig     = 0 ;
-                          Read         = 0 ;
-                        end
-       default        : begin
-                          ValidRegSpace = 0 ;
-                          WEControl     = 0 ;
-                          CountWESig    = 0 ;
-                          Dequeue       = 0 ;
-                          ValidFIFO     = 0 ;
-                          RegWESig      = 0 ;
-                          Read          = 0 ;
-                        end
+       IdleState :
+         begin                      // If not Empty request control of RegSpace else do nothing
+           WEControl     = 0                ;
+           CountWESig    = 0                ;
+           Dequeue       = 0                ;
+           ValidFIFO     = 0                ;
+           RegWESig      = 0                ;
+           Read          = 0                ;
+           ValidRegSpace = (!Empty) ? 1 : 0 ;
+         end
+       ReadState : 
+         begin         // Schedule a Read transaction when posible
+           if(CmdFIFOFULL | !ValidRegSpace)begin  // If comand FIFO is FULL or there is not control of RegSpace Wait
+             WEControl    = 0 ;
+             CountWESig   = 0 ;
+             Dequeue      = 0 ;
+             ValidFIFO    = 0 ;
+             RegWESig     = 1 ;
+             Read         = 0 ;
+           end
+           else begin
+             if(DescDataIn.BytesToSend == DescDataOut.SentBytes | NextCountIn >= Chunk)begin // If a Descriptor or a Chunk is finished schedule the last transaction and dequeue the pointer from FIFO
+               WEControl    = 1 ;
+               CountWESig   = 1 ;
+               Dequeue      = 1 ;
+               ValidFIFO    = 0 ;
+               RegWESig     = 1 ;
+               Read         = 1 ;
+             end
+             else begin           // keep scheduling read transactions
+               WEControl    = 1 ;
+               CountWESig   = 1 ;
+               Dequeue      = 0 ;
+               ValidFIFO    = 0 ;
+               RegWESig     = 1 ;
+               Read         = 1 ;
+             end
+           end
+         end
+       WriteBackState : 
+         begin                   // Request control of FIFO to re-write the dequeued address pointer back in the queue
+           WEControl    = 0 ;
+           CountWESig   = 0 ;
+           Dequeue      = 0 ;
+           ValidFIFO    = 1 ;
+           RegWESig     = 0 ;
+           Read         = 0 ;
+         end
+       default :
+         begin
+           ValidRegSpace = 0 ;
+           WEControl     = 0 ;
+           CountWESig    = 0 ;
+           Dequeue       = 0 ;
+           ValidFIFO     = 0 ;
+           RegWESig      = 0 ;
+           Read          = 0 ;
+         end
     endcase ;
   end
   
@@ -202,7 +209,7 @@ module Scheduler#(
       end
       else begin
         if(CountWESig) begin
-          counter <= Dequeue ? NextCountIn : 0 ;
+          counter <= Dequeue ? 0 : NextCountIn  ;
         end
       end
     end
