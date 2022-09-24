@@ -22,144 +22,135 @@ import DataPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 module TestRegSpace#(
-  NumOfDesc         = 8,
-  NumOfRegInDesc    = 5,
-  RegSpaceAddrWidth = 32
+//--------------------------------------------------------------------------
+  parameter NUM_COL   =  8                ,
+  parameter COL_WIDTH =  32               ,
+  parameter ADDR_WIDTH = 10               , // Addr Width in bits : 2 *ADDR_WIDTH = RAM Depth
+  parameter DATA_WIDTH = NUM_COL*COL_WIDTH  // Data Width in bits
+//----------------------------------------------------------------------
 );
-    reg                                   RST       ;
-    reg                                   Clk       ;
-    reg        [NumOfRegInDesc    -1 :0]  WE_1      ;
-    reg        [NumOfRegInDesc    -1 :0]  WE_2      ;
-    reg        [RegSpaceAddrWidth -1 :0]  AddrIn_1  ;
-    reg        [RegSpaceAddrWidth -1 :0]  AddrIn_2  ;
-    Data_packet                           DataIn_1  ;
-    Data_packet                           DataIn_2  ;
-    Data_packet                           DataOut_1 ;
-    Data_packet                           DataOut_2 ;
-
-    // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns
+ reg                                   clkA  ;
+ reg                                   enaA  ;
+ reg         [NUM_COL    -1 : 0]       weA   ;
+ reg         [ADDR_WIDTH -1 : 0]       addrA ;
+ Data_packet                           dinA  ;
+ reg                                   clkB  ;
+ reg                                   enaB  ;
+ reg         [NUM_COL    -1 : 0]       weB   ;
+ reg         [ADDR_WIDTH -1 : 0]       addrB ;
+ Data_packet                           dinB  ;
+ Data_packet                           doutA ;
+ Data_packet                           doutB ;
+                                   
+    // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
     localparam period = 20;  
 
-    RegSpace UUT (
-     .RST       ( RST       ) ,
-     .Clk       ( Clk       ) ,
-     .WE_1      ( WE_1      ) ,
-     .WE_2      ( WE_2      ) ,
-     .AddrIn_1  ( AddrIn_1  ) ,
-     .AddrIn_2  ( AddrIn_2  ) ,
-     .DataIn_1  ( DataIn_1  ) ,
-     .DataIn_2  ( DataIn_2  ) ,
-     .DataOut_1 ( DataOut_1 ) ,
-     .DataOut_2 ( DataOut_2 )
+    bytewrite_tdp_ram_rf UUT (
+     .clkA  ( clkA  ) ,
+     .enaA  ( enaA  ) ,
+     .weA   ( weA   ) ,
+     .addrA ( addrA ) ,
+     .dinA  ( dinA  ) ,
+     .clkB  ( clkB  ) ,
+     .enaB  ( enaB  ) ,
+     .weB   ( weB   ) ,
+     .addrB ( addrB ) ,
+     .dinB  ( dinB  ) ,
+     .doutA ( doutA ) ,
+     .doutB ( doutB )
     );
     
     always 
     begin
-        Clk = 1'b1; 
+        clkA = 1'b1; 
         #20; // high for 20 * timescale = 20 ns
     
-        Clk = 1'b0;
+        clkA = 1'b0;
+        #20; // low for 20 * timescale = 20 ns
+    end
+   
+    always 
+    begin
+        clkB = 1'b1; 
+        #20; // high for 20 * timescale = 20 ns
+    
+        clkB = 1'b0;
         #20; // low for 20 * timescale = 20 ns
     end
     
-    always @(posedge Clk)
+    always @(posedge clkA ,posedge clkB)
         begin
-          RST       = 1                         ;
-          WE_1      = 1                         ;
-          WE_2      = 1                         ;
-          AddrIn_1  = 'd0                       ;
-          AddrIn_2  = 'd2                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
+          #(period); // wait for period   
+          enaA             = 1              ;
+          weA              = 'd15           ;
+          addrA            = 'd0            ;
+          enaB             = 1              ;
+          weB              = 'd15           ;
+          addrB            = 'd0            ;
+          dinA.SrcAddr     = 'd10           ;
+          dinA.DstAddr     = 'd100          ;    
+          dinA.BytesToSend = 'd200          ;     
+          dinA.SentBytes   = 'd74           ;     
+          dinB.SrcAddr     = 'd20           ; 
+          dinB.DstAddr     = 'd200          ; 
+          dinB.BytesToSend = 'd300          ; 
+          dinB.SentBytes   = 'd0            ; 
           
           #(period*2); // wait for period   
           
-          RST       = 0                         ;
-          WE_1      = 1                         ;
-          WE_2      = 1                         ;
-          AddrIn_1  = 'd0                       ;
-          AddrIn_2  = 'd2                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
+          enaA             = 1              ;
+          weA              = 'd15           ;
+          addrA            = 'd0            ;
+          enaB             = 0              ;
+          weB              = 'd15           ;
+          addrB            = 'd0            ;
+          dinA.SrcAddr     = 'd10           ;
+          dinA.DstAddr     = 'd100          ;    
+          dinA.BytesToSend = 'd200          ;     
+          dinA.SentBytes   = 'd74           ;     
+          dinB.SrcAddr     = 'd20           ; 
+          dinB.DstAddr     = 'd200          ; 
+          dinB.BytesToSend = 'd300          ; 
+          dinB.SentBytes   = 'd0            ;  
           
           #(period*2); // wait for period   
-         
-          RST       = 0                         ;
-          WE_1      = 0                         ;
-          WE_2      = 0                         ;
-          AddrIn_1  = 'd1                       ;
-          AddrIn_2  = 'd3                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
+          
+          enaA             = 1              ;
+          weA              = 'd15            ;
+          addrA            = 'd1            ;
+          enaB             = 0              ;
+          weB              = 'd1            ;
+          addrB            = 'd1            ;
+          dinA.SrcAddr     = 'd10           ;
+          dinA.DstAddr     = 'd100          ;    
+          dinA.BytesToSend = 'd200          ;     
+          dinA.SentBytes   = 'd74           ;     
+          dinB.SrcAddr     = 'd20           ; 
+          dinB.DstAddr     = 'd200          ; 
+          dinB.BytesToSend = 'd300          ; 
+          dinB.SentBytes   = 'd0            ;   
           
           #(period*2); // wait for period 
           
-          RST       = 0                         ;
-          WE_1      = 0                         ;
-          WE_2      = 0                         ;
-          AddrIn_1  = 'd0                       ;
-          AddrIn_2  = 'd3                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
+          enaA             = 1              ;
+          weA              = 'd31           ;
+          addrA            = 'd0            ;
+          enaB             = 0              ;
+          weB              = 'd1            ;
+          addrB            = 'd1            ;
+          dinA.SrcAddr     = 'd10           ;
+          dinA.DstAddr     = 'd100          ;    
+          dinA.BytesToSend = 'd200          ;     
+          dinA.SentBytes   = 'd74           ;     
+          dinB.SrcAddr     = 'd20           ; 
+          dinB.DstAddr     = 'd200          ; 
+          dinB.BytesToSend = 'd300          ; 
+          dinB.SentBytes   = 'd0            ;   
           
           #(period*2); // wait for period 
                             
-          RST       = 0                         ;
-          WE_1      = ~0                        ;
-          WE_2      = ~0                        ;
-          AddrIn_1  = 'd0                       ;
-          AddrIn_2  = 'd3                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
-          
-          #(period*2); // wait for period   
-          
-                   
-          RST       = 1                         ;
-          WE_1      = 0                         ;
-          WE_2      = 0                         ;
-          AddrIn_1  = 'd1                       ;
-          AddrIn_2  = 'd3                       ;
-          DataIn_1.SrcAddr     = 'd10           ;
-          DataIn_1.DstAddr     = 'd100          ;    
-          DataIn_1.BytesToSend = 'd200          ;     
-          DataIn_1.SentBytes   = 'd74           ;     
-          DataIn_2.SrcAddr     = 'd20           ; 
-          DataIn_2.DstAddr     = 'd200          ; 
-          DataIn_2.BytesToSend = 'd300          ; 
-          DataIn_2.SentBytes   = 'd0            ; 
-          
           #(period*2); // wait for period 
+          
         $stop;
         end
 endmodule

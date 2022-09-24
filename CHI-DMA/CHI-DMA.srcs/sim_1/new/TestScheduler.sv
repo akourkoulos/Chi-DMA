@@ -22,66 +22,64 @@ import DataPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 module TestScheduler#(
- RegSpaceAddrWidth = 32 ,
- NumOfRegInDesc    = 5  ,
- CHI_Word_Width    = 32 ,
- CounterWidth      = 32 ,
- Done_Status       = 1  ,
- Idle_Status       = 0  ,
- Chunk             = 64 ,
- MEMAddrWidth      = 32 ,
- RegWidth          = 32 , // width of a Reg in Descriptor 
- StateWidth        = 8   
+  BRAM_ADDR_WIDTH   = 10 ,
+  BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
+  BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
+  CHI_Word_Width    = 32 ,  
+  Chunk             = 5  , // number of CHI-Words
+  MEMAddrWidth      = 32 ,
+  Done_Status       = 1  ,
+  Idle_Status       = 0   
  );
-    reg                                RST               ;
-    reg                                Clk               ;
-    Data_packet                        DescDataIn        ;
-    reg                                ReadyRegSpace     ;
-    reg                                ReadyFIFO         ;
-    reg        [RegSpaceAddrWidth-1:0] FIFO_Addr         ;
-    reg                                Empty             ;
-    reg                                CmdFIFOFULL       ;
-    Data_packet                        DescDataOut       ;
-    wire       [NumOfRegInDesc   -1:0] WE                ;
-    wire       [RegSpaceAddrWidth-1:0] RegSpaceAddrOut   ;
-    wire                               ValidRegSpace     ;
-    wire                               Dequeue           ;
-    wire                               ValidFIFO         ;
-    wire       [RegSpaceAddrWidth-1:0] DescAddrPointer   ;
-    wire                               Read              ;
-    wire       [MEMAddrWidth     -1:0] ReadAddr          ;
-    wire       [MEMAddrWidth     -1:0] ReadLength        ;
-    wire       [MEMAddrWidth     -1:0] WriteAddr         ;
-    wire       [MEMAddrWidth     -1:0] WriteLength       ;
-    wire       [RegSpaceAddrWidth-1:0] FinishedDescAddr  ;
-    wire                               FinishedDescValid ;
+    reg                                RST               ;                               
+    reg                                Clk               ;                               
+    Data_packet                        DescDataIn        ; //sig from BRAM               
+    reg                                ReadyBRAM         ; //sig from BRAM's Arbiter     
+    reg                                ReadyFIFO         ; //sig from FIFO's Arbiter     
+    reg        [BRAM_ADDR_WIDTH  -1:0] FIFO_Addr         ; //sig from FIFO               
+    reg                                Empty             ;                               
+    reg                                CmdFIFOFULL       ; //sig from chi-converter      
+    Data_packet                        DescDataOut       ; //sig for BRAM                
+    wire       [BRAM_NUM_COL     -1:0] WE                ;                               
+    wire       [BRAM_ADDR_WIDTH  -1:0] BRAMAddrOut       ;                               
+    wire                               ValidBRAM         ; //sig for BRAM's Arbiter      
+    wire                               Dequeue           ; //sig for FIFO                
+    wire                               ValidFIFO         ; //sig for FIFO 's Arbiter     
+    wire       [BRAM_ADDR_WIDTH  -1:0] DescAddrPointer   ;                               
+    wire                               IssueValid        ; //sig for chi-converter       
+    wire       [MEMAddrWidth     -1:0] ReadAddr          ;                               
+    wire       [MEMAddrWidth     -1:0] ReadLength        ;                               
+    wire       [MEMAddrWidth     -1:0] WriteAddr         ;                               
+    wire       [MEMAddrWidth     -1:0] WriteLength       ;                               
+    wire       [BRAM_ADDR_WIDTH  -1:0] FinishedDescAddr  ;                               
+    wire                               FinishedDescValid ;                               
     
     // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns
     localparam period = 20;  
 
     Scheduler UUT (
-    .RST                (RST              ) ,
-    .Clk                (Clk              ) ,
-    .DescDataIn         (DescDataIn       ) ,
-    .ReadyRegSpace      (ReadyRegSpace    ) ,
-    .ReadyFIFO          (ReadyFIFO        ) ,
-    .FIFO_Addr          (FIFO_Addr        ) ,
-    .Empty              (Empty            ) ,
-    .CmdFIFOFULL        (CmdFIFOFULL      ) ,
-    .DescDataOut        (DescDataOut      ) ,
-    .WE                 (WE               ) , 
-    .RegSpaceAddrOut    (RegSpaceAddrOut  ) ,
-    .ValidRegSpace      (ValidRegSpace    ) ,
-    .Dequeue            (Dequeue          ) ,
-    .ValidFIFO          (ValidFIFO        ) ,
-    .DescAddrPointer    (DescAddrPointer  ) ,
-    .Read               (Read             ) ,
-    .ReadAddr           (ReadAddr         ) , 
-    .ReadLength         (ReadLength       ) ,    
-    .WriteAddr          (WriteAddr        ) , 
-    .WriteLength        (WriteLength      ) ,
-     .FinishedDescAddr  (FinishedDescAddr ) ,
-     .FinishedDescValid (FinishedDescValid)
+    .RST              (RST              ) ,
+    .Clk              (Clk              ) ,
+    .DescDataIn       (DescDataIn       ) ,
+    .ReadyBRAM        (ReadyBRAM        ) ,
+    .ReadyFIFO        (ReadyFIFO        ) ,
+    .FIFO_Addr        (FIFO_Addr        ) ,
+    .Empty            (Empty            ) ,
+    .CmdFIFOFULL      (CmdFIFOFULL      ) ,
+    .DescDataOut      (DescDataOut      ) ,
+    .WE               (WE               ) , 
+    .BRAMAddrOut      (BRAMAddrOut      ) ,
+    .ValidBRAM        (ValidBRAM        ) ,
+    .Dequeue          (Dequeue          ) ,
+    .ValidFIFO        (ValidFIFO        ) ,
+    .DescAddrPointer  (DescAddrPointer  ) ,
+    .IssueValid       (IssueValid       ) ,
+    .ReadAddr         (ReadAddr         ) , 
+    .ReadLength       (ReadLength       ) ,    
+    .WriteAddr        (WriteAddr        ) , 
+    .WriteLength      (WriteLength      ) ,
+    .FinishedDescAddr (FinishedDescAddr ) ,
+    .FinishedDescValid(FinishedDescValid)
     );
     
     always 
@@ -99,22 +97,36 @@ module TestScheduler#(
     
          RST           = 1              ;       
          DescDataIn    = 'd10           ;
-         ReadyRegSpace = 1              ;    
+         ReadyBRAM     = 1              ;    
          ReadyFIFO     = 0              ;     
          FIFO_Addr     = 0              ;     
          Empty         = 1              ;       
          CmdFIFOFULL   = 0              ;
         
         #(period*2); // wait for period begin
-        #(period); // wait for period begin
+        #1
         
          RST                    =  0             ;       
          DescDataIn.SrcAddr     = 'd10           ;
          DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd158          ;
+         DescDataIn.BytesToSend = 'd100          ;
+         DescDataIn.SentBytes   = 'd0            ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 0              ;    
+         ReadyBRAM              = 0              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+      
+        #(period*2); // wait for period begin
+        
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd100          ;
+         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
          FIFO_Addr              = 'd2            ;     
          Empty                  = 0              ;       
@@ -126,25 +138,11 @@ module TestScheduler#(
          DescDataIn.SrcAddr     = 'd10           ;
          DescDataIn.DstAddr     = 'd100          ;
          DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd158          ;
+         DescDataIn.SentBytes   = 'd0            ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd2            ;     
-         Empty                  = 0              ;       
-         CmdFIFOFULL            = 0              ;
-      
-        #(period*2); // wait for period begin
-        
-         RST                    = 0              ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd158          ;
-         DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
-         ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd2            ;     
+         FIFO_Addr              = 'd3            ;     
          Empty                  = 0              ;       
          CmdFIFOFULL            = 0              ;
       
@@ -154,12 +152,12 @@ module TestScheduler#(
          DescDataIn.SrcAddr     = 'd10           ;
          DescDataIn.DstAddr     = 'd100          ;
          DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd190          ;
+         DescDataIn.SentBytes   = 'd0            ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd2            ;     
-         Empty                  = 0              ;       
+         FIFO_Addr              = 'd0            ;     
+         Empty                  = 1              ;       
          CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
@@ -168,13 +166,13 @@ module TestScheduler#(
          DescDataIn.SrcAddr     = 'd10           ;
          DescDataIn.DstAddr     = 'd100          ;
          DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd100          ;
+         DescDataIn.SentBytes   = 'd160          ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
-         ReadyFIFO              = 1              ;     
-         FIFO_Addr              = 'd5            ;     
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd3            ;     
          Empty                  = 0              ;       
-         CmdFIFOFULL            = 1              ;
+         CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
         
@@ -184,7 +182,7 @@ module TestScheduler#(
          DescDataIn.BytesToSend = 'd200          ;
          DescDataIn.SentBytes   = 'd100          ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
          FIFO_Addr              = 'd5            ;     
          Empty                  = 0              ;       
@@ -198,7 +196,7 @@ module TestScheduler#(
          DescDataIn.BytesToSend = 'd200          ;
          DescDataIn.SentBytes   = 'd132          ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
          FIFO_Addr              = 'd5            ;     
          Empty                  = 0              ;       
@@ -211,7 +209,7 @@ module TestScheduler#(
          DescDataIn.BytesToSend = 'd200          ;
          DescDataIn.SentBytes   = 'd164          ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
          FIFO_Addr              = 'd5            ;     
          Empty                  = 0              ;       
@@ -225,7 +223,7 @@ module TestScheduler#(
          DescDataIn.BytesToSend = 'd200          ;
          DescDataIn.SentBytes   = 'd164          ;
          DescDataIn.Status      = 'd0            ;
-         ReadyRegSpace          = 1              ;    
+         ReadyBRAM              = 1              ;    
          ReadyFIFO              = 1              ;     
          FIFO_Addr              = 'd5            ;     
          Empty                  = 0              ;       

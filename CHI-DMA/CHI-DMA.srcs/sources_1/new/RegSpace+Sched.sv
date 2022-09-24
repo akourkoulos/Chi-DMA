@@ -46,7 +46,7 @@ module RegSpaceAndSched(
     wire [AddrWidth-1:0] SigSrcAddr,SigDstAddr;
     wire WE_SB,finish,Next;
     
-    RegSpace myRegSpace (
+    bytewrite_tdp_ram_rf myRegSpace (
     .Clk(Clk),.RST(RST),.WE(WE),.Next(Next) ,.SrcAddrIn(SrcAddrIn)
     ,.DstAddrIn(DstAddrIn), .BytesToSendIn(BytesToSendIn), .SentBytesIn(SigSentBytesIn), .WE_SB(WE_SB)
     , .finish(finish), .SrcAddrOut(SigSrcAddr), .DstAddrOut(SigDstAddr), .BytesToSendOut(SigBytesToSend)

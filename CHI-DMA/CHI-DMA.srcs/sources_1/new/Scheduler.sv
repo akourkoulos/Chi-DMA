@@ -29,62 +29,57 @@ import DataPkg::*;
  
 
 module Scheduler#(
-  RegSpaceAddrWidth = 32 ,
-  NumOfRegInDesc    = 5  ,
-  CHI_Word_Width    = 32 ,
-  CounterWidth      = 32 ,  
-  Done_Status       = 1  ,
-  Idle_Status       = 0  ,
-  Chunk             = 64 ,
+  BRAM_ADDR_WIDTH   = 10 ,
+  BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
+  BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
+  CHI_Word_Width    = 32 ,  
+  Chunk             = 5  , // number of CHI-Words
   MEMAddrWidth      = 32 ,
-  RegWidth          = 32 , // width of a Reg in Descriptor 
-  StateWidth        = 8 
+  Done_Status       = 1  ,
+  Idle_Status       = 0   
 )(
     input  logic                              RST               ,
     input  logic                              Clk               ,
-    input  Data_packet                        DescDataIn        , //sig from RegSpace
-    input  logic                              ReadyRegSpace     , //sig from RegSpace's Arbiter
+    input  Data_packet                        DescDataIn        , //sig from BRAM
+    input  logic                              ReadyBRAM         , //sig from BRAM's Arbiter
     input  logic                              ReadyFIFO         , //sig from FIFO's Arbiter
-    input  logic      [RegSpaceAddrWidth-1:0] FIFO_Addr         , //sig from FIFO
+    input  logic      [BRAM_ADDR_WIDTH  -1:0] FIFO_Addr         , //sig from FIFO
     input  logic                              Empty             , 
     input  logic                              CmdFIFOFULL       , //sig from chi-converter
-    output Data_packet                        DescDataOut       , //sig for RegSpace
-    output wire       [NumOfRegInDesc   -1:0] WE                , 
-    output wire       [RegSpaceAddrWidth-1:0] RegSpaceAddrOut   , 
-    output logic                              ValidRegSpace     , //sig for RegSpace's Arbiter
+    output Data_packet                        DescDataOut       , //sig for BRAM
+    output wire       [BRAM_NUM_COL     -1:0] WE                , 
+    output wire       [BRAM_ADDR_WIDTH  -1:0] BRAMAddrOut       , 
+    output logic                              ValidBRAM         , //sig for BRAM's Arbiter
     output logic                              Dequeue           , //sig for FIFO
     output logic                              ValidFIFO         , //sig for FIFO 's Arbiter
-    output wire       [RegSpaceAddrWidth-1:0] DescAddrPointer   , 
-    output logic                              Read              , //sig for chi-converter
+    output wire       [BRAM_ADDR_WIDTH  -1:0] DescAddrPointer   , 
+    output logic                              IssueValid        , //sig for chi-converter
     output wire       [MEMAddrWidth     -1:0] ReadAddr          ,
     output wire       [MEMAddrWidth     -1:0] ReadLength        ,
     output wire       [MEMAddrWidth     -1:0] WriteAddr         ,
     output wire       [MEMAddrWidth     -1:0] WriteLength       ,
-    output wire       [RegSpaceAddrWidth-1:0] FinishedDescAddr  ,
+    output wire       [BRAM_ADDR_WIDTH  -1:0] FinishedDescAddr  ,
     output wire                               FinishedDescValid 
     );
     
     enum int unsigned { IdleState      = 0 , 
-                        ReadState      = 1 , 
+                        IssueState     = 1 , 
                         WriteBackState = 2   } state , next_state ; 
                         
                         
-    reg        [RegSpaceAddrWidth -1 : 0] AddrRegister      ;  // keeps the address pointer from FIFO
-    reg        [CounterWidth      -1 : 0] counter           ;  // count the bytes that have been sent to change chunk 
+    reg        [BRAM_ADDR_WIDTH   -1 : 0] AddrRegister      ;  // keeps the address pointer from FIFO
     
-    wire       [CounterWidth      -1 : 0] NextCountIn       ;
-    wire       [RegWidth          -1 : 0] SigWordLength     ;
+    wire       [BRAM_COL_WIDTH    -1 : 0] SigWordLength     ;
     reg        [1                    : 0] WEControl         ; // FSM Signals
-    reg                                   CountWESig        ;
     reg                                   RegWESig          ;
     
      
-    assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width);                                                                                  ;
-    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes)})                                                              ;
+    assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width * Chunk);                                                                                  ;
+    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes)})                                                                              ;
         
     assign WE = WEControl ? ('b1 << `StatusRegIndx) : 0 ;
     
-    assign RegSpaceAddrOut = Empty ? DescAddrPointer : FIFO_Addr ;
+    assign BRAMAddrOut = Empty ? DescAddrPointer : FIFO_Addr ;
     
     assign DescAddrPointer = AddrRegister ; 
 
@@ -110,25 +105,25 @@ module Scheduler#(
      case(state)
        IdleState :
          begin                           
-           if(!Empty & ReadyRegSpace)  // FIFO is not empty so there is a Descripotr to serve and there is RegSpace to read it
-             next_state = ReadState ;
-           else                        // There is not Descriptor to serve or RegSpace Control
+           if(!Empty & ReadyBRAM)  // FIFO is not empty so there is a Descripotr to serve and there is BRAM to read it
+             next_state = IssueState ;
+           else                        // There is not Descriptor to serve or BRAM Control
              next_state = IdleState ;
          end
-       ReadState :
+       IssueState :
          begin
-           if((DescDataIn.BytesToSend == DescDataOut.SentBytes & !CmdFIFOFULL) | !ReadyRegSpace) // Every Bytes of a Descriptor is sending
+           if((DescDataIn.BytesToSend == DescDataOut.SentBytes & !CmdFIFOFULL) | !ReadyBRAM) // All Bytes of a Descriptor have been scheduled
              next_state = IdleState ;
-           else if (NextCountIn >= Chunk & !CmdFIFOFULL & ReadyRegSpace) // A chunk of one Descripotr have been served
+           else if (!CmdFIFOFULL & ReadyBRAM)     // A chunk of one Descriptor have been served
              next_state = WriteBackState ;
            else
-             next_state = ReadState ;            // Chunk is not over and there are more Bytes of the current Descriptor to be sent 
+             next_state = IssueState ;            // Chunk is not over and there are more Bytes of the current Descriptor to be sent 
          end
        WriteBackState : 
          begin
-           if(ReadyFIFO & ReadyRegSpace)         // Descriptor Addr pointer wrote back to FIFO and there is Control of RegSpace to read next Descriptor                                            
-             next_state = ReadState ;
-           else if (ReadyFIFO & !ReadyRegSpace)  // Descriptor Addr pointer wrote back to FIFO and there is not Control of RegSpace to read next Descriptor                                        
+           if(ReadyFIFO & ReadyBRAM)              // Descriptor Addr pointer wrote back to FIFO and there is Control of BRAM to read next Descriptor                                            
+             next_state = IssueState ;
+           else if (ReadyFIFO & !ReadyBRAM)       // Descriptor Addr pointer wrote back to FIFO and there is not Control of BRAM to read next Descriptor                                        
              next_state = IdleState ;
            else
              next_state = WriteBackState ;       // FIFO's control has not obtained yet                                                                                                            
@@ -141,87 +136,72 @@ module Scheduler#(
   always_comb begin
     case(state)
        IdleState :
-         begin                      // If not Empty request control of RegSpace else do nothing
+         begin                      // If not Empty request control of BRAM else do nothing
            WEControl     = 0                ;
-           CountWESig    = 0                ;
            Dequeue       = 0                ;
            ValidFIFO     = 0                ;
            RegWESig      = 0                ;
-           Read          = 0                ;
-           ValidRegSpace = (!Empty) ? 1 : 0 ;
+           IssueValid    = 0                ;
+           ValidBRAM     = (!Empty) ? 1 : 0 ;
          end
-       ReadState : 
+       IssueState : 
          begin         // Schedule a Read transaction when posible
-           if(CmdFIFOFULL | !ValidRegSpace)begin  // If comand FIFO is FULL or there is not control of RegSpace Wait
+           if(CmdFIFOFULL | !ReadyBRAM)begin  // If comand FIFO is FULL or there is not control of BRAM do nothing
              WEControl    = 0 ;
-             CountWESig   = 0 ;
              Dequeue      = 0 ;
              ValidFIFO    = 0 ;
              RegWESig     = 1 ;
-             Read         = 0 ;
+             IssueValid   = 0 ;
+             ValidBRAM    = 1 ;
            end
            else begin
-             if(DescDataIn.BytesToSend == DescDataOut.SentBytes | NextCountIn >= Chunk)begin // If a Descriptor or a Chunk is finished schedule the last transaction and dequeue the pointer from FIFO
+             if(DescDataIn.BytesToSend == DescDataOut.SentBytes)begin // If a Descriptor is finished schedule the last transaction and dequeue the pointer from FIFO
                WEControl    = 1 ;
-               CountWESig   = 1 ;
                Dequeue      = 1 ;
                ValidFIFO    = 0 ;
                RegWESig     = 1 ;
-               Read         = 1 ;
+               IssueValid   = 1 ;
+               ValidBRAM    = 1 ;
              end
-             else begin           // keep scheduling read transactions
+             else begin           //  schedul a new transaction
                WEControl    = 1 ;
-               CountWESig   = 1 ;
                Dequeue      = 0 ;
                ValidFIFO    = 0 ;
                RegWESig     = 1 ;
-               Read         = 1 ;
+               IssueValid   = 1 ;
+               ValidBRAM    = 1 ;
              end
            end
          end
        WriteBackState : 
          begin                   // Request control of FIFO to re-write the dequeued address pointer back in the queue
            WEControl    = 0 ;
-           CountWESig   = 0 ;
            Dequeue      = 0 ;
            ValidFIFO    = 1 ;
            RegWESig     = 0 ;
-           Read         = 0 ;
+           IssueValid   = 0 ;
+           ValidBRAM    = 1 ;
          end
        default :
          begin
-           ValidRegSpace = 0 ;
+           ValidBRAM     = 0 ;
            WEControl     = 0 ;
-           CountWESig    = 0 ;
            Dequeue       = 0 ;
            ValidFIFO     = 0 ;
            RegWESig      = 0 ;
-           Read          = 0 ;
+           IssueValid    = 0 ;
          end
     endcase ;
   end
-  
-   //update counter
-    assign NextCountIn = counter + SigWordLength;
-    always_ff @ (posedge Clk) begin 
-      if(RST)begin 
-        counter<=0;
-      end
-      else begin
-        if(CountWESig) begin
-          counter <= Dequeue ? 0 : NextCountIn  ;
-        end
-      end
-    end
     
     //update AddressRegister
     always_ff @ (posedge Clk) begin
       if(RST) begin
-        AddrRegister = 0 ;
+        AddrRegister <= 0 ;
       end
       else begin
         if(RegWESig)
-          AddrRegister = FIFO_Addr;          
+          AddrRegister <= FIFO_Addr;          
       end
     end
 endmodule

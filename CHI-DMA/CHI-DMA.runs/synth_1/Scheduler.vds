@@ -2,255 +2,263 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Mon Aug 29 21:10:23 2022
-# Process ID: 13992
+# Start of session at: Sat Sep 24 17:30:00 2022
+# Process ID: 10732
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
 # Command line: vivado.exe -log Scheduler.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source Scheduler.tcl
 # Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/Scheduler.vds
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
 source Scheduler.tcl -notrace
-create_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 413.793 ; gain = 111.133
+create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 413.059 ; gain = 109.930
 Command: synth_design -top Scheduler -part xc7vx485tffg1157-1
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
+INFO: [Common 17-86] Your Synthesis license expires in 4 day(s)
+INFO: [Common 17-1686] The version limit for your license is '2022.09' and will not allow you to run Xilinx software released after that date (year & month). A version limit expiration means that while you will be able to continue to use the current version of tools or IP with this license, you will not be able to use any updates or new releases.
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 13316 
+INFO: Helper process launched with PID 13044 
 ---------------------------------------------------------------------------------
-Starting Synthesize : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 686.141 ; gain = 247.539
+Starting Synthesize : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 686.113 ; gain = 248.242
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'Scheduler' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv:31]
-	Parameter RegSpaceAddrWidth bound to: 32 - type: integer 
-	Parameter NumOfRegInDesc bound to: 5 - type: integer 
+	Parameter BRAM_ADDR_WIDTH bound to: 10 - type: integer 
+	Parameter BRAM_NUM_COL bound to: 8 - type: integer 
+	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
 	Parameter CHI_Word_Width bound to: 32 - type: integer 
-	Parameter CounterWidth bound to: 32 - type: integer 
+	Parameter Chunk bound to: 5 - type: integer 
+	Parameter MEMAddrWidth bound to: 32 - type: integer 
 	Parameter Done_Status bound to: 1 - type: integer 
 	Parameter Idle_Status bound to: 0 - type: integer 
-	Parameter Chunk bound to: 64 - type: integer 
-	Parameter MEMAddrWidth bound to: 32 - type: integer 
-	Parameter StateWidth bound to: 8 - type: integer 
-WARNING: [Synth 8-87] always_comb on 'ValidRegSpace_reg' did not result in combinational logic [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv:147]
 INFO: [Synth 8-6155] done synthesizing module 'Scheduler' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv:31]
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][95] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][94] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][93] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][92] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][91] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][90] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][89] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][88] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][87] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][86] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][85] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][84] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][83] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][82] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][81] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][80] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][79] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][78] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][77] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][76] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][75] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][74] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][73] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][72] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][71] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][70] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][69] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][68] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][67] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][66] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][65] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][64] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][63] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][62] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][61] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][60] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][59] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][58] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][57] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][56] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][55] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][54] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][53] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][52] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][51] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][50] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][49] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][48] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][47] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][46] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][45] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][44] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][43] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][42] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][41] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][40] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][39] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][38] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][37] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][36] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][35] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][34] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][33] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][32] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][31] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][30] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][29] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][28] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][27] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][26] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][25] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][24] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][23] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][22] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][21] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][20] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][19] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][18] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][17] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][16] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][15] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][14] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][13] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][12] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][11] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][10] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][9] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][8] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][7] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][6] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][5] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][4] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][3] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][2] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][1] driven by constant 0
-WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved][0] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][31] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][30] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][29] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][28] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][27] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][26] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][25] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][24] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][23] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][22] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][21] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][20] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][19] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][18] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][17] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][16] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][15] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][14] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][13] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][12] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][11] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][10] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][9] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][8] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][7] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][6] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][5] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][4] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][3] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][2] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][1] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved3][0] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][31] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][30] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][29] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][28] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][27] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][26] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][25] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][24] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][23] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][22] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][21] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][20] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][19] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][18] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][17] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][16] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][15] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][14] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][13] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][12] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][11] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][10] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][9] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][8] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][7] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][6] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][5] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][4] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][3] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][2] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][1] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved2][0] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][31] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][30] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][29] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][28] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][27] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][26] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][25] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][24] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][23] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][22] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][21] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][20] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][19] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][18] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][17] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][16] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][15] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][14] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][13] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][12] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][11] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][10] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][9] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][8] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][7] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][6] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][5] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][4] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][3] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][2] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][1] driven by constant 0
+WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Reserved1][0] driven by constant 0
 WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Status][31] driven by constant 0
 WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Status][30] driven by constant 0
 WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Status][29] driven by constant 0
 WARNING: [Synth 8-3917] design Scheduler has port DescDataOut[Status][28] driven by constant 0
 INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][95]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][94]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][93]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][92]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][91]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][90]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][89]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][88]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][87]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][86]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][85]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][84]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][83]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][82]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][81]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][80]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][79]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][78]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][77]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][76]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][75]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][74]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][73]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][72]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][71]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][70]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][69]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][68]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][67]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][66]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][65]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][64]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][63]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][62]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][61]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][60]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][59]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][58]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][57]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][56]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][55]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][54]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][53]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][52]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][51]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][50]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][49]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][48]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][47]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][46]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][45]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][44]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][43]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][42]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][41]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][40]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][39]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][38]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][37]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][36]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][35]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][34]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][33]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][32]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][31]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][30]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][29]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][28]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][27]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][26]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][25]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][24]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][23]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][22]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][21]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][20]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][19]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][18]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][17]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][16]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][15]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][14]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][13]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][12]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][11]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][10]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][9]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][8]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][7]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][6]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][5]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][4]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][3]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][2]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][1]
-WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved][0]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][31]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][30]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][29]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][28]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][27]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][26]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][25]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][24]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][23]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][22]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][21]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][20]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][19]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][18]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][17]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][16]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][15]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][14]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][13]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][12]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][11]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][10]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][9]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][8]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][7]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][6]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][5]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][4]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][3]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][2]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][1]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved3][0]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][31]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][30]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][29]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][28]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][27]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][26]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][25]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][24]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][23]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][22]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][21]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][20]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][19]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][18]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][17]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][16]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][15]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][14]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][13]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][12]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][11]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][10]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][9]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][8]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][7]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][6]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][5]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][4]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][3]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][2]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][1]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved2][0]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][31]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][30]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][29]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][28]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][27]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][26]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][25]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][24]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][23]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][22]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][21]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][20]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][19]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][18]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][17]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][16]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][15]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][14]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][13]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][12]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][11]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][10]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][9]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][8]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][7]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][6]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][5]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][4]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][3]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][2]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][1]
+WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Reserved1][0]
 WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Status][31]
 WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Status][30]
 WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Status][29]
 WARNING: [Synth 8-3331] design Scheduler has unconnected port DescDataIn[Status][28]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Synthesize : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 752.012 ; gain = 313.410
+Finished Synthesize : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 752.488 ; gain = 314.617
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 756.801 ; gain = 318.199
+Finished Constraint Validation : Time (s): cpu = 00:00:20 ; elapsed = 00:00:22 . Memory (MB): peak = 755.234 ; gain = 317.363
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7vx485tffg1157-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 756.801 ; gain = 318.199
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:20 ; elapsed = 00:00:22 . Memory (MB): peak = 755.234 ; gain = 317.363
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
-WARNING: [Synth 8-327] inferring latch for variable 'ValidRegSpace_reg' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv:147]
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Scheduler'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+               IdleState |                               00 | 00000000000000000000000000000000
+              IssueState |                               01 | 00000000000000000000000000000001
+          WriteBackState |                               10 | 00000000000000000000000000000010
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'Scheduler'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:15 . Memory (MB): peak = 766.750 ; gain = 328.148
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 766.941 ; gain = 329.070
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -265,15 +273,15 @@ Start RTL Component Statistics
 Detailed RTL Component Info : 
 +---Adders : 
 	   3 Input     32 Bit       Adders := 1     
-	   2 Input     32 Bit       Adders := 4     
+	   2 Input     32 Bit       Adders := 3     
 +---Registers : 
-	               32 Bit    Registers := 1     
+	               10 Bit    Registers := 1     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 2     
-	   3 Input      2 Bit        Muxes := 2     
-	   4 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 7     
-	   4 Input      1 Bit        Muxes := 6     
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input     10 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 5     
+	   3 Input      1 Bit        Muxes := 5     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -285,15 +293,15 @@ Module Scheduler
 Detailed RTL Component Info : 
 +---Adders : 
 	   3 Input     32 Bit       Adders := 1     
-	   2 Input     32 Bit       Adders := 4     
+	   2 Input     32 Bit       Adders := 3     
 +---Registers : 
-	               32 Bit    Registers := 1     
+	               10 Bit    Registers := 1     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 2     
-	   3 Input      2 Bit        Muxes := 2     
-	   4 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 7     
-	   4 Input      1 Bit        Muxes := 6     
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input     10 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 5     
+	   3 Input      1 Bit        Muxes := 5     
 ---------------------------------------------------------------------------------
 Finished RTL Hierarchical Component Statistics
 ---------------------------------------------------------------------------------
@@ -311,38 +319,8 @@ No constraint files found.
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 Warning: Parallel synthesis criteria is not met 
-INFO: [Synth 8-3886] merging instance 'state_reg[31]' (FDR) to 'state_reg[30]'
-INFO: [Synth 8-3886] merging instance 'state_reg[30]' (FDR) to 'state_reg[29]'
-INFO: [Synth 8-3886] merging instance 'state_reg[29]' (FDR) to 'state_reg[28]'
-INFO: [Synth 8-3886] merging instance 'state_reg[28]' (FDR) to 'state_reg[27]'
-INFO: [Synth 8-3886] merging instance 'state_reg[27]' (FDR) to 'state_reg[26]'
-INFO: [Synth 8-3886] merging instance 'state_reg[26]' (FDR) to 'state_reg[25]'
-INFO: [Synth 8-3886] merging instance 'state_reg[25]' (FDR) to 'state_reg[24]'
-INFO: [Synth 8-3886] merging instance 'state_reg[24]' (FDR) to 'state_reg[23]'
-INFO: [Synth 8-3886] merging instance 'state_reg[23]' (FDR) to 'state_reg[22]'
-INFO: [Synth 8-3886] merging instance 'state_reg[22]' (FDR) to 'state_reg[21]'
-INFO: [Synth 8-3886] merging instance 'state_reg[21]' (FDR) to 'state_reg[20]'
-INFO: [Synth 8-3886] merging instance 'state_reg[20]' (FDR) to 'state_reg[19]'
-INFO: [Synth 8-3886] merging instance 'state_reg[19]' (FDR) to 'state_reg[18]'
-INFO: [Synth 8-3886] merging instance 'state_reg[18]' (FDR) to 'state_reg[17]'
-INFO: [Synth 8-3886] merging instance 'state_reg[17]' (FDR) to 'state_reg[16]'
-INFO: [Synth 8-3886] merging instance 'state_reg[16]' (FDR) to 'state_reg[15]'
-INFO: [Synth 8-3886] merging instance 'state_reg[15]' (FDR) to 'state_reg[14]'
-INFO: [Synth 8-3886] merging instance 'state_reg[14]' (FDR) to 'state_reg[13]'
-INFO: [Synth 8-3886] merging instance 'state_reg[13]' (FDR) to 'state_reg[12]'
-INFO: [Synth 8-3886] merging instance 'state_reg[12]' (FDR) to 'state_reg[11]'
-INFO: [Synth 8-3886] merging instance 'state_reg[11]' (FDR) to 'state_reg[10]'
-INFO: [Synth 8-3886] merging instance 'state_reg[10]' (FDR) to 'state_reg[9]'
-INFO: [Synth 8-3886] merging instance 'state_reg[9]' (FDR) to 'state_reg[8]'
-INFO: [Synth 8-3886] merging instance 'state_reg[8]' (FDR) to 'state_reg[7]'
-INFO: [Synth 8-3886] merging instance 'state_reg[7]' (FDR) to 'state_reg[6]'
-INFO: [Synth 8-3886] merging instance 'state_reg[6]' (FDR) to 'state_reg[5]'
-INFO: [Synth 8-3886] merging instance 'state_reg[5]' (FDR) to 'state_reg[4]'
-INFO: [Synth 8-3886] merging instance 'state_reg[4]' (FDR) to 'state_reg[3]'
-INFO: [Synth 8-3886] merging instance 'state_reg[3]' (FDR) to 'state_reg[2]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\state_reg[2] )
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:53 ; elapsed = 00:00:56 . Memory (MB): peak = 1065.285 ; gain = 626.684
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1057.438 ; gain = 619.566
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -355,7 +333,7 @@ No constraint files found.
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:54 ; elapsed = 00:00:56 . Memory (MB): peak = 1072.250 ; gain = 633.648
+Finished Timing Optimization : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -367,7 +345,7 @@ Report RTL Partitions:
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:54 ; elapsed = 00:00:56 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Technology Mapping : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -391,13 +369,13 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished IO Insertion : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -416,25 +394,25 @@ Report Check Netlist:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -451,48 +429,46 @@ Report Cell Usage:
 |      |Cell   |Count |
 +------+-------+------+
 |1     |BUFG   |     1|
-|2     |CARRY4 |    51|
-|3     |LUT2   |   103|
-|4     |LUT3   |    32|
-|5     |LUT4   |    22|
-|6     |LUT5   |    23|
+|2     |CARRY4 |    35|
+|3     |LUT2   |   100|
+|4     |LUT3   |    14|
+|5     |LUT4   |    10|
+|6     |LUT5   |     7|
 |7     |LUT6   |    18|
-|8     |FDRE   |    66|
-|9     |LD     |     1|
-|10    |IBUF   |   166|
-|11    |OBUF   |   490|
+|8     |FDRE   |    12|
+|9     |IBUF   |   144|
+|10    |OBUF   |   427|
 +------+-------+------+
 
 Report Instance Areas: 
 +------+---------+-------+------+
 |      |Instance |Module |Cells |
 +------+---------+-------+------+
-|1     |top      |       |   973|
+|1     |top      |       |   768|
 +------+---------+-------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 710 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
-Synthesis Optimization Complete : Time (s): cpu = 00:01:11 ; elapsed = 00:01:14 . Memory (MB): peak = 1072.430 ; gain = 633.828
+Synthesis finished with 0 errors, 0 critical warnings and 713 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
+Synthesis Optimization Complete : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 1064.309 ; gain = 626.438
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 1084.305 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 52 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.061 . Memory (MB): peak = 1076.332 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 35 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1188.746 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1188.406 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 1 instances were transformed.
-  LD => LDCE: 1 instance 
+No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-43 Infos, 202 Warnings, 0 Critical Warnings and 0 Errors encountered.
+17 Infos, 200 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:01:27 ; elapsed = 00:01:31 . Memory (MB): peak = 1188.746 ; gain = 774.953
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1188.746 ; gain = 0.000
+synth_design: Time (s): cpu = 00:01:36 ; elapsed = 00:01:41 . Memory (MB): peak = 1188.406 ; gain = 775.348
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1188.406 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/Scheduler.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file Scheduler_utilization_synth.rpt -pb Scheduler_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Mon Aug 29 21:12:18 2022...
+INFO: [Common 17-206] Exiting Vivado at Sat Sep 24 17:32:07 2022...
