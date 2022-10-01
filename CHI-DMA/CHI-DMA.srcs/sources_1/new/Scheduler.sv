@@ -32,7 +32,7 @@ module Scheduler#(
   BRAM_ADDR_WIDTH   = 10 ,
   BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
   BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
-  CHI_Word_Width    = 32 ,  
+  CHI_Word_Width    = 64 ,  
   Chunk             = 5  , // number of CHI-Words
   MEMAddrWidth      = 32 ,
   Done_Status       = 1  ,
@@ -70,14 +70,14 @@ module Scheduler#(
     reg        [BRAM_ADDR_WIDTH   -1 : 0] AddrRegister      ;  // keeps the address pointer from FIFO
     
     wire       [BRAM_COL_WIDTH    -1 : 0] SigWordLength     ;
-    reg        [1                    : 0] WEControl         ; // FSM Signals
+    reg                                   WEControl         ; // FSM Signals
     reg                                   RegWESig          ;
     
      
     assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width * Chunk);                                                                                  ;
     assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes)})                                                                              ;
         
-    assign WE = WEControl ? ('b1 << `StatusRegIndx) : 0 ;
+    assign WE = WEControl ? ('b1 << `SBRegIndx) : 0 ;
     
     assign BRAMAddrOut = Empty ? DescAddrPointer : FIFO_Addr ;
     
@@ -137,59 +137,49 @@ module Scheduler#(
     case(state)
        IdleState :
          begin                      // If not Empty request control of BRAM else do nothing
-           WEControl     = 0                ;
-           Dequeue       = 0                ;
-           ValidFIFO     = 0                ;
-           RegWESig      = 0                ;
-           IssueValid    = 0                ;
-           ValidBRAM     = (!Empty) ? 1 : 0 ;
+           WEControl  = 0                ;
+           Dequeue    = 0                ;
+           ValidFIFO  = 0                ;
+           RegWESig   = 0                ;
+           IssueValid = 0                ;
+           ValidBRAM  = (!Empty) ? 1 : 0 ;
          end
        IssueState : 
-         begin         // Schedule a Read transaction when posible
-           if(CmdFIFOFULL | !ReadyBRAM)begin  // If comand FIFO is FULL or there is not control of BRAM do nothing
-             WEControl    = 0 ;
-             Dequeue      = 0 ;
-             ValidFIFO    = 0 ;
-             RegWESig     = 1 ;
-             IssueValid   = 0 ;
-             ValidBRAM    = 1 ;
+         begin         // Schedule a new transaction when posible
+           if(CmdFIFOFULL | !ReadyBRAM)begin  // If comand FIFO is FULL or there is not control of BRAM do nothing (Dont schedule)
+             WEControl  = 0 ;
+             Dequeue    = 0 ;
+             ValidFIFO  = 0 ;
+             RegWESig   = 1 ;
+             IssueValid = 0 ;
+             ValidBRAM  = 1 ;
            end
-           else begin
-             if(DescDataIn.BytesToSend == DescDataOut.SentBytes)begin // If a Descriptor is finished schedule the last transaction and dequeue the pointer from FIFO
-               WEControl    = 1 ;
-               Dequeue      = 1 ;
-               ValidFIFO    = 0 ;
-               RegWESig     = 1 ;
-               IssueValid   = 1 ;
-               ValidBRAM    = 1 ;
-             end
-             else begin           //  schedul a new transaction
-               WEControl    = 1 ;
-               Dequeue      = 0 ;
-               ValidFIFO    = 0 ;
-               RegWESig     = 1 ;
-               IssueValid   = 1 ;
-               ValidBRAM    = 1 ;
-             end
+           else begin                         // Schedule a new transaction 
+             WEControl  = 1 ;
+             Dequeue    = 1 ;
+             ValidFIFO  = 0 ;
+             RegWESig   = 1 ;
+             IssueValid = 1 ;
+             ValidBRAM  = 1 ;
            end
          end
        WriteBackState : 
          begin                   // Request control of FIFO to re-write the dequeued address pointer back in the queue
-           WEControl    = 0 ;
-           Dequeue      = 0 ;
-           ValidFIFO    = 1 ;
-           RegWESig     = 0 ;
-           IssueValid   = 0 ;
-           ValidBRAM    = 1 ;
+           WEControl  = 0 ;
+           Dequeue    = 0 ;
+           ValidFIFO  = 1 ;
+           RegWESig   = 0 ;
+           IssueValid = 0 ;
+           ValidBRAM  = 1 ;
          end
        default :
          begin
-           ValidBRAM     = 0 ;
-           WEControl     = 0 ;
-           Dequeue       = 0 ;
-           ValidFIFO     = 0 ;
-           RegWESig      = 0 ;
-           IssueValid    = 0 ;
+           ValidBRAM  = 0 ;
+           WEControl  = 0 ;
+           Dequeue    = 0 ;
+           ValidFIFO  = 0 ;
+           RegWESig   = 0 ;
+           IssueValid = 0 ;
          end
     endcase ;
   end

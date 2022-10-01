@@ -23,7 +23,7 @@ eval( EAInclude(ISEJScriptLib) );
 
 
 ISEStep( "vivado",
-         "-log Scheduler.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source Scheduler.tcl" );
+         "-log CHIConverter.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl" );
 
 
 

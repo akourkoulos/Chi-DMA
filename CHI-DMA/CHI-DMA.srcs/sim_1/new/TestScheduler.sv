@@ -131,6 +131,20 @@ module TestScheduler#(
          FIFO_Addr              = 'd2            ;     
          Empty                  = 0              ;       
          CmdFIFOFULL            = 0              ;
+         
+         #(period*2); // wait for period begin
+        
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd100          ;
+         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd2            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
         
@@ -156,6 +170,34 @@ module TestScheduler#(
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd3            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 1              ;
+         
+         #(period*2); // wait for period begin
+         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd3            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+         #(period*2); // wait for period begin
+         
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd10           ;
+         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.BytesToSend = 'd200          ;
+         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 1              ;     
          FIFO_Addr              = 'd0            ;     
          Empty                  = 1              ;       
          CmdFIFOFULL            = 0              ;
@@ -225,9 +267,11 @@ module TestScheduler#(
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 1              ;     
-         FIFO_Addr              = 'd5            ;     
+         FIFO_Addr              = 'd5            ;      
          Empty                  = 0              ;       
          CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
         $stop;
         end
     

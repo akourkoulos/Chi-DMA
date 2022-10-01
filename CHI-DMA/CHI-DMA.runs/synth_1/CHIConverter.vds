@@ -1,0 +1,784 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Sat Oct  1 14:33:34 2022
+# Process ID: 9324
+# Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
+# Command line: vivado.exe -log CHIConverter.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
+# Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHIConverter.vds
+# Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source CHIConverter.tcl -notrace
+Command: synth_design -top CHIConverter -part xc7vx485tffg1157-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
+INFO: [Common 17-86] Your Synthesis license expires in 29 day(s)
+INFO: [Common 17-1540] The version limit for your license is '2022.09' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 13680 
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:15 ; elapsed = 00:00:16 . Memory (MB): peak = 686.043 ; gain = 248.168
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'CHIConverter' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:42]
+	Parameter BRAM_ADDR_WIDTH bound to: 10 - type: integer 
+	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
+	Parameter MEM_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter CMD_FIFO_LENGTH bound to: 16 - type: integer 
+	Parameter DATA_FIFO_LENGTH bound to: 16 - type: integer 
+	Parameter TXID_FIFO_LENGTH bound to: 32 - type: integer 
+	Parameter SIZE_FIFO_WIDTH bound to: 7 - type: integer 
+	Parameter COUNTER_WIDTH bound to: 5 - type: integer 
+	Parameter CHI_DATA_WIDTH bound to: 64 - type: integer 
+	Parameter QoS bound to: 8 - type: integer 
+	Parameter TgtID bound to: 2 - type: integer 
+	Parameter SrcID bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'FIFO' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 32 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized0' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 11 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized0' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized1' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 512 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized1' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized2' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 2 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized2' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized3' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 8 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized3' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized4' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 7 - type: integer 
+	Parameter FIFO_LENGTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized4' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized5' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+	Parameter FIFO_WIDTH bound to: 8 - type: integer 
+	Parameter FIFO_LENGTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized5' (1#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:25]
+WARNING: [Synth 8-6014] Unused sequential element RspCrdInbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:469]
+WARNING: [Synth 8-6014] Unused sequential element DataCrdInbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:470]
+WARNING: [Synth 8-6014] Unused sequential element RspCrdOutbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:471]
+WARNING: [Synth 8-3848] Net TXREQFLITPEND in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:64]
+WARNING: [Synth 8-3848] Net TXRSPFLITPEND in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:68]
+WARNING: [Synth 8-3848] Net TXRSPFLITV in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:69]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[QoS] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[TgtID] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[SrcID] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[TxnID] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[Opcode] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[RespErr] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[Resp] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[FwdState] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[DBID] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[PCrdType] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXRSPFLIT[TraceTag] in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:70]
+WARNING: [Synth 8-3848] Net TXDATFLITPEND in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:72]
+WARNING: [Synth 8-3848] Net FULLUpdater in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:151]
+WARNING: [Synth 8-3848] Net ValidBRAM in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:85]
+WARNING: [Synth 8-3848] Net AddrBRAM in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:86]
+WARNING: [Synth 8-3848] Net Status in module/entity CHIConverter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:87]
+INFO: [Synth 8-6155] done synthesizing module 'CHIConverter' (2#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:42]
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLITV driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[TgtID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[TgtID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[SrcID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[SrcID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[SrcID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnNID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[StashNIDValid] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][7] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ReturnTxnID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][43] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][42] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][41] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][40] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][39] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][38] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][37] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Addr][36] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[NS] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LikelyShared] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[AllowRetry] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Order][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Order][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[PCrdType][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[PCrdType][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[PCrdType][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[PCrdType][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LPID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LPID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LPID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LPID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[LPID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[Excl] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[ExpCompAck] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXREQFLIT[TraceTag] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[TgtID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[TgtID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[TgtID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[TgtID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[SrcID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[SrcID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[SrcID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[SrcID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[SrcID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[HomeNID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[Opcode][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[Resp][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[Resp][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[Resp][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataSource][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataSource][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataSource][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][7] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][6] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][4] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][3] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][2] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DBID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[CCID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[CCID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataID][1] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[TraceTag] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][63] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][62] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][61] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][60] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][59] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][58] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][57] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][56] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][55] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][54] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][53] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][52] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][51] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][50] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][49] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][48] driven by constant 0
+WARNING: [Synth 8-3917] design CHIConverter has port TXDATFLIT[DataCheck][47] driven by constant 0
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXREQFLITPEND
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLITPEND
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLITV
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[QoS][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[QoS][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[QoS][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[QoS][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TgtID][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[SrcID][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][7]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TxnID][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Opcode][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Opcode][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Opcode][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Opcode][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[RespErr][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[RespErr][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Resp][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Resp][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[Resp][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[FwdState][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[FwdState][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[FwdState][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][7]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[DBID][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[PCrdType][3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[PCrdType][2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[PCrdType][1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[PCrdType][0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPFLIT[TraceTag]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXDATFLITPEND
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port ValidBRAM
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[9]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[8]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[7]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port AddrBRAM[0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[31]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[30]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[29]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[28]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[27]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[26]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[25]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[24]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[23]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[22]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[21]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[20]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[19]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[18]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[17]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[16]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[15]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[14]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[13]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[12]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[11]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[10]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[9]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[8]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[7]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[6]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[5]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[4]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[3]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[2]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[1]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port Status[0]
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port TXRSPLCRDV
+WARNING: [Synth 8-3331] design CHIConverter has unconnected port RXRSPFLITPEND
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 759.609 ; gain = 321.734
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:26 ; elapsed = 00:00:27 . Memory (MB): peak = 778.309 ; gain = 340.434
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7vx485tffg1157-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:26 ; elapsed = 00:00:27 . Memory (MB): peak = 778.309 ; gain = 340.434
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:54]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:488]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:498]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:57 ; elapsed = 00:00:48 . Memory (MB): peak = 1133.559 ; gain = 695.684
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++------+--------------------------+------------+----------+
+|      |RTL Partition             |Replication |Instances |
++------+--------------------------+------------+----------+
+|1     |FIFO__parameterized1__GB0 |           1|     40984|
+|2     |FIFO__parameterized1__GB1 |           1|     12412|
+|3     |FIFO__parameterized1__GB2 |           1|     12412|
+|4     |CHIConverter__GC0         |           1|     40681|
++------+--------------------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     33 Bit       Adders := 2     
+	   3 Input     32 Bit       Adders := 2     
+	   3 Input      7 Bit       Adders := 1     
+	   2 Input      4 Bit       Adders := 4     
++---Registers : 
+	              512 Bit    Registers := 16    
+	               32 Bit    Registers := 64    
+	               11 Bit    Registers := 32    
+	                8 Bit    Registers := 48    
+	                7 Bit    Registers := 16    
+	                4 Bit    Registers := 4     
+	                2 Bit    Registers := 32    
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input    512 Bit        Muxes := 49    
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     33 Bit        Muxes := 4     
+	   2 Input     32 Bit        Muxes := 192   
+	   2 Input     11 Bit        Muxes := 96    
+	   2 Input      8 Bit        Muxes := 150   
+	   2 Input      7 Bit        Muxes := 49    
+	   3 Input      5 Bit        Muxes := 1     
+	   5 Input      4 Bit        Muxes := 1     
+	   5 Input      3 Bit        Muxes := 2     
+	   2 Input      2 Bit        Muxes := 99    
+	   5 Input      2 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 55    
+	   3 Input      1 Bit        Muxes := 196   
+	   5 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module CHIConverter 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     33 Bit       Adders := 2     
+	   3 Input     32 Bit       Adders := 2     
+	   3 Input      7 Bit       Adders := 1     
+	   2 Input      4 Bit       Adders := 4     
++---Registers : 
+	                4 Bit    Registers := 4     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input    512 Bit        Muxes := 1     
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     33 Bit        Muxes := 4     
+	   2 Input      8 Bit        Muxes := 6     
+	   2 Input      7 Bit        Muxes := 1     
+	   3 Input      5 Bit        Muxes := 1     
+	   5 Input      4 Bit        Muxes := 1     
+	   5 Input      3 Bit        Muxes := 2     
+	   5 Input      2 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 7     
+	   5 Input      1 Bit        Muxes := 1     
+Module FIFO__parameterized1 
+Detailed RTL Component Info : 
++---Registers : 
+	              512 Bit    Registers := 16    
++---Muxes : 
+	   2 Input    512 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__1 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__2 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__3 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized0__1 
+Detailed RTL Component Info : 
++---Registers : 
+	               11 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     11 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized0 
+Detailed RTL Component Info : 
++---Registers : 
+	               11 Bit    Registers := 16    
++---Muxes : 
+	   2 Input     11 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized2__1 
+Detailed RTL Component Info : 
++---Registers : 
+	                2 Bit    Registers := 16    
++---Muxes : 
+	   2 Input      2 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized3 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 16    
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized2 
+Detailed RTL Component Info : 
++---Registers : 
+	                2 Bit    Registers := 16    
++---Muxes : 
+	   2 Input      2 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized4 
+Detailed RTL Component Info : 
++---Registers : 
+	                7 Bit    Registers := 16    
++---Muxes : 
+	   2 Input      7 Bit        Muxes := 48    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 15    
+Module FIFO__parameterized5 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 32    
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 96    
+	   2 Input      1 Bit        Muxes := 4     
+	   3 Input      1 Bit        Muxes := 31    
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 2800 (col length:140)
+BRAMs: 2060 (col length: RAMB18 140 RAMB36 70)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_7/\WriteReqBytes_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_1/\ReadReqBytes_reg[5] )
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][0]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][1]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][1]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][2]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][2]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][3]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][3]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][4]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][4]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][5]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][5]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][6]'
+INFO: [Synth 8-3886] merging instance 'i_0/FIFODTXNID/MyQueue_reg[31][6]' (FDRE) to 'i_0/FIFODTXNID/MyQueue_reg[31][7]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[31][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[30][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[29][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[28][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[27][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[26][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[25][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[24][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[23][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[22][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[21][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (FIFODTXNID/\MyQueue_reg[20][6] )
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:07:21 ; elapsed = 00:07:22 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++------+--------------------------+------------+----------+
+|      |RTL Partition             |Replication |Instances |
++------+--------------------------+------------+----------+
+|1     |FIFO__parameterized1__GB0 |           1|     19545|
+|2     |FIFO__parameterized1__GB1 |           1|      4147|
+|3     |FIFO__parameterized1__GB2 |           1|      4145|
+|4     |CHIConverter__GC0         |           1|      4150|
++------+--------------------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:07:22 ; elapsed = 00:07:23 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++------+--------------------------+------------+----------+
+|      |RTL Partition             |Replication |Instances |
++------+--------------------------+------------+----------+
+|1     |FIFO__parameterized1__GB0 |           1|     19545|
+|2     |FIFO__parameterized1__GB1 |           1|      4147|
+|3     |FIFO__parameterized1__GB2 |           1|      4145|
+|4     |CHIConverter__GC0         |           1|      4150|
++------+--------------------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:07:38 ; elapsed = 00:07:39 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:08:29 ; elapsed = 00:08:30 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:08:29 ; elapsed = 00:08:31 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:08:31 ; elapsed = 00:08:33 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:08:31 ; elapsed = 00:08:33 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:09:22 ; elapsed = 00:09:26 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:09:22 ; elapsed = 00:09:26 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY4 |    48|
+|3     |LUT1   |    72|
+|4     |LUT2   |   630|
+|5     |LUT3   |  3147|
+|6     |LUT4   |    85|
+|7     |LUT5   |  4343|
+|8     |LUT6   |  1704|
+|9     |FDRE   |  8586|
+|10    |IBUF   |   534|
+|11    |OBUF   |   828|
+|12    |OBUFT  |    98|
++------+-------+------+
+
+Report Instance Areas: 
++------+-----------------+-----------------------+------+
+|      |Instance         |Module                 |Cells |
++------+-----------------+-----------------------+------+
+|1     |top              |                       | 20076|
+|2     |  FIFODBID       |FIFO__parameterized3   |   372|
+|3     |  FIFODBIDRspErr |FIFO__parameterized2   |   145|
+|4     |  FIFOData       |FIFO__parameterized1   | 17622|
+|5     |  FIFODataRspErr |FIFO__parameterized2_0 |   236|
+|6     |  FIFODstAddr    |FIFO                   |   110|
+|7     |  FIFOSrcAddr    |FIFO_1                 |   111|
++------+-----------------+-----------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:09:22 ; elapsed = 00:09:26 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1001 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:09:22 ; elapsed = 00:09:26 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+Synthesis Optimization Complete : Time (s): cpu = 00:09:22 ; elapsed = 00:09:26 . Memory (MB): peak = 1525.207 ; gain = 1087.332
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 1525.207 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 48 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+WARNING: [Netlist 29-101] Netlist 'CHIConverter' is not ideal for floorplanning, since the cellview 'FIFO__parameterized1' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1525.207 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+146 Infos, 223 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:09:42 ; elapsed = 00:09:47 . Memory (MB): peak = 1525.207 ; gain = 1112.148
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.017 . Memory (MB): peak = 1525.207 ; gain = 0.000
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHIConverter.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:08 ; elapsed = 00:00:07 . Memory (MB): peak = 1525.207 ; gain = 0.000
+INFO: [runtcl-4] Executing : report_utilization -file CHIConverter_utilization_synth.rpt -pb CHIConverter_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Oct  1 14:43:45 2022...

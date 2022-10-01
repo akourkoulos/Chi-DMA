@@ -15,7 +15,7 @@ package DataPkg;
 
 
 
-package CHIFlits;
+package CHIFlitsPkg;
    typedef struct packed {
      bit [3 : 0] QoS           ; 
      bit [6 : 0] TgtID         ;  // Width can be 7 to 11. Width determined by NodeID_Width
@@ -73,7 +73,7 @@ package CHIFlits;
      bit          TraceTag   ;
      //RSVDC  Y = 0 No RSVDC bus . Reserved for customer use : Y = 4, 12, 16, 24, 32 Permitted RSVDC bus widths
      bit [63 : 0] BE         ; // it can be 16, 32, 64 it depends on bus
-     bit [511: 0]Data        ; // it can be 128, 256, 512 it depends on bus
+     bit [511: 0] Data       ; // it can be 128, 256, 512 it depends on bus
      bit [63 : 0] DataCheck  ; // it can be 0, 16, 32, 64
      bit [7  : 0] Poison     ; // It can be 0, 2, 4, 8 
     //Total bit : D = 706 = 512(Data) + 122 + 64(DataCheck) + 8(Poison) bit Data

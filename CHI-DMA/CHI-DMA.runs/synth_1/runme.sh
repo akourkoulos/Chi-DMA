@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log Scheduler.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source Scheduler.tcl
+EAStep vivado -log CHIConverter.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
