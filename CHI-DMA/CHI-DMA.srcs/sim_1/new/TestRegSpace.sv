@@ -81,6 +81,7 @@ module TestRegSpace#(
     always @(posedge clkA ,posedge clkB)
         begin
           #(period); // wait for period   
+          // Write to the same address by both ports . B port Wins
           enaA             = 1              ;
           weA              = 'd15           ;
           addrA            = 'd0            ;
@@ -97,7 +98,7 @@ module TestRegSpace#(
           dinB.SentBytes   = 'd0            ; 
           
           #(period*2); // wait for period   
-          
+          //desable b port
           enaA             = 1              ;
           weA              = 'd15           ;
           addrA            = 'd0            ;
@@ -114,7 +115,7 @@ module TestRegSpace#(
           dinB.SentBytes   = 'd0            ;  
           
           #(period*2); // wait for period   
-          
+          // Write to address 1
           enaA             = 1              ;
           weA              = 'd15            ;
           addrA            = 'd1            ;
@@ -131,7 +132,7 @@ module TestRegSpace#(
           dinB.SentBytes   = 'd0            ;   
           
           #(period*2); // wait for period 
-          
+          // Read written data of address 0 and write new ones
           enaA             = 1              ;
           weA              = 'd31           ;
           addrA            = 'd0            ;
@@ -148,7 +149,21 @@ module TestRegSpace#(
           dinB.SentBytes   = 'd0            ;   
           
           #(period*2); // wait for period 
-                            
+          // 1 port writes addr 3 and second port read it (camt read new data) 
+          enaA             = 1              ;
+          weA              = 'd15           ;
+          addrA            = 'd3            ;
+          enaB             = 1              ;
+          weB              = 'd0            ;
+          addrB            = 'd3            ;
+          dinA.SrcAddr     = 'd10           ;
+          dinA.DstAddr     = 'd100          ;    
+          dinA.BytesToSend = 'd200          ;     
+          dinA.SentBytes   = 'd74           ;     
+          dinB.SrcAddr     = 'd20           ; 
+          dinB.DstAddr     = 'd200          ; 
+          dinB.BytesToSend = 'd300          ; 
+          dinB.SentBytes   = 'd0            ;                   
           #(period*2); // wait for period 
           
         $stop;

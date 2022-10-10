@@ -41,8 +41,9 @@ import CHIFlitsPkg::*;
 
 module CHIConverter#(    
   parameter BRAM_ADDR_WIDTH  = 10  ,
+  parameter BRAM_NUM_COL     = 8   , // As the Data_packet fields
   parameter BRAM_COL_WIDTH   = 32  ,
-  parameter MEM_ADDR_WIDTH   = 32  ,//<------ should be the same with BRAM_COL_WIDTH
+  parameter MEM_ADDR_WIDTH   = 44  ,//<------ should be the same with BRAM_COL_WIDTH
   parameter CMD_FIFO_LENGTH  = 16  ,
   parameter DATA_FIFO_LENGTH = 16  ,
   parameter TXID_FIFO_LENGTH = 32  , 
@@ -53,38 +54,41 @@ module CHIConverter#(
   parameter TgtID            = 2   , //??
   parameter SrcID            = 1     //??
 )(
-    input                                     Clk               ,
-    input                                     RST               ,
-    input           [MEM_ADDR_WIDTH  - 1 : 0] SrcAddr           ,
-    input           [MEM_ADDR_WIDTH  - 1 : 0] DstAddr           ,
-    input           [MEM_ADDR_WIDTH  - 1 : 0] Length            ,
-    input                                     IssueValid        , 
-    input           [BRAM_ADDR_WIDTH - 1 : 0] DescAddr          , // Address of a finished Descriptor in BRAM
-    input                                     FinishedDescValid ,
-    output                                    TXREQFLITPEND     , // Request outbound Chanel
-    output                                    TXREQFLITV        ,
-    output ReqFlit                            TXREQFLIT         ,
-    input                                     TXREQLCRDV        ,
-    output                                    TXRSPFLITPEND     , // Response outbound Chanel
-    output                                    TXRSPFLITV        ,
-    output RspFlit                            TXRSPFLIT         ,
-    input                                     TXRSPLCRDV        ,
-    output                                    TXDATFLITPEND     , // Data outbound Chanel
-    output                                    TXDATFLITV        ,
-    output DataFlit                           TXDATFLIT         ,
-    input                                     TXDATLCRDV        ,
-    input                                     RXRSPFLITPEND     , // Response inbound Chanel
-    input                                     RXRSPFLITV        ,
-    input  RspFlit                            RXRSPFLIT         ,
-    output reg                                RXRSPLCRDV        ,
-    input                                     RXDATFLITPEND     , // Data inbound Chanel
-    input                                     RXDATFLITV        ,
-    input  DataFlit                           RXDATFLIT         ,
-    output reg                                RXDATLCRDV        ,
-    output                                    CmdFIFOFULL       ,
-    output                                    ValidBRAM         ,
-    output          [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ,
-    output          [BRAM_COL_WIDTH  - 1 : 0] Status            
+    input                                        Clk               ,
+    input                                        RST               ,
+    input Data_packet                            DataBRAM          , // From BRAM
+    input                                        ReadyBRAM         , // From Arbiter_BRAM
+    input              [MEM_ADDR_WIDTH  - 1 : 0] SrcAddr           ,
+    input              [MEM_ADDR_WIDTH  - 1 : 0] DstAddr           ,
+    input              [MEM_ADDR_WIDTH  - 1 : 0] Length            ,
+    input                                        IssueValid        , 
+    input              [BRAM_ADDR_WIDTH - 1 : 0] DescAddr          , // Address of a finished Descriptor in BRAM
+    input                                        FinishedDescValid ,
+    output                                       TXREQFLITPEND     , // Request outbound Chanel
+    output                                       TXREQFLITV        ,
+    output ReqFlit                               TXREQFLIT         ,
+    input                                        TXREQLCRDV        ,
+    output                                       TXRSPFLITPEND     , // Response outbound Chanel
+    output                                       TXRSPFLITV        ,
+    output RspFlit                               TXRSPFLIT         ,
+    input                                        TXRSPLCRDV        ,
+    output                                       TXDATFLITPEND     , // Data outbound Chanel
+    output                                       TXDATFLITV        ,
+    output DataFlit                              TXDATFLIT         ,
+    input                                        TXDATLCRDV        ,
+    input                                        RXRSPFLITPEND     , // Response inbound Chanel
+    input                                        RXRSPFLITV        ,
+    input  RspFlit                               RXRSPFLIT         ,
+    output reg                                   RXRSPLCRDV        ,
+    input                                        RXDATFLITPEND     , // Data inbound Chanel
+    input                                        RXDATFLITV        ,
+    input  DataFlit                              RXDATFLIT         ,
+    output reg                                   RXDATLCRDV        ,
+    output                                       CmdFIFOFULL       , // For Scheduler
+    output                                       ValidBRAM         , // For Arbiter_BRAM
+    output             [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          , // For BRAM
+    output Data_packet                           DescStatus        ,
+    output             [BRAM_NUM_COL    - 1 : 0] WEBRAM        
     );                         
     
    //Read command FIFO signals
@@ -254,14 +258,14 @@ module CHIConverter#(
        DATA_FIFO_LENGTH    //FIFO_LENGTH      
        )     
        FIFOData  (     
-       .RST      ( RST             ) ,      
-       .Clk      ( Clk             ) ,      
-       .Inp      ( RXDATFLIT.Data  ) , 
-       .Enqueue  ( RXDATFLITV      ) , 
-       .Dequeue  ( SigDeqData      ) , 
-       .Outp     ( SigFIFOData     ) , 
-       .FULL     (                 ) , 
-       .Empty    ( SigDataEmpty    ) 
+       .RST      ( RST                            ) ,      
+       .Clk      ( Clk                            ) ,      
+       .Inp      ( RXDATFLIT.Data                 ) , 
+       .Enqueue  ( RXDATFLITV & DataCrdInbound!=0 ) , 
+       .Dequeue  ( SigDeqData                     ) , 
+       .Outp     ( SigFIFOData                    ) , 
+       .FULL     (                                ) , 
+       .Empty    ( SigDataEmpty                   ) 
        );
    
    // Read Data RspErr FIFO
@@ -270,14 +274,14 @@ module CHIConverter#(
         DATA_FIFO_LENGTH    //FIFO_LENGTH      
        )     
        FIFODataRspErr  (     
-       .RST            ( RST               ) ,      
-       .Clk            ( Clk               ) ,      
-       .Inp            ( RXDATFLIT.RespErr ) , 
-       .Enqueue        ( RXDATFLITV        ) , 
-       .Dequeue        ( SigDeqData        ) , 
-       .Outp           ( SigFIFODataRspErr ) , 
-       .FULL           (                   ) , 
-       .Empty          (                   ) 
+       .RST            ( RST                            ) ,      
+       .Clk            ( Clk                            ) ,      
+       .Inp            ( RXDATFLIT.RespErr              ) , 
+       .Enqueue        ( RXDATFLITV & DataCrdInbound!=0 ) , 
+       .Dequeue        ( SigDeqData                     ) , 
+       .Outp           ( SigFIFODataRspErr              ) , 
+       .FULL           (                                ) , 
+       .Empty          (                                ) 
        );
        
    // DBID FIFO
@@ -329,7 +333,7 @@ module CHIConverter#(
        );
        
    // TXNID FIFO
-   FIFO #(     
+   FIFOInit #(     
        8                ,  //FIFO_WIDTH       
        TXID_FIFO_LENGTH    //FIFO_LENGTH      
        )     
@@ -344,6 +348,27 @@ module CHIConverter#(
        .Empty     ( SigTxnIDEmpty    ) 
        );
        
+   // Status Updater
+   Completer #(     
+       BRAM_ADDR_WIDTH  ,         
+       DATA_FIFO_LENGTH ,            
+       BRAM_NUM_COL   
+       )myCompleter (     
+       .RST         ( RST               ) ,      
+       .Clk         ( Clk               ) ,      
+       .DescAddr    ( SigWrtTxnDescAddr ) , 
+       .DBIDRespErr ( SigFIFODBIDRspErr ) , 
+       .DataRespErr ( SigFIFODataRspErr ) , 
+       .ValidUpdate ( SigDeqData        ) , 
+       .DescData    ( DataBRAM          ) , 
+       .ReadyBRAM   ( ReadyBRAM         ) ,
+       .ValidBRAM   ( ValidBRAM         ) ,
+       .AddrOut     ( AddrBRAM          ) ,
+       .DataOut     ( DescStatus        ) ,
+       .WE          ( WEBRAM            ) ,
+       .FULL        ( FULLUpdater       )
+       );
+   
    assign CmdFIFOFULL = SigSrcAddrFULL | SigDstAddrFULL ;
         
    // ################## Read Requester ##################
@@ -355,28 +380,28 @@ module CHIConverter#(
    // Dequeue Read command FIFO 
    assign SigDeqRead = (SigRLength - ReadReqBytes <= CHI_DATA_WIDTH & ReadReqArbValid & ReadReqArbReady) ? 1 : 0 ;
    // Create Request Read flit 
-   assign ReadReqFlit  = (!SigSrcAddrEmpty) ? '{default       : 0                         ,                       
-                                                QoS           : QoS                       ,
-                                                TgtID         : TgtID                     ,
-                                                SrcID         : SrcID                     ,
-                                                TxnID         : SigNextTxnID              ,
-                                                ReturnNID     : 0                         ,
-                                                StashNIDValid : 0                         ,
-                                                ReturnTxnID   : 0                         ,
-                                                Opcode        : `ReadOnce                 ,
-                                                Size          : 3'b110                    , // 64 bytes
-                                                Addr          : SigSrcAddr + ReadReqBytes ,
-                                                NS            : 0                         , // Non-Secure bit disable
-                                                LikelyShared  : 0                         ,
-                                                AllowRetry    : 0                         ,
-                                                Order         : 2'b00                     ,
-                                                PCrdType      : 4'b0000                   ,
-                                                MemAttr       : 4'b0101                   , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
-                                                SnpAttr       : 1                         ,
-                                                LPID          : 'b0                       ,
-                                                Excl          : 0                         ,
-                                                ExpCompAck    : 0                         ,
-                                                TraceTag      : 0                           } : 0 ;
+   assign ReadReqFlit  = '{default       : 0                         ,                       
+                           QoS           : QoS                       ,
+                           TgtID         : TgtID                     ,
+                           SrcID         : SrcID                     ,
+                           TxnID         : SigNextTxnID              ,
+                           ReturnNID     : 0                         ,
+                           StashNIDValid : 0                         ,
+                           ReturnTxnID   : 0                         ,
+                           Opcode        : `ReadOnce                 ,
+                           Size          : 3'b110                    , // 64 bytes
+                           Addr          : SigSrcAddr + ReadReqBytes ,
+                           NS            : 0                         , // Non-Secure bit disable
+                           LikelyShared  : 0                         ,
+                           AllowRetry    : 0                         ,
+                           Order         : 2'b00                     ,
+                           PCrdType      : 4'b0000                   ,
+                           MemAttr       : 4'b0101                   , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
+                           SnpAttr       : 1                         ,
+                           LPID          : 'b0                       ,
+                           Excl          : 0                         ,
+                           ExpCompAck    : 0                         ,
+                           TraceTag      : 0                           } ;
    // Manage Registers 
    always_ff@(posedge Clk) begin 
      if(RST)begin
@@ -403,28 +428,28 @@ module CHIConverter#(
    // Size of Data that will be sent
    assign SigDataSize = (SigWLength - WriteReqBytes <= CHI_DATA_WIDTH ) ? (SigWLength - WriteReqBytes) : CHI_DATA_WIDTH ;
    // Create Request Write flit 
-   assign WriteReqFlit  = (!SigDstAddrEmpty) ? '{default       : 0                          ,                       
-                                                 QoS           : QoS                        ,
-                                                 TgtID         : TgtID                      ,
-                                                 SrcID         : SrcID                      ,
-                                                 TxnID         : SigNextTxnID               ,
-                                                 ReturnNID     : 0                          ,
-                                                 StashNIDValid : 0                          ,
-                                                 ReturnTxnID   : 0                          ,
-                                                 Opcode        : `WriteUniquePtl            ,
-                                                 Size          : 3'b110                     , // 64 bytes
-                                                 Addr          : SigDstAddr + WriteReqBytes ,
-                                                 NS            : 0                          , // Non-Secure bit disable
-                                                 LikelyShared  : 0                          ,
-                                                 AllowRetry    : 0                          ,
-                                                 Order         : 2'b00                      ,
-                                                 PCrdType      : 4'b0000                    ,
-                                                 MemAttr       : 4'b0101                    , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
-                                                 SnpAttr       : 1                          ,
-                                                 LPID          : 'b0                        ,
-                                                 Excl          : 0                          ,
-                                                 ExpCompAck    : 0                          ,
-                                                 TraceTag      : 0                           } : 0 ;
+   assign WriteReqFlit  = ( '{ default       : 0                          ,                       
+                               QoS           : QoS                        ,
+                               TgtID         : TgtID                      ,
+                               SrcID         : SrcID                      ,
+                               TxnID         : SigNextTxnID               ,
+                               ReturnNID     : 0                          ,
+                               StashNIDValid : 0                          ,
+                               ReturnTxnID   : 0                          ,
+                               Opcode        : `WriteUniquePtl            ,
+                               Size          : 3'b110                     , // 64 bytes
+                               Addr          : SigDstAddr + WriteReqBytes ,
+                               NS            : 0                          , // Non-Secure bit disable
+                               LikelyShared  : 0                          ,
+                               AllowRetry    : 0                          ,
+                               Order         : 2'b00                      ,
+                               PCrdType      : 4'b0000                    ,
+                               MemAttr       : 4'b0101                    , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
+                               SnpAttr       : 1                          ,
+                               LPID          : 'b0                        ,
+                               Excl          : 0                          ,
+                               ExpCompAck    : 0                          ,
+                               TraceTag      : 0                           }) ;
    
    // Manage Registers 
    always_ff@(posedge Clk) begin 
@@ -457,7 +482,7 @@ module CHIConverter#(
    assign  WriteReqArbReady = (!ReadReqArbValid & WriteReqArbValid) ? 1 : ((ReadReqArbValid & WriteReqArbValid) ?  AccessReg : 0) ;
    // Request chanel signals
    assign  TXREQFLIT    = WriteReqArbReady ? WriteReqFlit : (ReadReqArbReady ? ReadReqFlit : 'b0) ;
-   assign  TXREQFLITV   = WriteReqArbReady ? WriteReqFlit : (ReadReqArbReady ? ReadReqFlit : 'b0) ;
+   assign  TXREQFLITV   = WriteReqArbReady ? WriteReqV    : (ReadReqArbReady ? ReadReqV    : 'b0) ;
    // ################## End Arbiter ##################      
        
       
@@ -495,7 +520,7 @@ module CHIConverter#(
        else if(!RXRSPLCRDV & (RspCrdInbound != 0 & RXRSPFLITV))
          RspCrdInbound <= RspCrdInbound - 1 ;
        // Count the number of given Rsp Crds in order not to give more than DBID FIFO length
-       if((GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) & ((!SigDeqData & !RXRSPFLITV ) | (!SigDeqData & RXRSPFLITV & RXRSPFLIT.Opcode == `DBIDResp)))
+       if((GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) & ((!SigDeqData & !RXRSPFLITV ) | (!SigDeqData & RXRSPFLITV & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))))
          GivenRspCrd <= GivenRspCrd + 1 ;
        else if(SigDeqData & RXRSPFLITV & RXRSPFLIT.Opcode != `DBIDResp)
          GivenRspCrd <= GivenRspCrd - 1 ;
@@ -511,9 +536,9 @@ module CHIConverter#(
    end
    
    // Give an extra Crd in outbound Rsp Chanel
-   assign RXRSPLCRDV = SigDeqData | (RXRSPFLITV & RXRSPFLIT.Opcode != `DBIDResp) | (GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) ;
+   assign RXRSPLCRDV = SigDeqData | (RXRSPFLITV & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp) | (GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) ;
    // Give an extra Crd in outbound Data Chanel
-   assign RXDATLCRDV = SigDeqData &(GivenDataCrd < DATA_FIFO_LENGTH & GivenDataCrd < `MaxCrds) ;
+   assign RXDATLCRDV = SigDeqData | (GivenDataCrd < DATA_FIFO_LENGTH & GivenDataCrd < `MaxCrds) ;
    
    
     // ****************** Data Sender ******************
@@ -522,32 +547,32 @@ module CHIConverter#(
    // Dequeue FIFOs for DATA transfer 
    assign SigDeqData = TXDATFLITV ;
    // Create Request Write flit 
-   assign TXDATFLIT    = (!SigDataEmpty & !SigDBIDEmpty) ? '{default    : 0                                        ,                       
-                                                             QoS        : QoS                                      ,
-                                                             TgtID      : TgtID                                    ,
-                                                             SrcID      : SrcID                                    ,
-                                                             TxnID      : SigFIFODBID                              ,
-                                                             HomeNID    : 0                                        ,
-                                                             Opcode     : `NonCopyBackWrData                       ,
-                                                             RespErr    : SigFIFODBIDRspErr | SigFIFODataRspErr    ,
-                                                             Resp       : 0                                        , // Resp should be 0 when NonCopyBackWrData Rsp
-                                                             DataSource : 'b0                                      , 
-                                                             DBID       : 'b0                                      ,
-                                                             CCID       : 'b0                                      , 
-                                                             DataID     : 'b0                                      ,
-                                                             TraceTag   : 0                                        ,
-                                                             BE         : ~({CHI_DATA_WIDTH{1'b1}} << SigFIFOSize) ,
-                                                             Data       : SigFIFOData                              , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
-                                                             DataCheck  : 'b0                                      ,
-                                                             Poison     : 'b0                                        } : 0 ;
+   assign TXDATFLIT    = '{default    : 0                                        ,                       
+                           QoS        : QoS                                      ,
+                           TgtID      : TgtID                                    ,
+                           SrcID      : SrcID                                    ,
+                           TxnID      : SigFIFODBID                              ,
+                           HomeNID    : 0                                        ,
+                           Opcode     : `NonCopyBackWrData                       ,
+                           RespErr    : SigFIFODBIDRspErr | SigFIFODataRspErr    ,
+                           Resp       : 0                                        , // Resp should be 0 when NonCopyBackWrData Rsp
+                           DataSource : 'b0                                      , 
+                           DBID       : 'b0                                      ,
+                           CCID       : 'b0                                      , 
+                           DataID     : 'b0                                      ,
+                           TraceTag   : 0                                        ,
+                           BE         : ~({CHI_DATA_WIDTH{1'b1}} << SigFIFOSize) ,
+                           Data       : SigFIFOData                              , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
+                           DataCheck  : 'b0                                      ,
+                           Poison     : 'b0                                        } ;
     // ****************** End Data Sender ******************
     
     // ****************** RSP Handler  ******************
     // Re-enqueue TxnID of finished transaction
     assign SigFinishedTxnID = (SigEnqTxnID) ? RXRSPFLIT.TxnID : 'b0 ;
-    assign SigEnqTxnID = (RXRSPFLITV == 1 & RXRSPFLIT.Opcode == `DBIDResp & RXRSPFLIT.Opcode == `CompDBIDResp);
+    assign SigEnqTxnID = (RXRSPFLITV == 1 & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp) & RspCrdInbound != 0);
     
-    assign SigEnqDBID  = (RXRSPFLITV == 1 & RXRSPFLIT.Opcode == `DBIDResp & RXRSPFLIT.Opcode == `CompDBIDResp);
+    assign SigEnqDBID  = (RXRSPFLITV == 1 & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp) & RspCrdInbound != 0 );
     // ****************** End of RSP Handler ******************
     
    

@@ -21,13 +21,13 @@
 
 
 module Arbiter#( 
-  parameter RegSpaceAddrWidth  = 32
+  parameter BRAM_ADDR_WIDTH  = 32
 )(
-    input logic        [1                         : 0 ] Valid           ,
-    input logic        [RegSpaceAddrWidth - 1     : 0 ] DescAddrInProc  ,
-    input logic        [RegSpaceAddrWidth - 1     : 0 ] DescAddrInSched ,
-    output wire        [1                         : 0 ] Ready           ,
-    output wire        [RegSpaceAddrWidth - 1     : 0 ] DescAddrOut
+    input logic        [1                       : 0 ] Valid           ,
+    input logic        [BRAM_ADDR_WIDTH - 1     : 0 ] DescAddrInProc  ,
+    input logic        [BRAM_ADDR_WIDTH - 1     : 0 ] DescAddrInSched ,
+    output wire        [1                       : 0 ] Ready           ,
+    output wire        [BRAM_ADDR_WIDTH - 1     : 0 ] DescAddrOut
     );
     
    

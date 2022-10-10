@@ -1,6 +1,6 @@
 # compile verilog/system verilog design source files
 sv xil_defaultlib  --include "../../../../CHI-DMA.srcs/sources_1/new" \
-"../../../../CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv" \
+"../../../../CHI-DMA.srcs/sources_1/new/FIFOInit.sv" \
 "../../../../CHI-DMA.srcs/sim_1/new/TestFIFO.sv" \
 
 # compile glbl module

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestCHIConverter_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="CHIFlitsPkg" />
+            <top_module name="DataPkg" />
+            <top_module name="TestCHIConverter" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1000001fs"></ZoomEndTime>
+      <Cursor1Time time="688082fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="224"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="57" />
+   <wvobject fp_name="/TestCHIConverter/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/DataBRAM" type="array">
+      <obj_property name="ElementShortName">DataBRAM</obj_property>
+      <obj_property name="ObjectShortName">DataBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/ReadyBRAM" type="logic">
+      <obj_property name="ElementShortName">ReadyBRAM</obj_property>
+      <obj_property name="ObjectShortName">ReadyBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/SrcAddr" type="array">
+      <obj_property name="ElementShortName">SrcAddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcAddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/DstAddr" type="array">
+      <obj_property name="ElementShortName">DstAddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DstAddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/Length" type="array">
+      <obj_property name="ElementShortName">Length[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Length[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/IssueValid" type="logic">
+      <obj_property name="ElementShortName">IssueValid</obj_property>
+      <obj_property name="ObjectShortName">IssueValid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/DescAddr" type="array">
+      <obj_property name="ElementShortName">DescAddr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">DescAddr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/FinishedDescValid" type="logic">
+      <obj_property name="ElementShortName">FinishedDescValid</obj_property>
+      <obj_property name="ObjectShortName">FinishedDescValid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXREQFLITV" type="logic">
+      <obj_property name="ElementShortName">TXREQFLITV</obj_property>
+      <obj_property name="ObjectShortName">TXREQFLITV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXREQFLIT" type="array">
+      <obj_property name="ElementShortName">TXREQFLIT</obj_property>
+      <obj_property name="ObjectShortName">TXREQFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXREQLCRDV" type="logic">
+      <obj_property name="ElementShortName">TXREQLCRDV</obj_property>
+      <obj_property name="ObjectShortName">TXREQLCRDV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXDATFLITV" type="logic">
+      <obj_property name="ElementShortName">TXDATFLITV</obj_property>
+      <obj_property name="ObjectShortName">TXDATFLITV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXDATFLIT" type="array">
+      <obj_property name="ElementShortName">TXDATFLIT</obj_property>
+      <obj_property name="ObjectShortName">TXDATFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/TXDATLCRDV" type="logic">
+      <obj_property name="ElementShortName">TXDATLCRDV</obj_property>
+      <obj_property name="ObjectShortName">TXDATLCRDV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXRSPFLITV" type="logic">
+      <obj_property name="ElementShortName">RXRSPFLITV</obj_property>
+      <obj_property name="ObjectShortName">RXRSPFLITV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXRSPFLIT" type="array">
+      <obj_property name="ElementShortName">RXRSPFLIT</obj_property>
+      <obj_property name="ObjectShortName">RXRSPFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXRSPLCRDV" type="logic">
+      <obj_property name="ElementShortName">RXRSPLCRDV</obj_property>
+      <obj_property name="ObjectShortName">RXRSPLCRDV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXDATFLITV" type="logic">
+      <obj_property name="ElementShortName">RXDATFLITV</obj_property>
+      <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXDATFLIT" type="array">
+      <obj_property name="ElementShortName">RXDATFLIT</obj_property>
+      <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/RXDATLCRDV" type="logic">
+      <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
+      <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/CmdFIFOFULL" type="logic">
+      <obj_property name="ElementShortName">CmdFIFOFULL</obj_property>
+      <obj_property name="ObjectShortName">CmdFIFOFULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/ValidBRAM" type="logic">
+      <obj_property name="ElementShortName">ValidBRAM</obj_property>
+      <obj_property name="ObjectShortName">ValidBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/AddrBRAM" type="array">
+      <obj_property name="ElementShortName">AddrBRAM[9:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrBRAM[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/DescStatus" type="array">
+      <obj_property name="ElementShortName">DescStatus</obj_property>
+      <obj_property name="ObjectShortName">DescStatus</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/WEBRAM" type="array">
+      <obj_property name="ElementShortName">WEBRAM[7:0]</obj_property>
+      <obj_property name="ObjectShortName">WEBRAM[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/BRAM_ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">BRAM_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAM_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/BRAM_NUM_COL" type="array">
+      <obj_property name="ElementShortName">BRAM_NUM_COL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAM_NUM_COL[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/BRAM_COL_WIDTH" type="array">
+      <obj_property name="ElementShortName">BRAM_COL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAM_COL_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/MEM_ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">MEM_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FIFODstAddr/MyQueue" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">MyQueue[15:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[15:0][31:0]</obj_property>
+      <obj_property name="label">MyQueue[15:0][31:0]DstAddr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[2]" type="array">
+      <obj_property name="ElementShortName">[2][511:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][511:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[1]" type="array">
+      <obj_property name="ElementShortName">[1][511:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][511:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[0]" type="array">
+      <obj_property name="ElementShortName">[0][511:0]</obj_property>
+      <obj_property name="ObjectShortName">[0][511:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FIFOSize/MyQueue" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">MyQueue[15:0][6:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[15:0][6:0]</obj_property>
+      <obj_property name="label">MyQueue[15:0][6:0]Size</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbValid" type="logic">
+      <obj_property name="ElementShortName">WriteReqArbValid</obj_property>
+      <obj_property name="ObjectShortName">WriteReqArbValid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbReady" type="logic">
+      <obj_property name="ElementShortName">WriteReqArbReady</obj_property>
+      <obj_property name="ObjectShortName">WriteReqArbReady</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbValid" type="logic">
+      <obj_property name="ElementShortName">ReadReqArbValid</obj_property>
+      <obj_property name="ObjectShortName">ReadReqArbValid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbReady" type="logic">
+      <obj_property name="ElementShortName">ReadReqArbReady</obj_property>
+      <obj_property name="ObjectShortName">ReadReqArbReady</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Enqueue" type="logic">
+      <obj_property name="ElementShortName">Enqueue</obj_property>
+      <obj_property name="ObjectShortName">Enqueue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Inp" type="array">
+      <obj_property name="ElementShortName">Inp[116:0]</obj_property>
+      <obj_property name="ObjectShortName">Inp[116:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Dequeue" type="logic">
+      <obj_property name="ElementShortName">Dequeue</obj_property>
+      <obj_property name="ObjectShortName">Dequeue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Outp" type="array">
+      <obj_property name="ElementShortName">Outp[116:0]</obj_property>
+      <obj_property name="ObjectShortName">Outp[116:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/SigTXREQFLIT" type="array">
+      <obj_property name="ElementShortName">SigTXREQFLIT</obj_property>
+      <obj_property name="ObjectShortName">SigTXREQFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/FULL" type="logic">
+      <obj_property name="ElementShortName">FULL</obj_property>
+      <obj_property name="ObjectShortName">FULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/Empty" type="logic">
+      <obj_property name="ElementShortName">Empty</obj_property>
+      <obj_property name="ObjectShortName">Empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/MyQueue" type="array">
+      <obj_property name="ElementShortName">MyQueue[116:0][116:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[116:0][116:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/FIFO_WIDTH" type="array">
+      <obj_property name="ElementShortName">FIFO_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/myFIFOReq/FIFO_LENGTH" type="array">
+      <obj_property name="ElementShortName">FIFO_LENGTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_LENGTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/ReadReqBytes" type="array">
+      <obj_property name="ElementShortName">ReadReqBytes[43:0]</obj_property>
+      <obj_property name="ObjectShortName">ReadReqBytes[43:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/WriteReqBytes" type="array">
+      <obj_property name="ElementShortName">WriteReqBytes[43:0]</obj_property>
+      <obj_property name="ObjectShortName">WriteReqBytes[43:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -22,14 +22,12 @@ import DataPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 module TestScheduler#(
-  BRAM_ADDR_WIDTH   = 10 ,
-  BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
-  BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
-  CHI_Word_Width    = 32 ,  
-  Chunk             = 5  , // number of CHI-Words
-  MEMAddrWidth      = 32 ,
-  Done_Status       = 1  ,
-  Idle_Status       = 0   
+  parameter BRAM_ADDR_WIDTH   = 10 ,
+  parameter BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
+  parameter BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
+  parameter CHI_Word_Width    = 64 ,  
+  parameter Chunk             = 5  , // number of CHI-Words
+  parameter MEMAddrWidth      = 32   
  );
     reg                                RST               ;                               
     reg                                Clk               ;                               
@@ -94,7 +92,7 @@ module TestScheduler#(
 
     always @(posedge Clk)
         begin
-    
+         // Reset 
          RST           = 1              ;       
          DescDataIn    = 'd10           ;
          ReadyBRAM     = 1              ;    
@@ -104,27 +102,13 @@ module TestScheduler#(
          CmdFIFOFULL   = 0              ;
         
         #(period*2); // wait for period begin
-        #1
-        
-         RST                    =  0             ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd100          ;
-         DescDataIn.SentBytes   = 'd0            ;
-         DescDataIn.Status      = 'd0            ;
-         ReadyBRAM              = 0              ;    
-         ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd2            ;     
-         Empty                  = 0              ;       
-         CmdFIFOFULL            = 0              ;
-      
-        #(period*2); // wait for period begin
-        
+        #period   // signals change at the negedge of Clk
+        //(Idle State)Read from BRAM
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd1000         ;
          DescDataIn.BytesToSend = 'd100          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD < chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -133,12 +117,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
          
          #(period*2); // wait for period begin
-        
+        //(Issue State) schedule Chunk transactions
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd1000         ;
          DescDataIn.BytesToSend = 'd100          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD < chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -147,12 +131,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
-        
+        //(Idle State) Read next Descripotr because last is finshed
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.DstAddr     = 'd600          ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -161,12 +145,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
-         
+         // (Issue State) Comand FIFO FULL -> wait
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.DstAddr     = 'd600          ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -175,12 +159,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 1              ;
          
          #(period*2); // wait for period begin
-         
+         // (Issue State) Schedule one chunk
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.DstAddr     = 'd600          ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -189,12 +173,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
          
          #(period*2); // wait for period begin
-         
+         // (WriteBack State) FIFO Empty Read and write last pointer
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd0            ;
+         DescDataIn.DstAddr     = 'd600          ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 1              ;     
@@ -203,12 +187,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
-         
+         // (Issue State) schedule last transaction
          RST                    = 0              ;       
          DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd160          ;
+         DescDataIn.DstAddr     = 'd600          ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd321          ; // BTS-SD < chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -217,12 +201,12 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
       
         #(period*2); // wait for period begin
-        
+        // (Idle State) Read next Descriptor
          RST                    = 0              ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd100          ;
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
          ReadyBRAM              = 1              ;    
          ReadyFIFO              = 0              ;     
@@ -231,42 +215,88 @@ module TestScheduler#(
          CmdFIFOFULL            = 0              ;
       
        #(period*2); // wait for period begin
+        // (Issue State) no control of BRAM
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 0              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
+         //(Idle State) Control of BRAM reobtained
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;     
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
+         //(Issue state) schedule a chunk
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;      
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
         
+        //(WriteBack state) no control of BRAM and FIFOReady -> Idle State
          RST                    = 0              ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd132          ;
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
          DescDataIn.Status      = 'd0            ;
-         ReadyBRAM              = 1              ;    
-         ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd5            ;     
-         Empty                  = 0              ;       
-         CmdFIFOFULL            = 0              ;
-         
-        #(period*2); // wait for period begin
-         RST                    = 0              ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd164          ;
-         DescDataIn.Status      = 'd0            ;
-         ReadyBRAM              = 1              ;    
-         ReadyFIFO              = 0              ;     
-         FIFO_Addr              = 'd5            ;     
-         Empty                  = 0              ;       
-         CmdFIFOFULL            = 0              ;
-         
-        #(period*2); // wait for period begin
-         
-         RST                    = 0              ;       
-         DescDataIn.SrcAddr     = 'd10           ;
-         DescDataIn.DstAddr     = 'd100          ;
-         DescDataIn.BytesToSend = 'd200          ;
-         DescDataIn.SentBytes   = 'd164          ;
-         DescDataIn.Status      = 'd0            ;
-         ReadyBRAM              = 1              ;    
+         ReadyBRAM              = 0              ;    
          ReadyFIFO              = 1              ;     
+         FIFO_Addr              = 'd5            ;      
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 1              ;
+         
+        #(period*2); // wait for period begin
+        
+        //(Idle State) read from BRAM
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd0            ; // BTS-SD > chunk*CHI_WORD
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
+         FIFO_Addr              = 'd5            ;      
+         Empty                  = 0              ;       
+         CmdFIFOFULL            = 0              ;
+         
+        #(period*2); // wait for period begin
+        
+        //(Issue State) Schedule last transaction 
+         RST                    = 0              ;       
+         DescDataIn.SrcAddr     = 'd100          ;
+         DescDataIn.DstAddr     = 'd3000         ;
+         DescDataIn.BytesToSend = 'd400          ;
+         DescDataIn.SentBytes   = 'd320          ; // BTS-SD < chunk*CHI_WORD
+         DescDataIn.Status      = 'd0            ;
+         ReadyBRAM              = 1              ;    
+         ReadyFIFO              = 0              ;     
          FIFO_Addr              = 'd5            ;      
          Empty                  = 0              ;       
          CmdFIFOFULL            = 0              ;
