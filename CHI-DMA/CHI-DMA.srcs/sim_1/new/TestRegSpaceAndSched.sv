@@ -22,7 +22,7 @@ import DataPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module TestBRAMAndSched#(
+module TestRegSpaceAndSched#(
   parameter BRAM_NUM_COL      = 8                           ,
   parameter BRAM_COL_WIDTH    = 32                          ,
   parameter BRAM_ADDR_WIDTH   = 10                          ,
@@ -75,6 +75,11 @@ module TestBRAMAndSched#(
       .OutValidBRAM         (OutValidBRAM        )
     );
     
+    int flag     = 0 ;
+    int varFULL      ;
+    int varReady     ;
+    int nextFULL = 0 ;
+    
     always 
     begin
         Clk = 1'b1; 
@@ -84,11 +89,32 @@ module TestBRAMAndSched#(
         #20; // low for 20 * timescale = 20 ns
     end
    
+   
+   always begin
+     #(period)  
+     if(flag == 1)begin   
+       // manage ReadyBRAM
+       varReady        = $urandom_range(6);
+       InpReadyBRAM   = !varReady[2]      ;  // // 67% to have control of BRAM
+       // manage InpCmdFIFOFULL
+       if(InpCmdFIFOFULL == 1 )begin
+         varFULL        = $urandom_range(6);
+         InpCmdFIFOFULL = !varFULL[2]      ; // 67% chance to be full if it was full
+         nextFULL       = 0                ;
+       end
+       else 
+         InpCmdFIFOFULL = nextFULL ;  // else not FULL
+         if(OutIssueValid & InpReadyBRAM)begin
+           varFULL  = $urandom_range(6);
+           nextFULL = varFULL[2]       ; //67% chance to be full on next cycle if issue a transaction
+         end
+         #(period) ;
+      end
+   end
     
     always @(posedge Clk)
         begin
         
-        #period // signals change at the negedge of Clk
         // Reset 
         RST              = 1        ;
         enaA             = 1        ;
@@ -102,7 +128,7 @@ module TestBRAMAndSched#(
         ValidArbIn       = 0        ;
         InpReadyBRAM     = 1        ;
         InpCmdFIFOFULL   = 0        ;
-         
+        #period // signals change at the negedge of Clk
         #(period*2); // wait for period begin  
         // Proc Writes 1st Desc
         RST              = 0        ;            
@@ -268,10 +294,51 @@ module TestBRAMAndSched#(
         ValidArbIn       = 0        ;  
         InpReadyBRAM     = 1        ;
         InpCmdFIFOFULL   = 0        ; 
+        flag             = 1        ; //enable flag to begin random ReadyBRAM and CmdFIFOFULL operation
+         
+        #(period*120); // schedule every transaction of Descriptors 
+         
+        for(int j = 1 ; j < 50 ; j++)begin //wriet 50 transactions in Descriptors
         
-        // schedule every transaction of Descriptors 
-        #(period*80); // wait for period begin 
+          RST              = 0   ;                                       
+          enaA             = 1   ;                            
+          weA              = 'b0 ;                           
+          addrA            = j   ;                                       
+          dinA.SrcAddr     = 'd0 ;           
+          dinA.DstAddr     = 'd0 ;           
+          dinA.BytesToSend = 'd0 ;           
+          dinA.SentBytes   = 'd0 ;                                            
+          dinA.Status      = 'd0 ;                                       
+          ValidArbIn       = 0   ;                           
+          
+        #(period * 2 * $urandom_range(5)); 
         
+        
+          RST              = 0                               ;            
+          enaA             = 1                               ; 
+          weA              = 'b111111                        ;
+          addrA            = j                               ;            
+          dinA.SrcAddr     = 'd10    * $urandom_range(10000) ;            
+          dinA.DstAddr     = 'd10000 * $urandom_range(10000) ;            
+          dinA.BytesToSend = 'd200   * $urandom_range(7)     ;            
+          dinA.SentBytes   = 'd0                             ;                 
+          dinA.Status      = 'd0                             ;            
+          ValidArbIn       = 1                               ; 
+          
+        #(period*2);  
+        end
+        RST              = 0        ;            
+        enaA             = 1        ; 
+        weA              = 'b0      ;
+        addrA            = 'd10     ;            
+        dinA.SrcAddr     = 'd10     ;            
+        dinA.DstAddr     = 'd10000  ;            
+        dinA.BytesToSend = 'd2000   ;            
+        dinA.SentBytes   = 'd0      ;                 
+        dinA.Status      = 'd0      ;            
+        ValidArbIn       = 0        ; 
+        #(period*1200);   // shcedule every transaction of Descriptors
+       
         $stop;
         end
         

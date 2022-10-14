@@ -22,8 +22,9 @@
 
 
 module FIFOInit#(
-  FIFO_WIDTH  = 32,
-  FIFO_LENGTH = 8
+  FIFO_WIDTH        = 32,
+  FIFO_LENGTH       = 8 ,
+  FIRST_INIT_VALUE  = 0
 )(
     input  wire                              RST     ,
     input  wire                              Clk     ,
@@ -47,7 +48,7 @@ module FIFOInit#(
       always_ff @ (posedge Clk) begin
         if(RST)begin 
             state <= FIFO_LENGTH ;
-            for (int i = 0 ; i < FIFO_LENGTH ; i++) MyQueue[i] <= i ;
+            for (int i = 0 ; i < FIFO_LENGTH ; i++) MyQueue[i] <= FIRST_INIT_VALUE + i ;
         end
         else begin  
           if(Enqueue == 1 & (Dequeue == 0 | Empty) & !FULL) begin  // Enqueue case

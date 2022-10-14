@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="320000fs"></Cursor1Time>
+      <ZoomStartTime time="66700fs"></ZoomStartTime>
+      <ZoomEndTime time="1066701fs"></ZoomEndTime>
+      <Cursor1Time time="308974fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="223"></ValueColumnWidth>
+      <ValueColumnWidth column_width="243"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="5" />
+   <WVObjectSize size="7" />
    <wvobject fp_name="group975" type="group">
       <obj_property name="label">Inp</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -63,7 +63,7 @@
       </wvobject>
    </wvobject>
    <wvobject fp_name="group974" type="group">
-      <obj_property name="label">New Group 4</obj_property>
+      <obj_property name="label">outp</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/ReadyArbProc" type="logic">
@@ -78,82 +78,86 @@
          <obj_property name="CustomSignalColor">#FF0080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutIssueValid" type="logic">
-         <obj_property name="ElementShortName">OutIssueValid</obj_property>
-         <obj_property name="ObjectShortName">OutIssueValid</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutReadAddr" type="array">
-         <obj_property name="ElementShortName">OutReadAddr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">OutReadAddr[31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutReadLength" type="array">
-         <obj_property name="ElementShortName">OutReadLength[31:0]</obj_property>
-         <obj_property name="ObjectShortName">OutReadLength[31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutWriteAddr" type="array">
-         <obj_property name="ElementShortName">OutWriteAddr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">OutWriteAddr[31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutWriteLength" type="array">
-         <obj_property name="ElementShortName">OutWriteLength[31:0]</obj_property>
-         <obj_property name="ObjectShortName">OutWriteLength[31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutFinishedDescAddr" type="array">
-         <obj_property name="ElementShortName">OutFinishedDescAddr[9:0]</obj_property>
-         <obj_property name="ObjectShortName">OutFinishedDescAddr[9:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutFinishedDescValid" type="logic">
-         <obj_property name="ElementShortName">OutFinishedDescValid</obj_property>
-         <obj_property name="ObjectShortName">OutFinishedDescValid</obj_property>
-         <obj_property name="CustomSignalColor">#FF0080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutValidBRAM" type="logic">
          <obj_property name="ElementShortName">OutValidBRAM</obj_property>
          <obj_property name="ObjectShortName">OutValidBRAM</obj_property>
          <obj_property name="CustomSignalColor">#FF0080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+      <wvobject fp_name="group1305" type="group">
+         <obj_property name="label">outForCHIConv</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutIssueValid" type="logic">
+            <obj_property name="ElementShortName">OutIssueValid</obj_property>
+            <obj_property name="ObjectShortName">OutIssueValid</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutReadAddr" type="array">
+            <obj_property name="ElementShortName">OutReadAddr[31:0]</obj_property>
+            <obj_property name="ObjectShortName">OutReadAddr[31:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutReadLength" type="array">
+            <obj_property name="ElementShortName">OutReadLength[31:0]</obj_property>
+            <obj_property name="ObjectShortName">OutReadLength[31:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutWriteAddr" type="array">
+            <obj_property name="ElementShortName">OutWriteAddr[31:0]</obj_property>
+            <obj_property name="ObjectShortName">OutWriteAddr[31:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutWriteLength" type="array">
+            <obj_property name="ElementShortName">OutWriteLength[31:0]</obj_property>
+            <obj_property name="ObjectShortName">OutWriteLength[31:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutFinishedDescAddr" type="array">
+            <obj_property name="ElementShortName">OutFinishedDescAddr[9:0]</obj_property>
+            <obj_property name="ObjectShortName">OutFinishedDescAddr[9:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestRegSpaceAndSched/UUT/OutFinishedDescValid" type="logic">
+            <obj_property name="ElementShortName">OutFinishedDescValid</obj_property>
+            <obj_property name="ObjectShortName">OutFinishedDescValid</obj_property>
+            <obj_property name="CustomSignalColor">#FF0080</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="group970" type="group">
       <obj_property name="label">FIFO</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/FIFOEmpty" type="logic">
-         <obj_property name="ElementShortName">FIFOEmpty</obj_property>
-         <obj_property name="ObjectShortName">FIFOEmpty</obj_property>
-         <obj_property name="CustomSignalColor">#008080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/ArbPointer" type="array">
+         <obj_property name="DisplayName">label</obj_property>
          <obj_property name="ElementShortName">ArbPointer[9:0]</obj_property>
          <obj_property name="ObjectShortName">ArbPointer[9:0]</obj_property>
          <obj_property name="CustomSignalColor">#008080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestRegSpaceAndSched/UUT/WriteBackPointer" type="array">
-         <obj_property name="ElementShortName">WriteBackPointer[9:0]</obj_property>
-         <obj_property name="ObjectShortName">WriteBackPointer[9:0]</obj_property>
-         <obj_property name="CustomSignalColor">#008080</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="label">FIFOIN[9:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/PointerFIFO" type="array">
+         <obj_property name="DisplayName">label</obj_property>
          <obj_property name="ElementShortName">PointerFIFO[9:0]</obj_property>
          <obj_property name="ObjectShortName">PointerFIFO[9:0]</obj_property>
          <obj_property name="CustomSignalColor">#008080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="label">FIFOOUT[9:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/AddrPointerFIFO/Enqueue" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">Enqueue</obj_property>
+         <obj_property name="ObjectShortName">Enqueue</obj_property>
+         <obj_property name="CustomSignalColor">#008080</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="label">EnqueueFIFO</obj_property>
       </wvobject>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/DequeueFIFO" type="logic">
          <obj_property name="ElementShortName">DequeueFIFO</obj_property>
@@ -188,6 +192,12 @@
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/AddrPointerFIFO/state" type="array">
          <obj_property name="ElementShortName">state[31:0]</obj_property>
          <obj_property name="ObjectShortName">state[31:0]</obj_property>
+         <obj_property name="CustomSignalColor">#008080</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/FIFOEmpty" type="logic">
+         <obj_property name="ElementShortName">FIFOEmpty</obj_property>
+         <obj_property name="ObjectShortName">FIFOEmpty</obj_property>
          <obj_property name="CustomSignalColor">#008080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -226,6 +236,12 @@
          <obj_property name="CustomSignalColor">#FFFF00</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/WriteBackPointer" type="array">
+         <obj_property name="ElementShortName">WriteBackPointer[9:0]</obj_property>
+         <obj_property name="ObjectShortName">WriteBackPointer[9:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="group973" type="group">
       <obj_property name="label">Arbiter</obj_property>
@@ -234,10 +250,95 @@
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/ValidArbSched" type="logic">
          <obj_property name="ElementShortName">ValidArbSched</obj_property>
          <obj_property name="ObjectShortName">ValidArbSched</obj_property>
+         <obj_property name="CustomSignalColor">#00FF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestRegSpaceAndSched/UUT/ReadyArbSched" type="logic">
          <obj_property name="ElementShortName">ReadyArbSched</obj_property>
          <obj_property name="ObjectShortName">ReadyArbSched</obj_property>
+         <obj_property name="CustomSignalColor">#00FF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject fp_name="group1318" type="group">
+      <obj_property name="label">BRAM</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/addrA" type="array">
+         <obj_property name="ElementShortName">addrA[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addrA[9:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/weA" type="array">
+         <obj_property name="ElementShortName">weA[7:0]</obj_property>
+         <obj_property name="ObjectShortName">weA[7:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/dinA" type="array">
+         <obj_property name="ElementShortName">dinA[255:0]</obj_property>
+         <obj_property name="ObjectShortName">dinA[255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/addrB" type="array">
+         <obj_property name="ElementShortName">addrB[9:0]</obj_property>
+         <obj_property name="ObjectShortName">addrB[9:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/weB" type="array">
+         <obj_property name="ElementShortName">weB[7:0]</obj_property>
+         <obj_property name="ObjectShortName">weB[7:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/dinB" type="array">
+         <obj_property name="ElementShortName">dinB[255:0]</obj_property>
+         <obj_property name="ObjectShortName">dinB[255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[5]" type="array">
+         <obj_property name="ElementShortName">[5][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[5][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[4]" type="array">
+         <obj_property name="ElementShortName">[4][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[3]" type="array">
+         <obj_property name="ElementShortName">[3][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[3][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[2]" type="array">
+         <obj_property name="ElementShortName">[2][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[1]" type="array">
+         <obj_property name="ElementShortName">[1][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestRegSpaceAndSched/UUT/myBRAM/ram_block[0]" type="array">
+         <obj_property name="ElementShortName">[0][255:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][255:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpaceAndSched/flag" type="array">
+      <obj_property name="ElementShortName">flag[31:0]</obj_property>
+      <obj_property name="ObjectShortName">flag[31:0]</obj_property>
    </wvobject>
 </wave_config>

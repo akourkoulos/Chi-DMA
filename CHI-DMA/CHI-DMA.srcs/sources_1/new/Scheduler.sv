@@ -5,6 +5,9 @@
 `define SBRegIndx     3
 `define StatusRegIndx 4
 
+`define StatusIdle    0
+`define StatusError   2
+
 import DataPkg::*; 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -73,9 +76,9 @@ module Scheduler#(
     
      
     assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width * Chunk);                                                                                  ;
-    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes)})                                                                              ;
+    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes) , Status : `StatusIdle})                                                                              ;
         
-    assign WE = WEControl ? ('b1 << `SBRegIndx) : 0 ;
+    assign WE = WEControl ? ((SigWordLength == 0) ? ('b1 << `StatusRegIndx) : ('b1 << `SBRegIndx) ): 0 ;
     
     assign BRAMAddrOut = Empty ? DescAddrPointer : FIFO_Addr ;
     
@@ -153,12 +156,12 @@ module Scheduler#(
              ValidBRAM  = 1 ;
            end
            else begin                         // Schedule a new transaction 
-             WEControl  = 1 ;
-             Dequeue    = 1 ;
-             ValidFIFO  = 0 ;
-             RegWESig   = 1 ;
-             IssueValid = 1 ;
-             ValidBRAM  = 1 ;
+             WEControl  = 1                      ;
+             Dequeue    = 1                      ;
+             ValidFIFO  = 0                      ;
+             RegWESig   = 1                      ;
+             IssueValid = 1 & SigWordLength != 0 ;
+             ValidBRAM  = 1                      ;
            end
          end
        WriteBackState : 

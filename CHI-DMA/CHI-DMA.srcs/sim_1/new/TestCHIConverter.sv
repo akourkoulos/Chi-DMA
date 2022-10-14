@@ -35,7 +35,10 @@ module TestCHIConverter#(
   parameter BRAM_ADDR_WIDTH  = 10  ,
   parameter BRAM_NUM_COL     = 8   , // As the Data_packet fields
   parameter BRAM_COL_WIDTH   = 32  ,
-  parameter MEM_ADDR_WIDTH   = 32  //<------ should be the same with BRAM_COL_WIDTH
+  parameter MEM_ADDR_WIDTH   = 44  ,//<------ should be the same with BRAM_COL_WIDTH
+  parameter CHI_DATA_WIDTH   = 64  , //Bytes
+  parameter Chunk            = 5   ,
+  parameter FIFO_Length      = 120
 //----------------------------------------------------------------------
 );
 
@@ -116,26 +119,52 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
      .WEBRAM            (WEBRAM            )    
     );
     
-    reg SigDeqReq;
-    reg SigReqEmpty ;
-    
-     int i=0;
-    ReqFlit SigTXREQFLIT  ;
-    
-    // Read Data FIFO
+    //Crds signals
+    int                           CountDataCrds = 0 ; 
+    int                           CountRspCrds  = 0 ;
+    reg [31 : 0]                  GivenReqCrds      ;// use in order not to give more crds than fifo length
+    //FIFO signals
+    reg                           SigDeqReqR         ;
+    reg                           SigReqEmptyR       ;
+    reg                           SigDeqReqW         ;
+    reg                           SigReqEmptyW       ;
+    ReqFlit                       SigTXREQFLITR  ;
+    ReqFlit                       SigTXREQFLITW  ;
+    int                           i=0;
+    //Last Trans signals
+    reg [MEM_ADDR_WIDTH  - 1 : 0] SrcAddrReg  ;
+    reg                           SrcAddrRegWE;
+
+    // Read Req FIFO
    FIFO #(     
-       117 ,  //FIFO_WIDTH       
-       117    //FIFO_LENGTH      
+       117         ,  //FIFO_WIDTH       
+       FIFO_Length    //FIFO_LENGTH      
        )     
-       myFIFOReq  (     
-       .RST      ( RST             ) ,      
-       .Clk      ( Clk             ) ,      
-       .Inp      ( TXREQFLIT       ) , 
-       .Enqueue  ( TXREQFLITV      ) , 
-       .Dequeue  ( SigDeqReq       ) , 
-       .Outp     ( SigTXREQFLIT    ) , 
-       .FULL     (                 ) , 
-       .Empty    ( SigReqEmpty     ) 
+       myRFIFOReq  (     
+       .RST      ( RST                                          ) ,      
+       .Clk      ( Clk                                          ) ,      
+       .Inp      ( TXREQFLIT                                    ) , 
+       .Enqueue  ( TXREQFLITV & TXREQFLIT.Opcode == `ReadOnce   ) , 
+       .Dequeue  ( SigDeqReqR                                   ) , 
+       .Outp     ( SigTXREQFLITR                                ) , 
+       .FULL     (                                              ) , 
+       .Empty    ( SigReqEmptyR                                 ) 
+       );
+       
+    // Write Req FIFO
+   FIFO #(     
+       117         ,  //FIFO_WIDTH       
+       FIFO_Length    //FIFO_LENGTH      
+       )     
+       myWFIFOReq  (     
+       .RST      ( RST                                              ) ,      
+       .Clk      ( Clk                                              ) ,      
+       .Inp      ( TXREQFLIT                                        ) , 
+       .Enqueue  ( TXREQFLITV & TXREQFLIT.Opcode == `WriteUniquePtl ) , 
+       .Dequeue  ( SigDeqReqW                                       ) , 
+       .Outp     ( SigTXREQFLITW                                    ) , 
+       .FULL     (                                                  ) , 
+       .Empty    ( SigReqEmptyW                                     ) 
        );
        
     
@@ -148,134 +177,201 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         #20; // low for 20 * timescale = 20 ns
     end
     
+    //Signals for Completer
     always_comb begin
-         ReadyBRAM  = ValidBRAM ;
+      if(ValidBRAM) begin
+         ReadyBRAM = 1         ;
+         DataBRAM  = $urandom();
+      end
+      else begin
+        ReadyBRAM = 0 ;
+        DataBRAM  = 0 ;
+      end
     end
     
-    always@(posedge Clk) begin     
-      RXRSPFLITPEND     = 0      ;
-      RXRSPFLITV        = 0      ;
-      RXRSPFLIT         = 'd0    ;      
-      RXDATFLITPEND     = 0      ;
-      RXDATFLITV        = 0      ;
-      RXDATFLIT         = 'd0    ;
-      SigDeqReq         = 0      ;
-      if(!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce )begin
-       #(period*5)
+    //Manage given Crds
+    always_ff@(posedge Clk) begin
+      if(RXDATLCRDV & !RXDATFLITV)
+        CountDataCrds++;
+      else if(!RXDATLCRDV & RXDATFLITV)
+        CountDataCrds--;
+      if(RXRSPLCRDV & !RXRSPFLITV) 
+        CountRspCrds++; 
+      else if(!RXRSPLCRDV & RXRSPFLITV) 
+        CountRspCrds--; 
+    end
+    
+    // use in order not to give more crds than fifo length
+    always_ff@(posedge Clk) begin
+      if(RST)
+        GivenReqCrds <= 0;
+      else begin
+        if(!TXREQLCRDV & TXREQFLITV & CountDataCrds != 0)
+          GivenReqCrds-- ;
+        else if(TXREQLCRDV & !(TXREQFLITV & CountDataCrds != 0))
+          GivenReqCrds++ ;
+      end
+    end
+    
+    //give Crds
+    always begin
+      TXREQLCRDV = 0;
+      #(2*period*$urandom_range(5) + period);
+      if(GivenReqCrds < FIFO_Length)
+        TXREQLCRDV = 1;
+      #(2*period) ;
+      TXREQLCRDV = 0;
+      #period ;
+    end
+    always begin
+      TXRSPLCRDV = 0;
+      #(2*period*$urandom_range(5) + period);
+      TXRSPLCRDV = 1;
+      #(2*period) ;
+      TXRSPLCRDV = 0;
+      #period ;
+    end
+    always begin
+      TXDATLCRDV = 0;
+      #(2*period*$urandom_range(5) + period);
+      TXDATLCRDV = 1;
+      #(2*period) ;
+      TXDATLCRDV = 0;
+      #period ;
+    end
+    
+    
+    // Data Response
+    always begin     
+      if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrds != 0 )begin
+        //response delay
+        if(SrcAddrReg + 64 != SigTXREQFLITR.Addr)begin // 0 delay if addresses are continuous
+          #(2*period*$urandom_range(7) + 3*period);  // random delay if addresses arent continuous
+        end
         RXDATFLITV = 1;
         RXDATFLIT = '{default                : 0                                        ,                       
                                   QoS        : 0                                        ,
                                   TgtID      : 1                                        ,
                                   SrcID      : 2                                        ,
-                                  TxnID      : SigTXREQFLIT.TxnID                       ,
+                                  TxnID      : SigTXREQFLITR.TxnID                      ,
                                   HomeNID    : 0                                        ,
                                   Opcode     : `CompData                                ,
                                   RespErr    : 0                                        ,
                                   Resp       : 0                                        , // Resp should be 0 when NonCopyBackWrData Rsp
-                                  DataSource : 'b0                                      , 
-                                  DBID       : 'b0                                      ,
-                                  CCID       : 'b0                                      , 
-                                  DataID     : 'b0                                      ,
+                                  DataSource : 0                                        , 
+                                  DBID       : 0                                        ,
+                                  CCID       : 0                                        , 
+                                  DataID     : 0                                        ,
                                   TraceTag   : 0                                        ,
                                   BE         : {64{1'b1}}                               ,
-                                  Data       : 'd848392                                 , // EWA : 1 , Device : 0 , Cachable : 1 , Allocate : 0 
-                                  DataCheck  : 64'b0                                    ,
-                                  Poison     : 'b0                                        
-                                  };     
-        SigDeqReq = 1;
+                                  Data       : 2**$urandom_range(0,512) - $urandom()    ,  //512 width of data
+                                  DataCheck  : 0                                        ,
+                                  Poison     : 0                                        
+                                  }; 
+        SrcAddrRegWE = 1;    
+        SigDeqReqR = 1;
+        #(period*2);
+        RXDATFLITPEND     = 0      ;
+        RXDATFLITV        = 0      ;
+        RXDATFLIT         = 0      ;
+        SigDeqReqR        = 0      ;
+        SrcAddrRegWE      = 0      ; 
+        if(SrcAddrReg +64 != SigTXREQFLITR.Addr)
+          #period;
       end
-      else if(!SigReqEmpty & SigTXREQFLIT.Opcode == `WriteUniquePtl  )begin
-       #(period*5)
+      else begin
+        RXDATFLITPEND     = 0      ;
+        RXDATFLITV        = 0      ;
+        RXDATFLIT         = 'd0    ;
+        SigDeqReqR        = 0      ;
+        SrcAddrRegWE      = 0      ; 
+        #(period*2) ;
+      end
+    end
+    
+    always_ff@(posedge Clk)begin
+      if(RST)
+        SrcAddrReg <= 0 ;
+      else
+        if(SrcAddrRegWE)
+          SrcAddrReg <= SigTXREQFLITR.Addr ;
+    end
+
+    //DBID Respose 
+    always begin
+      if(!SigReqEmptyW & SigTXREQFLITW.Opcode == `WriteUniquePtl & CountRspCrds != 0)begin
+        #(2*period*$urandom_range(10) + 3*period) //response delay//response delay
         RXRSPFLITV = 1;
         RXRSPFLIT = '{default              : 0                                        ,                       
                                   QoS      : 0                                        ,
                                   TgtID    : 1                                        ,
                                   SrcID    : 2                                        ,
-                                  TxnID    : SigTXREQFLIT.TxnID                       ,
+                                  TxnID    : SigTXREQFLITW.TxnID                      ,
                                   Opcode   : `CompDBIDResp                            ,
                                   RespErr  : 0                                        ,
                                   Resp     : 0                                        ,
                                   FwdState : 0                                        , // Resp should be 0 when NonCopyBackWrData Rsp
                                   DBID     : i                                        , 
-                                  PCrdType : 'b0                                      ,
-                                  TraceTag : 'b0                                       
+                                  PCrdType : 0                                        ,
+                                  TraceTag : 0                                       
                                   };     
-      i++;
-      SigDeqReq = 1;
+        i++; //increase DBID pointer
+        SigDeqReqW = 1;
+        #(period*2);
+        RXRSPFLITPEND     = 0      ;
+        RXRSPFLITV        = 0      ;
+        RXRSPFLIT         = 'd0    ;
+        SigDeqReqW        = 0      ;
+        #period;
       end
       else begin
-        RXDATFLITV = 0 ;
-        RXDATFLIT  = 0 ;
-        RXRSPFLITV = 0 ;
-        RXRSPFLIT  = 0 ;
+        RXRSPFLITPEND     = 0      ;
+        RXRSPFLITV        = 0      ;
+        RXRSPFLIT         = 'd0    ;      
+        SigDeqReqW        = 0      ;
+        #(period*2) ;
       end
-     #(period*2) ;
     end
-
     
+    int temp =0;
     always @(posedge Clk)
         begin
           // Reset;
          RST               = 1      ;
-         DataBRAM          = 'd0    ;
          SrcAddr           = 'd10   ;
          DstAddr           = 'd1000 ;
          Length            = 'd320  ;
          IssueValid        = 1      ;
          DescAddr          = 'd1    ;
          FinishedDescValid = 0      ;
-         TXREQLCRDV        = 1      ;
-         TXRSPLCRDV        = 1      ;
-         TXDATLCRDV        = 1      ;/*
-         RXRSPFLITPEND     = 0      ;
-         RXRSPFLITV        = 'd0    ;
-         RXRSPFLIT         = 0      ;*//*
-         RXDATFLITPEND     = 0      ;
-         RXDATFLITV        = 0      ;
-         RXDATFLIT         = 'd0    ;*/
          
          #(period); // signals change at the negedge of Clk  
          #(period*2); // wait for period   
-          
-          // Issue a transactiom . Take Crds
-         RST               = 0      ;
-         DataBRAM          = 'd0    ;
-         SrcAddr           = 'd10   ;
-         DstAddr           = 'd1000 ;
-         Length            = 'd320  ;
-         IssueValid        = 1      ;
-         DescAddr          = 'd1    ;
-         FinishedDescValid = 0      ;
-         TXREQLCRDV        = 1      ;
-         TXRSPLCRDV        = 1      ;
-         TXDATLCRDV        = 1      ;
-         #(period*2); // wait for period   
-         // Issue one more transactiom .Take Crds
-         RST               = 0      ;
-         DataBRAM.Status   = 'd1    ;
-         SrcAddr           = 'd20   ;
-         DstAddr           = 'd2000 ;
-         Length            = 'd100  ;
-         IssueValid        = 1      ;
-         DescAddr          = 'd2    ;
-         FinishedDescValid = 1      ;
-         TXREQLCRDV        = 1      ;
-         TXRSPLCRDV        = 1      ;
-         TXDATLCRDV        = 1      ;
-         #(period*2); // wait for period   
-         // Issue one more transactiom .Take Crds
-         RST               = 0      ;
-         DataBRAM.Status   = 'd1    ;
-         SrcAddr           = 'd20   ;
-         DstAddr           = 'd2000 ;
-         Length            = 'd100  ;
-         IssueValid        = 0      ;
-         DescAddr          = 'd2    ;
-         FinishedDescValid = 1      ;
-         TXREQLCRDV        = 1      ;
-         TXRSPLCRDV        = 1      ;
-         TXDATLCRDV        = 1      ;
-         #(period*60); // wait for period   
+         
+         for(int i = 1 ; i<20 ; i++)begin
+           RST               = 0                                      ;
+           SrcAddr           = 'd10    * $urandom_range(10000)        ;
+           DstAddr           = 'd10000 * $urandom_range(10000)        ;
+           Length            = $urandom_range(3,CHI_DATA_WIDTH*Chunk) ;
+           if(CmdFIFOFULL)
+             IssueValid      = 0                                      ;
+           else
+             IssueValid      = 1                                      ;
+           DescAddr          = i                                      ;
+           temp              = $urandom(5)                            ;
+           FinishedDescValid = temp[2]                                ; //20% chance to be the last transaction of Desc
+           #(period*2); // wait for period  
+         end
+         //stop
+         RST               = 0  ;                                   
+         SrcAddr           = 0  ;      
+         DstAddr           = 0  ;
+         Length            = 0  ;
+         IssueValid        = 0  ;                                   
+         DescAddr          = 1  ;                                   
+         FinishedDescValid = 0  ;                                   
+         
+         #(period*1500); // wait for period   
         $stop;
         end
 endmodule
