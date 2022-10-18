@@ -76,7 +76,6 @@ module TestRegSpaceAndSched#(
     );
     
     int flag     = 0 ;
-    int varFULL      ;
     int varReady     ;
     int nextFULL = 0 ;
     
@@ -94,19 +93,16 @@ module TestRegSpaceAndSched#(
      #(period)  
      if(flag == 1)begin   
        // manage ReadyBRAM
-       varReady        = $urandom_range(6);
-       InpReadyBRAM   = !varReady[2]      ;  // // 67% to have control of BRAM
+       InpReadyBRAM = ($urandom_range(2) != 0) ;  // // 67% to have control of BRAM
        // manage InpCmdFIFOFULL
-       if(InpCmdFIFOFULL == 1 )begin
-         varFULL        = $urandom_range(6);
-         InpCmdFIFOFULL = !varFULL[2]      ; // 67% chance to be full if it was full
-         nextFULL       = 0                ;
+       if(InpCmdFIFOFULL == 1)begin
+         InpCmdFIFOFULL = ($urandom_range(2) != 0) ; // 67% chance to be full if it was full
+         nextFULL       = 0                        ;
        end
        else 
          InpCmdFIFOFULL = nextFULL ;  // else not FULL
          if(OutIssueValid & InpReadyBRAM)begin
-           varFULL  = $urandom_range(6);
-           nextFULL = varFULL[2]       ; //67% chance to be full on next cycle if issue a transaction
+           nextFULL = ($urandom_range(3) != 0) ; //67% chance to be full on next cycle if issue a transaction
          end
          #(period) ;
       end

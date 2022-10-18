@@ -41,19 +41,19 @@ import CHIFlitsPkg::*;
 `define CrdRegWidth       4  // log2(MaxCrds)
 
 module CHIConverter#(    
-  parameter BRAM_ADDR_WIDTH  = 10  ,
-  parameter BRAM_NUM_COL     = 8   , // As the Data_packet fields
-  parameter BRAM_COL_WIDTH   = 32  ,
-  parameter MEM_ADDR_WIDTH   = 44  ,//<------ should be the same with BRAM_COL_WIDTH
-  parameter CMD_FIFO_LENGTH  = 16  ,
-  parameter DATA_FIFO_LENGTH = 16  ,
-  parameter TXID_FIFO_LENGTH = 32  , 
-  parameter SIZE_FIFO_WIDTH  = 7   , //log2(CHI_DATA_WIDTH) + 1 
-  parameter COUNTER_WIDTH    = 5   , //log2(DATA_FIFO_LENGTH) + 1
-  parameter CHI_DATA_WIDTH   = 64  , //Bytes
-  parameter QoS              = 8   , //??
-  parameter TgtID            = 2   , //??
-  parameter SrcID            = 1     //??
+  parameter BRAM_ADDR_WIDTH  = 10                    ,
+  parameter BRAM_NUM_COL     = 8                     , // As the Data_packet fields
+  parameter BRAM_COL_WIDTH   = 32                    ,
+  parameter MEM_ADDR_WIDTH   = 44                    ,//<------ should be the same with BRAM_COL_WIDTH
+  parameter CMD_FIFO_LENGTH  = 32                    ,
+  parameter DATA_FIFO_LENGTH = 32                    ,
+  parameter TXID_FIFO_LENGTH = 2**(`TxnIDWidth - 1)  , 
+  parameter SIZE_FIFO_WIDTH  = 7                     , //log2(CHI_DATA_WIDTH) + 1 
+  parameter COUNTER_WIDTH    = 6                     , //log2(DATA_FIFO_LENGTH) + 1
+  parameter CHI_DATA_WIDTH   = 64                    , //Bytes
+  parameter QoS              = 8                     , //??
+  parameter TgtID            = 2                     , //??
+  parameter SrcID            = 1                       //??
 )(
     input                                        Clk               ,
     input                                        RST               ,
@@ -145,8 +145,8 @@ module CHIConverter#(
    reg  [`CrdRegWidth      - 1 : 0] DataCrdInbound   ; // CHI allows max 15 Crds per chanel
    reg  [`CrdRegWidth      - 1 : 0] RspCrdOutbound   ;
    reg  [`CrdRegWidth      - 1 : 0] DataCrdOutbound  ;
-   reg  [`CrdRegWidth      - 1 : 0] GivenRspCrd      ; // Used in order not to give more Crds than  DATA_FIFO_LENGTH
-   reg  [`CrdRegWidth      - 1 : 0] GivenDataCrd     ; // Used in order not to give more Crds than  DATA_FIFO_LENGTH
+   reg  [COUNTER_WIDTH     - 1 : 0] GivenRspCrd      ; // Used in order not to give more Crds than  DATA_FIFO_LENGTH
+   reg  [COUNTER_WIDTH     - 1 : 0] GivenDataCrd     ; // Used in order not to give more Crds than  DATA_FIFO_LENGTH
    //Read Requester signals 
    wire                            ReadReqArbValid   ; 
    wire                            ReadReqArbReady   ;
@@ -544,9 +544,15 @@ module CHIConverter#(
        else if(!RXRSPLCRDV & (RspCrdInbound != 0 & RXRSPFLITV))
          RspCrdInbound <= RspCrdInbound - 1 ;
        // Count the number of given Rsp Crds in order not to give more than DBID FIFO length
-       if((GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) & ((!SigDeqData & (!RXRSPFLITV | RspCrdInbound == 0) ) | (!SigDeqData & RXRSPFLITV & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))))
+       if(RXRSPLCRDV & !SigDeqData & (!RXRSPFLITV | RspCrdInbound == 0 | RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd + 1 ;
-       else if(SigDeqData & RXRSPFLITV & (RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp & RspCrdInbound != 0))
+       else if(!RXRSPLCRDV & SigDeqData & (!RXRSPFLITV | RspCrdInbound == 0 | RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))
+         GivenRspCrd <= GivenRspCrd - 1 ;
+       else if(!RXRSPLCRDV & !SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
+         GivenRspCrd <= GivenRspCrd - 1 ;
+       else if(!RXRSPLCRDV & SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
+         GivenRspCrd <= GivenRspCrd - 2 ;
+         else if(RXRSPLCRDV & SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd - 1 ;
        // Inbound Data chanle Crd Counter
        if(RXDATLCRDV & !(DataCrdInbound != 0 & RXDATFLITV))
@@ -554,15 +560,18 @@ module CHIConverter#(
        else if(!RXDATLCRDV & (DataCrdInbound != 0 & RXDATFLITV))
          DataCrdInbound <= DataCrdInbound - 1 ;
        // Count the number of given Data Crds in order not to give more than DATA FIFO length
-       if(!SigDeqData & (GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) )
-         GivenDataCrd <= GivenDataCrd + 1 ;
+       if(RXDATLCRDV & !SigDeqData)
+         GivenDataCrd <= GivenDataCrd + 1 ;       
+       else if(!RXDATLCRDV & SigDeqData)
+         GivenDataCrd <= GivenDataCrd - 1 ;      
+         
      end
    end
    
    // Give an extra Crd in outbound Rsp Chanel
-   assign RXRSPLCRDV = SigDeqData | (RXRSPFLITV & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp & RspCrdInbound != 0) | (GivenRspCrd < DATA_FIFO_LENGTH & GivenRspCrd < `MaxCrds) ;
+   assign RXRSPLCRDV = !RST & (GivenRspCrd  < DATA_FIFO_LENGTH & RspCrdInbound  < `MaxCrds) ;
    // Give an extra Crd in outbound Data Chanel
-   assign RXDATLCRDV = SigDeqData | (GivenDataCrd < DATA_FIFO_LENGTH & GivenDataCrd < `MaxCrds) ;
+   assign RXDATLCRDV = !RST & (GivenDataCrd < DATA_FIFO_LENGTH & DataCrdInbound < `MaxCrds) ;
    
    
     // ****************** Data Sender ******************
@@ -597,7 +606,7 @@ module CHIConverter#(
     assign SigFinishedTxnIDW = (SigEnqTxnIDW) ? (RXRSPFLIT.TxnID) : 0     ;
     assign SigEnqTxnIDR      = (RXDATFLITV == 1 & DataCrdInbound != 0)    ;
     assign SigEnqTxnIDW      = (RXRSPFLITV == 1 & RspCrdInbound  != 0)    ;
-    
+    // Enqueue DBID
     assign SigEnqDBID  = (RXRSPFLITV == 1 & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp) & RspCrdInbound != 0 );
     // ****************** End of RSP Handler ******************
     

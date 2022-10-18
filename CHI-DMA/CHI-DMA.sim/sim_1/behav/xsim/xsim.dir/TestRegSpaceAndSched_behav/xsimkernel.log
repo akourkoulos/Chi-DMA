@@ -1,7 +1,7 @@
-Running: xsim.dir/TestRegSpaceAndSched_behav/xsimk.exe -simmode gui -wdb TestRegSpaceAndSched_behav.wdb -simrunnum 0 -socket 64638
+Running: xsim.dir/TestRegSpaceAndSched_behav/xsimk.exe -simmode gui -wdb TestRegSpaceAndSched_behav.wdb -simrunnum 0 -socket 54998
 Design successfully loaded
-Design Loading Memory Usage: 6556 KB (Peak: 6556 KB)
-Design Loading CPU Usage: 61 ms
+Design Loading Memory Usage: 6600 KB (Peak: 6600 KB)
+Design Loading CPU Usage: 93 ms
 Simulation completed
-Simulation Memory Usage: 8436 KB (Peak: 8436 KB)
-Simulation CPU Usage: 109 ms
+Simulation Memory Usage: 15552 KB (Peak: 15552 KB)
+Simulation CPU Usage: 327 ms
