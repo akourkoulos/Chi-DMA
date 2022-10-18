@@ -1,6 +1,6 @@
 webtalk_init -webtalk_dir C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/
 webtalk_register_client -client project
-webtalk_add_data -client project -key date_generated -value "Sat Oct  1 20:01:24 2022" -context "software_version_and_target_device"
+webtalk_add_data -client project -key date_generated -value "Tue Oct 18 22:04:18 2022" -context "software_version_and_target_device"
 webtalk_add_data -client project -key product_version -value "XSIM v2019.2 (64-bit)" -context "software_version_and_target_device"
 webtalk_add_data -client project -key build_version -value "2708876" -context "software_version_and_target_device"
 webtalk_add_data -client project -key os_platform -value "WIN64" -context "software_version_and_target_device"
@@ -14,7 +14,7 @@ webtalk_add_data -client project -key target_package -value "not_applicable" -co
 webtalk_add_data -client project -key target_speed -value "not_applicable" -context "software_version_and_target_device"
 webtalk_add_data -client project -key random_id -value "42ac37a6-667b-4df3-810b-19ee81d00cb0" -context "software_version_and_target_device"
 webtalk_add_data -client project -key project_id -value "c7a29f15992b426cb919dc086fd6b26c" -context "software_version_and_target_device"
-webtalk_add_data -client project -key project_iteration -value "53" -context "software_version_and_target_device"
+webtalk_add_data -client project -key project_iteration -value "57" -context "software_version_and_target_device"
 webtalk_add_data -client project -key os_name -value "Windows Server 2008 R2 or Windows 7" -context "user_environment"
 webtalk_add_data -client project -key os_release -value "Service Pack 1  (build 7601)" -context "user_environment"
 webtalk_add_data -client project -key cpu_name -value "Intel(R) Core(TM) i7-2820QM CPU @ 2.30GHz" -context "user_environment"
@@ -26,7 +26,7 @@ webtalk_add_data -client xsim -key Command -value "xsim" -context "xsim\\command
 webtalk_add_data -client xsim -key trace_waveform -value "true" -context "xsim\\usage"
 webtalk_add_data -client xsim -key runtime -value "480 ns" -context "xsim\\usage"
 webtalk_add_data -client xsim -key iteration -value "0" -context "xsim\\usage"
-webtalk_add_data -client xsim -key Simulation_Time -value "0.06_sec" -context "xsim\\usage"
-webtalk_add_data -client xsim -key Simulation_Memory -value "7176_KB" -context "xsim\\usage"
-webtalk_transmit -clientid 2231290029 -regid "211686437_0_0_040" -xml C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.xml -html C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.html -wdm C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.wdm -intro "<H3>XSIM Usage Report</H3><BR>"
+webtalk_add_data -client xsim -key Simulation_Time -value "0.11_sec" -context "xsim\\usage"
+webtalk_add_data -client xsim -key Simulation_Memory -value "7208_KB" -context "xsim\\usage"
+webtalk_transmit -clientid 3640147800 -regid "211686437_0_0_040" -xml C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.xml -html C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.html -wdm C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/behav/xsim/xsim.dir/TestFIFO_behav/webtalk/usage_statistics_ext_xsim.wdm -intro "<H3>XSIM Usage Report</H3><BR>"
 webtalk_terminate

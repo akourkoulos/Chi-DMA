@@ -48,7 +48,7 @@ module TestCHIConverter#(
 
 reg                                   Clk               ;
 reg                                   RST               ;
- reg [$bits(Data_packet)-1:0]                DataBRAM          ; // From BRAM
+Data_packet                           DataBRAM          ; // From BRAM
 reg                                   ReadyBRAM         ; // From Arbiter_BRAM
 reg         [MEM_ADDR_WIDTH  - 1 : 0] SrcAddr           ;
 reg         [MEM_ADDR_WIDTH  - 1 : 0] DstAddr           ;
@@ -58,15 +58,15 @@ reg         [BRAM_ADDR_WIDTH - 1 : 0] DescAddr          ; // Address of a finish
 reg                                   FinishedDescValid ;
 reg                                   TXREQFLITPEND     ; // Request outbound Channel
 reg                                   TXREQFLITV        ;
- reg   [$bits(ReqFlit)-1:0]                TXREQFLIT         ;
+ReqFlit                               TXREQFLIT         ;
 reg                                   TXREQLCRDV        ;
 wire                                  TXRSPFLITPEND     ; // Response outbound Channel
 wire                                  TXRSPFLITV        ;
-reg [$bits(RspFlit)-1:0]                               TXRSPFLIT         ;
+reg                                   TXRSPFLIT         ;
 reg                                   TXRSPLCRDV        ;
 wire                                  TXDATFLITPEND     ; // Data outbound Channel
 wire                                  TXDATFLITV        ;
- reg [$bits(DataFlit)-1:0]                     TXDATFLIT         ;
+DataFlit                              TXDATFLIT         ;
 reg                                   TXDATLCRDV        ;
 reg                                   RXRSPFLITPEND     ; // Response inbound Channel
 reg                                   RXRSPFLITV        ;
@@ -79,7 +79,7 @@ wire                                  RXDATLCRDV        ;
 reg                                   CmdFIFOFULL       ; // For Scheduler
 reg                                   ValidBRAM         ; // For Arbiter_BRAM
 reg         [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM
- reg [$bits(Data_packet)-1:0]                         DescStatus        ;
+Data_packet                           DescStatus        ;
 reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
   
     // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns

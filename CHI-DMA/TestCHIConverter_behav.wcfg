@@ -13,13 +13,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="10010000fs"></ZoomStartTime>
-      <ZoomEndTime time="15210001fs"></ZoomEndTime>
-      <Cursor1Time time="10940000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="552001fs"></ZoomEndTime>
+      <Cursor1Time time="220000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="258"></ValueColumnWidth>
+      <ValueColumnWidth column_width="636"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="12" />
    <wvobject fp_name="/TestCHIConverter/Clk" type="logic">
@@ -124,16 +124,16 @@
       </wvobject>
       <wvobject fp_name="/TestCHIConverter/UUT/FIFOTXNIDR/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][7:0]</obj_property>
+         <obj_property name="ElementShortName">MyQueue[127:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[127:0][7:0]</obj_property>
          <obj_property name="label">RTxnIDMyQueue[31:0][7:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestCHIConverter/UUT/FIFOTXNIDW/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][7:0]</obj_property>
+         <obj_property name="ElementShortName">MyQueue[127:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[127:0][7:0]</obj_property>
          <obj_property name="label">WTxnIDMyQueue[31:0][7:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
@@ -259,30 +259,9 @@
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group167" type="group">
-      <obj_property name="label">Arbiter</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbValid" type="logic">
-         <obj_property name="ElementShortName">WriteReqArbValid</obj_property>
-         <obj_property name="ObjectShortName">WriteReqArbValid</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbValid" type="logic">
-         <obj_property name="ElementShortName">ReadReqArbValid</obj_property>
-         <obj_property name="ObjectShortName">ReadReqArbValid</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbReady" type="logic">
-         <obj_property name="ElementShortName">WriteReqArbReady</obj_property>
-         <obj_property name="ObjectShortName">WriteReqArbReady</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbReady" type="logic">
-         <obj_property name="ElementShortName">ReadReqArbReady</obj_property>
-         <obj_property name="ObjectShortName">ReadReqArbReady</obj_property>
-      </wvobject>
-   </wvobject>
    <wvobject fp_name="group1501" type="group">
       <obj_property name="label">Crds</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestCHIConverter/UUT/DataCrdOutbound" type="array">
          <obj_property name="ElementShortName">DataCrdOutbound[3:0]</obj_property>
          <obj_property name="ObjectShortName">DataCrdOutbound[3:0]</obj_property>
@@ -312,6 +291,26 @@
          <obj_property name="ObjectShortName">ReqCrd[3:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FF00</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group167" type="group">
+      <obj_property name="label">Arbiter</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbValid" type="logic">
+         <obj_property name="ElementShortName">WriteReqArbValid</obj_property>
+         <obj_property name="ObjectShortName">WriteReqArbValid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbValid" type="logic">
+         <obj_property name="ElementShortName">ReadReqArbValid</obj_property>
+         <obj_property name="ObjectShortName">ReadReqArbValid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbReady" type="logic">
+         <obj_property name="ElementShortName">WriteReqArbReady</obj_property>
+         <obj_property name="ObjectShortName">WriteReqArbReady</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReadReqArbReady" type="logic">
+         <obj_property name="ElementShortName">ReadReqArbReady</obj_property>
+         <obj_property name="ObjectShortName">ReadReqArbReady</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group1516" type="group">

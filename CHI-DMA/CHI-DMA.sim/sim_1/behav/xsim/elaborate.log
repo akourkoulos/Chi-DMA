@@ -1,31 +1,8 @@
 Vivado Simulator 2019.2
 Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
-Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestCHIConverter_behav xil_defaultlib.TestCHIConverter xil_defaultlib.glbl -log elaborate.log 
+Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TestFIFO_behav xil_defaultlib.TestFIFO xil_defaultlib.glbl -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 51 for port 'TXRSPFLIT' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:105]
-WARNING: [VRFC 10-3091] actual bit length 44 differs from formal bit length 32 for port 'Inp' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:173]
-WARNING: [VRFC 10-3091] actual bit length 44 differs from formal bit length 32 for port 'Inp' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:189]
-WARNING: [VRFC 10-3091] actual bit length 44 differs from formal bit length 32 for port 'Inp' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:205]
-WARNING: [VRFC 10-3091] actual bit length 44 differs from formal bit length 32 for port 'Inp' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:221]
 Completed static elaboration
-Starting simulation data flow analysis
-Completed simulation data flow analysis
-Time Resolution for simulation is 1ps
-Compiling package xil_defaultlib.DataPkg
-Compiling package xil_defaultlib.CHIFlitsPkg
-Compiling module xil_defaultlib.FIFO(FIFO_LENGTH=32)
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=11,FIFO_LENGTH=3...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=512,FIFO_LENGTH=...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=2,FIFO_LENGTH=32...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=8,FIFO_LENGTH=32...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=7,FIFO_LENGTH=32...
-Compiling module xil_defaultlib.FIFOInit(FIFO_WIDTH=8,FIFO_LENGT...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=10,FIFO_LENGTH=3...
-Compiling module xil_defaultlib.Completer
-Compiling module xil_defaultlib.CHIConverter
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=117,FIFO_LENGTH=...
-Compiling module xil_defaultlib.TestCHIConverter
-Compiling module xil_defaultlib.glbl
-Built simulation snapshot TestCHIConverter_behav
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
