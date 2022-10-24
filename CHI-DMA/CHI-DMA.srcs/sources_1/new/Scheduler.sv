@@ -1,41 +1,41 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+/*Scheduler is the module which determines the way that the transactions is going to
+be executed. Firstly Scheduler takes the address pointer from FIFO that has been 
+written by processor when it first wrote BRAM and reads the corresponding of the
+address pointer Descriptor of BRAM if there is permission from BRAM's Arbiter. 
+Then if there is still permission from BRAM's Arbiter and CHI-Converter(which is 
+the module that will execute the transaction)is not FULL then Scheduler passes the
+command of Chunk CHI-transactions to the CHI-Converter and update the SentBytes 
+field of Descriptor by the amount of bytes of scheduled transaction. If there are 
+not Chunk CHI-transactions in Descriptor then Scheduler schedules all the remaining
+bytes. At the same time the address pointer that was read from FIFO is being written 
+inside a register and the signal dequeues the first element from FIFO is enabled. 
+Subsequently Scheduler writes the address pointer that is written inside the 
+register back in FIFO if there are more non-scheduled transactions in Descriptor
+and reads the next one. This operation repeats until all transactions of Descriptors 
+have been scheduled and the FIFO is empty. Scheduler accomplishes the above 
+procedure by implementing an FSM a few registers and some combinational logic.*/
+//////////////////////////////////////////////////////////////////////////////////
+
+// Indexes of Descriptor's fields
 `define SRCRegIndx    0
 `define DSTRegIndx    1
 `define BTSRegIndx    2
 `define SBRegIndx     3
 `define StatusRegIndx 4
-
+// Status state
 `define StatusIdle    0
 `define StatusError   2
 
 import DataPkg::*; 
 
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 12.07.2022 12:41:34
-// Design Name: 
-// Module Name: Scheduler
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
- 
 
 module Scheduler#(
-  parameter BRAM_ADDR_WIDTH   = 10 ,
+  parameter BRAM_ADDR_WIDTH   = 10 , 
   parameter BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
   parameter BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
-  parameter CHI_Word_Width    = 64 ,  
+  parameter CHI_Word_Width    = 64 , // CHI bus width
   parameter Chunk             = 5  , // number of CHI-Words
   parameter MEMAddrWidth      = 32   
 )(
@@ -63,34 +63,38 @@ module Scheduler#(
     output wire                               FinishedDescValid 
     );
     
+    //FMS states : Idle       -> Read BRAM when not empty, 
+    //             Issue      -> pass a comand to CHI-Converter,
+    //             WriteBakck -> re-enqueue the address pointer back to FIFO
+    
     enum int unsigned { IdleState      = 0 , 
                         IssueState     = 1 , 
                         WriteBackState = 2   } state , next_state ; 
                         
                         
     reg        [BRAM_ADDR_WIDTH   -1 : 0] AddrRegister      ;  // keeps the address pointer from FIFO
-    
-    wire       [BRAM_COL_WIDTH    -1 : 0] SigWordLength     ;
-    reg                                   WEControl         ; // FSM Signals
     reg                                   RegWESig          ;
     
-     
+    wire       [BRAM_COL_WIDTH    -1 : 0] SigWordLength     ; // Signal to update SentBytes field of Descriptor
+    reg                                   WEControl         ; // Signal that FSM provides and controls WE of BRAM 
+    
+    // Data output for Descriptor : updated SentBytes field (or Status field if Descriptor has no transactions)
     assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width * Chunk);                                                                                  ;
-    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes) , Status : `StatusIdle})                                                                              ;
-        
+    assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes) , Status : `StatusIdle})                                                       ;
+    // if FSM enables WEControl then WE for SentBytes field enables(or Status field if Descriptor has no transactions) els 0 ;  
     assign WE = WEControl ? ((SigWordLength == 0) ? ('b1 << `StatusRegIndx) : ('b1 << `SBRegIndx) ): 0 ;
-    
+    // if FIFO empty then Address for BRAM is the address of register in order not to lose 1 cycle if there is only one address pointer in fifo
     assign BRAMAddrOut = Empty ? DescAddrPointer : FIFO_Addr ;
-    
+    // Write back to FIFO the pointer of register
     assign DescAddrPointer = AddrRegister ; 
-
+    // command for CHI-converter(transaction's information)
     assign ReadAddr    = DescDataIn.SrcAddr + DescDataIn.SentBytes ;
     assign WriteAddr   = DescDataIn.DstAddr + DescDataIn.SentBytes ;
     assign ReadLength  = SigWordLength                             ;
     assign WriteLength = SigWordLength                             ;
-    
+    // Address pointer of Descriptor
     assign FinishedDescAddr = FIFO_Addr ;
-    
+    // This signal is 1 if it is the last transaction of Descriptor
     assign FinishedDescValid = DescDataIn.BytesToSend == DescDataOut.SentBytes ;
    
    //FSM's state
@@ -127,9 +131,9 @@ module Scheduler#(
            else if (ReadyFIFO & !ReadyBRAM)       // Descriptor Addr pointer wrote back to FIFO and there is not Control of BRAM to read next Descriptor                                        
              next_state = IdleState ;
            else
-             next_state = WriteBackState ;       // FIFO's control has not obtained yet                                                                                                            
+             next_state = WriteBackState ;        // FIFO's control has not obtained yet                                                                                                            
          end 
-       default : next_state = IdleState;
+       default : next_state = IdleState;          // Default state
      endcase   
    end
    
@@ -138,12 +142,12 @@ module Scheduler#(
     case(state)
        IdleState :
          begin                      // If not Empty request control of BRAM else do nothing
-           WEControl  = 0                ;
-           Dequeue    = 0                ;
-           ValidFIFO  = 0                ;
-           RegWESig   = 0                ;
-           IssueValid = 0                ;
-           ValidBRAM  = (!Empty) ? 1 : 0 ;
+           WEControl  = 0                ; // Controls the WE output for BRAM
+           Dequeue    = 0                ; // Dequeue signal for FIFO
+           ValidFIFO  = 0                ; // Request permission from FIFO's Arbiter
+           RegWESig   = 0                ; // WE for register that stores the address pointer from FIFO
+           IssueValid = 0                ; // Indicates that the command for CHI-Converter is Valid
+           ValidBRAM  = (!Empty) ? 1 : 0 ; // Request permission from BRAM's Arbiter
          end
        IssueState : 
          begin         // Schedule a new transaction when posible

@@ -1,34 +1,27 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+/*Completer is the module that takes from CHI-Converter the Address pointer of
+Descriptor and the errors of the transactions if there is any and updates the status
+field of the Descriptor so the processor can understand that all transactions of 
+the Descriptor is over and re-write it with new transaction. When the last transaction
+of a Descriptor is finished then the MSB of DescAddr input is 1 and when CHI-Converter
+enables the ValidUpdate signal then the address of Descripotr is enqueued in compliter's
+FIFO. Then it requests from BRAM's Arbiter permission to access the BRAM and when it is 
+obtained then the status of Descriptor is updated.*/
+//////////////////////////////////////////////////////////////////////////////////
 import DataPkg::*; 
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 01.10.2022 21:30:19
-// Design Name: 
-// Module Name: Completer
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
+// Indexes of Descriptor's fields
 `define SRCRegIndx        0
 `define DSTRegIndx        1
 `define BTSRegIndx        2
 `define SBRegIndx         3
 `define StatusRegIndx     4
+// Status state
 `define StatusIdle        0
 `define StatusError       2
 
 `define RspErrWidth       2
-
 `define NoError           0
 
 module Completer#( 

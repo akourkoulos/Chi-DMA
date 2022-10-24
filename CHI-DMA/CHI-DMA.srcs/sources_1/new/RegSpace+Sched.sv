@@ -2,23 +2,7 @@
 import DataPkg::*;
 
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 19.07.2022 17:28:27
-// Design Name: 
-// Module Name: RegSpace+Sched
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
+/*Conect BRAM Scheduler Arbiter of FIFO and FIFO*/
 //////////////////////////////////////////////////////////////////////////////////
 
 

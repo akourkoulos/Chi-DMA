@@ -1,7 +1,7 @@
-Running: xsim.dir/TestCHIConverter_behav/xsimk.exe -simmode gui -wdb TestCHIConverter_behav.wdb -simrunnum 0 -socket 63101
+Running: xsim.dir/TestCHIConverter_behav/xsimk.exe -simmode gui -wdb TestCHIConverter_behav.wdb -simrunnum 0 -socket 49306
 Design successfully loaded
-Design Loading Memory Usage: 6616 KB (Peak: 6616 KB)
-Design Loading CPU Usage: 77 ms
+Design Loading Memory Usage: 6644 KB (Peak: 6644 KB)
+Design Loading CPU Usage: 62 ms
 Simulation completed
-Simulation Memory Usage: 15616 KB (Peak: 15616 KB)
-Simulation CPU Usage: 966 ms
+Simulation Memory Usage: 15600 KB (Peak: 15600 KB)
+Simulation CPU Usage: 483 ms

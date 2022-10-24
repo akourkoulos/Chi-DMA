@@ -41,6 +41,7 @@ import CHIFlitsPkg::*;
 `define CrdRegWidth       4  // log2(MaxCrds)
 
 module CHIConverter#(    
+//--------------------------------------------------------------------------
   parameter BRAM_ADDR_WIDTH  = 10                    ,
   parameter BRAM_NUM_COL     = 8                     , // As the Data_packet fields
   parameter BRAM_COL_WIDTH   = 32                    ,
@@ -54,6 +55,7 @@ module CHIConverter#(
   parameter QoS              = 8                     , //??
   parameter TgtID            = 2                     , //??
   parameter SrcID            = 1                       //??
+//--------------------------------------------------------------------------
 )(
     input                                        Clk               ,
     input                                        RST               ,

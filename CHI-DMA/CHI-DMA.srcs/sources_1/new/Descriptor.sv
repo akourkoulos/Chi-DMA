@@ -1,13 +1,14 @@
 import DataPkg::*; 
 
-
+//////////////////////////////////////////////////////////////////////////////////
 /*As Descriptor, we refer to the full set of registers, containing the info
-  src,dst, and so on. a typical lenght is 128bit. This can be further divided
-  to 4registers of 32bit each, since the software usually does 32bit writes.
-  Some times it can do MAX 128bit , and hence the 128bit total lenght. 
+  src,dst, and so on. a typical lenght is 256bit. This can be further divided
+  to 8 registers of 32bit each, since the software usually does 32bit writes.
+  Some times it can do MAX 256bit , and hence the 256bit total lenght. 
   
   The controler which handles the CPU comuniucation should be able to understand
-  if a write is 32 or 64 or 128bit, and assert the appropriate WEs*/
+  if a write is 32 or 64 or 128bit or 256bit, and assert the appropriate WEs*/
+//////////////////////////////////////////////////////////////////////////////////
 
 
 module Descriptor #( 
