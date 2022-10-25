@@ -29,22 +29,22 @@ module BarrelShifter#(
   parameter FIFO_LENGTH      = 32                    ,
   parameter COUNTER_WIDTH    = 6                       // log(FIFO_LENGTH) + 1
 ) ( 
-    input                            RST          ,
-    input                            Clk          ,
-    input   [BRAM_COL_WIDTH  - 1 :0] SrcAddrIn    ,
-    input   [BRAM_COL_WIDTH  - 1 :0] DstAddrIn    ,
-    input                            LastSrcTrans ,
-    input                            LastDstTrans ,
-    input                            EnqueueSrc   ,
-    input                            EnqueueDst   ,
-    input                            RXDATFLITV   ,
-    input   DataFlit                 RXDATFLIT    ,
-    output                           RXDATLCRDV   ,
-    input                            DequeueBS    ,
-    output [CHI_DATA_WIDTH*8 - 1 :0] DataOut      ,
-    output                           EmptyBS      ,
-    output                           BSFULLSrc    ,
-    output                           BSFULLDst
+    input                                        RST          ,
+    input                                        Clk          ,
+    input               [BRAM_COL_WIDTH  - 1 :0] SrcAddrIn    ,
+    input               [BRAM_COL_WIDTH  - 1 :0] DstAddrIn    ,
+    input                                        LastSrcTrans ,
+    input                                        LastDstTrans ,
+    input                                        EnqueueSrc   ,
+    input                                        EnqueueDst   ,
+    input                                        RXDATFLITV   ,
+    input   DataFlit                             RXDATFLIT    ,
+    output                                       RXDATLCRDV   ,
+    input                                        DequeueBS    ,
+    output  reg        [CHI_DATA_WIDTH*8 - 1 :0] DataOut      ,
+    output  reg                                  EmptyBS      ,
+    output                                       BSFULLSrc    ,
+    output                                       BSFULLDst
     );
     
     enum int unsigned { StartState      = 0 , 
@@ -58,7 +58,7 @@ module BarrelShifter#(
    reg [COUNTER_WIDTH     - 1 : 0] GivenDataCrd     ; // counter used in order not to take more DataRsp than FIFO length
   
    reg  [CHI_DATA_WIDTH*8 - 1 : 0]  PrevShiftedData ; // Register that stores the shifted data that came to the previous DataRsp 
-   wire                             PrvShftdDataWE  ; // WE of register
+   reg                              PrvShftdDataWE  ; // WE of register
    wire [CHI_DATA_WIDTH*8 - 1 : 0]  ShiftedData     ; // Out of Barrel Shifted comb 
 
    wire [BRAM_COL_WIDTH   - 1 : 0] AlignedSrcAddr   ;
@@ -67,17 +67,17 @@ module BarrelShifter#(
    wire [SHIFT_WIDTH      - 1 : 0] shift            ; // shift of Barrel Shifter
   
    wire                            SrcEmpty         ; // SrcAddr FIFO
-   wire                            DeqSrcAddr       ;
+   reg                             DeqSrcAddr       ;
    wire                            SrcAddrLast      ;
    wire [BRAM_COL_WIDTH   - 1 : 0] SrcAddr          ;
-   wire                            DeqDstAddr       ; // DstAddr FIFO
+   reg                             DeqDstAddr       ; // DstAddr FIFO
    wire                            DstAddrLast      ;
    wire [BRAM_COL_WIDTH   - 1 : 0] DstAddr          ;
-   wire                            DstEmpty         ;
-   wire                            DeqData          ; // Data FIFO
-   wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ; 
+   wire                            DstEmpty         ; 
+   wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ; // Data FIFO
    wire                            DataEmpty        ;
-    
+   
+   wire                            EmptyFIFO        ; // Or of every FIFO Empty
             // SrcAddr FIFO
    FIFO #(  
        BRAM_COL_WIDTH      ,  //FIFO_WIDTH       
@@ -139,7 +139,7 @@ module BarrelShifter#(
        .FULL           (             ),
        .Empty          (             )
        );                           
-    
+          // Data FIFO
    FIFO #(  
        CHI_DATA_WIDTH*8 ,  //FIFO_WIDTH       
        FIFO_LENGTH         //FIFO_LENGTH   
@@ -149,13 +149,13 @@ module BarrelShifter#(
        .Clk            ( Clk         ),     
        .Inp            ( RXFLITDAT   ),
        .Enqueue        ( RXFLITDATV  ),
-       .Dequeue        ( DeqData     ),
+       .Dequeue        ( DeqSrcAddr  ),
        .Outp           ( DataFIFO    ),
        .FULL           (             ),
        .Empty          ( DataEmpty   )
        );                           
     
-    assign EmptyBS = SrcEmpty | DstEmpty | DataEmpty ;
+    assign EmptyFIFO = SrcEmpty | DstEmpty | DataEmpty ;
     
     assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SHIFT_WIDTH],{SHIFT_WIDTH{1'b0}}};
     assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : SHIFT_WIDTH],{SHIFT_WIDTH{1'b0}}};
@@ -219,38 +219,38 @@ module BarrelShifter#(
      case(state)
        StartState :
          begin                           
-           if(!EmptyBS & !LastDstTrans & !LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))      // When DstAddr is bigger than SrcAddr compare to their aligned Addresses then Data must be shifted left  
+           if(!EmptyFIFO & !LastDstTrans & !LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))      // When DstAddr is bigger than SrcAddr compare to their aligned Addresses then Data must be shifted left  
              next_state = LeftShiftState ;
-           else if(!EmptyBS & !LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))                 // When DstAddr is smaller than SrcAddr compare to their aligned Addresses then Data must be shifted right  
+           else if(!EmptyFIFO & !LastSrcTrans & (DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))                             // When DstAddr is smaller than SrcAddr compare to their aligned Addresses then Data must be shifted right  
              next_state = RightShiftState ;
-           else if(!EmptyBS & !LastDstTrans & LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write then should be an extra write  
+           else if(!EmptyFIFO & !LastDstTrans & LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write then should be an extra write  
              next_state = ExtraWriteState ;
            else
              next_state = StartState ; 
          end
        LeftShiftState :
          begin
-           if(LastSrcTrans & LastDstTrans & !EmptyBS & DequeueBS)         //  When last Read becomes the last Write return to StartState
+           if(LastSrcTrans & LastDstTrans & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
              next_state = StartState ;
-           else if (LastSrcTrans & !LastDstTrans & !EmptyBS & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
+           else if (LastSrcTrans & !LastDstTrans & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
              next_state = ExtraWriteState ;
            else
              next_state = LeftShiftState ;            
          end
        RightShiftState : 
          begin
-           if(LastSrcTrans & LastDstTrans & !EmptyBS & DequeueBS)       //  When last Read becomes the last Write return to StartState                
+           if(LastSrcTrans & LastDstTrans & !EmptyFIFO & DequeueBS)       //  When last Read becomes the last Write return to StartState                
              next_state = StartState ; 
-           else if (LastSrcTrans & !LastDstTrans & !EmptyBS & DequeueBS) //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done                                        
+           else if (LastSrcTrans & !LastDstTrans & !EmptyFIFO & DequeueBS) //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done                                        
              next_state = ExtraWriteState ;
            else
              next_state = RightShiftState ;                                                                                                                    
          end 
        ExtraWriteState : 
-         if(LastSrcTrans & LastDstTrans & !EmptyBS & DequeueBS)  //  When last Read and last Write return to StartState
+         if(LastSrcTrans & LastDstTrans & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState
            next_state = StartState ;
          else
-           ExtraWriteState ;
+           next_state = ExtraWriteState ;
        default : next_state = StartState ;          // Default state
      endcase   
    end
@@ -258,16 +258,54 @@ module BarrelShifter#(
    //FSM's signals
   always_comb begin
     case(state)
-       IdleState :
-         begin                      // If not Empty request control of BRAM else do nothing
-           WEControl  = 0                ; // Controls the WE output for BRAM
-           Dequeue    = 0                ; // Dequeue signal for FIFO
-           ValidFIFO  = 0                ; // Request permission from FIFO's Arbiter
-           RegWESig   = 0                ; // WE for register that stores the address pointer from FIFO
-           IssueValid = 0                ; // Indicates that the command for CHI-Converter is Valid
-           ValidBRAM  = (!Empty) ? 1 : 0 ; // Request permission from BRAM's Arbiter
+       StartState :
+         begin                      
+           if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
+             EmptyBS        = 1 ;
+             DeqDstAddr     = 0 ;
+             DeqSrcAddr     = 0 ;
+             DataOut        = 0 ;
+             PrvShftdDataWE = 0 ;
+           end
+           else begin
+             if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & !LastSrcTrans)begin
+               EmptyBS        = 1           ; // Barrel Shifter is empty because there are not enough data for a Write
+               DeqDstAddr     = 0           ; // Dont Dequeue DstFIFO 
+               DeqSrcAddr     = 1           ; // Dequeue SrcFIFO 
+               PrvShftdDataWE = 1           ; // Write shifted Data in register
+               DataOut        = 0           ; // Output Data 
+             end
+             else if(LastSrcTrans & !LastDstTrans & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin
+               EmptyBS        = 0           ;
+               DeqDstAddr     = DequeueBS   ;
+               DeqSrcAddr     = 0           ;
+               PrvShftdDataWE = DequeueBS   ;
+               DataOut        = ShiftedData ;
+             end
+             else if(!LastSrcTrans & !LastDstTrans & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin
+               EmptyBS        = 0           ;
+               DeqDstAddr     = DequeueBS   ;
+               DeqSrcAddr     = DequeueBS   ;
+               PrvShftdDataWE = DequeueBS   ;
+               DataOut        = ShiftedData ;
+             end
+             else if((LastSrcTrans & LastDstTrans) | (DstAddr - AlignedDstAddr) == (SrcAddr - AlignedSrcAddr))begin
+               EmptyBS        = 0           ;
+               DeqDstAddr     = DequeueBS   ;
+               DeqSrcAddr     = DequeueBS   ;
+               PrvShftdDataWE = 0           ;
+               DataOut        = ShiftedData ;
+             end
+             else begin // it should never go to else 
+               EmptyBS        = 1 ;
+               DeqDstAddr     = 0 ;
+               DeqSrcAddr     = 0 ;
+               PrvShftdDataWE = 0 ;
+               DataOut        = 0 ;
+             end
+           end
          end
-       IssueState : 
+       LeftShiftState : 
          begin         // Schedule a new transaction when posible
            if(CmdFIFOFULL | !ReadyBRAM)begin  // If comand FIFO is FULL or there is not control of BRAM do nothing (Dont schedule)
              WEControl  = 0 ;
@@ -286,7 +324,7 @@ module BarrelShifter#(
              ValidBRAM  = 1                      ;
            end
          end
-       WriteBackState : 
+       RightShiftState : 
          begin                   // Request control of FIFO to re-write the dequeued address pointer back in the queue
            WEControl  = 0 ;
            Dequeue    = 0 ;
@@ -295,6 +333,7 @@ module BarrelShifter#(
            IssueValid = 0 ;
            ValidBRAM  = 1 ;
          end
+       ExtraWriteState : 
        default :
          begin
            ValidBRAM  = 0 ;
