@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestBarrelShifte_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="CHIFlitsPkg" />
+            <top_module name="TestBarrelShifte" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="307642fs"></ZoomStartTime>
+      <ZoomEndTime time="346472fs"></ZoomEndTime>
+      <Cursor1Time time="340000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="592"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="22" />
+   <wvobject fp_name="/TestBarrelShifte/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/SrcAddrIn" type="array">
+      <obj_property name="ElementShortName">SrcAddrIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcAddrIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/DstAddrIn" type="array">
+      <obj_property name="ElementShortName">DstAddrIn[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DstAddrIn[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/LastSrcTrans" type="logic">
+      <obj_property name="ElementShortName">LastSrcTrans</obj_property>
+      <obj_property name="ObjectShortName">LastSrcTrans</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/LastDstTrans" type="logic">
+      <obj_property name="ElementShortName">LastDstTrans</obj_property>
+      <obj_property name="ObjectShortName">LastDstTrans</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/EnqueueSrc" type="logic">
+      <obj_property name="ElementShortName">EnqueueSrc</obj_property>
+      <obj_property name="ObjectShortName">EnqueueSrc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/EnqueueDst" type="logic">
+      <obj_property name="ElementShortName">EnqueueDst</obj_property>
+      <obj_property name="ObjectShortName">EnqueueDst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/RXDATFLITV" type="logic">
+      <obj_property name="ElementShortName">RXDATFLITV</obj_property>
+      <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/RXDATFLIT" type="array">
+      <obj_property name="ElementShortName">RXDATFLIT</obj_property>
+      <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/RXDATLCRDV" type="logic">
+      <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
+      <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/DequeueBS" type="logic">
+      <obj_property name="ElementShortName">DequeueBS</obj_property>
+      <obj_property name="ObjectShortName">DequeueBS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/SizeIn" type="array">
+      <obj_property name="ElementShortName">SizeIn[6:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeIn[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/SizeDataOut" type="array">
+      <obj_property name="ElementShortName">SizeDataOut[6:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeDataOut[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/DataOut" type="array">
+      <obj_property name="ElementShortName">DataOut[511:0]</obj_property>
+      <obj_property name="ObjectShortName">DataOut[511:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/EmptyBS" type="logic">
+      <obj_property name="ElementShortName">EmptyBS</obj_property>
+      <obj_property name="ObjectShortName">EmptyBS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/BSFULLSrc" type="logic">
+      <obj_property name="ElementShortName">BSFULLSrc</obj_property>
+      <obj_property name="ObjectShortName">BSFULLSrc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/BSFULLDst" type="logic">
+      <obj_property name="ElementShortName">BSFULLDst</obj_property>
+      <obj_property name="ObjectShortName">BSFULLDst</obj_property>
+   </wvobject>
+   <wvobject fp_name="group281" type="group">
+      <obj_property name="label">FIFOs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOSrcAddr/MyQueue" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][31:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][31:0]</obj_property>
+         <obj_property name="label">SrcMyQueue[31:0][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOLastSrc/MyQueue" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][0:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][0:0]</obj_property>
+         <obj_property name="label">LastSrcMyQueue[31:0][0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOLastSrc/state" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">state[31:0]</obj_property>
+         <obj_property name="ObjectShortName">state[31:0]</obj_property>
+         <obj_property name="label">Srcstate[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFODstAddr/MyQueue" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][31:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][31:0]</obj_property>
+         <obj_property name="label">DstMyQueue[31:0][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOLastDst/MyQueue" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][0:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][0:0]</obj_property>
+         <obj_property name="label">LastDstMyQueue[31:0][0:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOSize/MyQueue" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][6:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][6:0]</obj_property>
+         <obj_property name="label">SizeMyQueue[31:0][6:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestBarrelShifte/UUT/FIFOLastDst/state" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">state[31:0]</obj_property>
+         <obj_property name="ObjectShortName">state[31:0]</obj_property>
+         <obj_property name="label">Dststate[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="group280" type="group">
+         <obj_property name="label">DataFIFO</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/MyQueue[3]" type="array">
+            <obj_property name="ElementShortName">[3][511:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/MyQueue[2]" type="array">
+            <obj_property name="ElementShortName">[2][511:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/MyQueue[1]" type="array">
+            <obj_property name="ElementShortName">[1][511:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/MyQueue[0]" type="array">
+            <obj_property name="ElementShortName">[0][511:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][511:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/state" type="array">
+            <obj_property name="ElementShortName">state[31:0]</obj_property>
+            <obj_property name="ObjectShortName">state[31:0]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/PrevShiftedData" type="array">
+      <obj_property name="ElementShortName">PrevShiftedData[511:0]</obj_property>
+      <obj_property name="ObjectShortName">PrevShiftedData[511:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+   </wvobject>
+</wave_config>

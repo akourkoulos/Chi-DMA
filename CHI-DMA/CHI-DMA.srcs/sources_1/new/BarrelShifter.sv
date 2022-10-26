@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+import CHIFlitsPkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -23,28 +24,33 @@
 
 
 module BarrelShifter#(
-  parameter CHI_DATA_WIDTH   = 64                    , //Bytes
-  parameter SHIFT_WIDTH      = 9                     , // log(CHI_DATA_WIDTH*8)
+//--------------------------------------------------------------------------
+  parameter CHI_DATA_WIDTH   = 64                    , // Bytes
+  parameter SIZE_FIFO_WIDTH  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
+  parameter SHIFT_WIDTH      = 9                     , // log2(CHI_DATA_WIDTH*8)
   parameter BRAM_COL_WIDTH   = 32                    ,
   parameter FIFO_LENGTH      = 32                    ,
-  parameter COUNTER_WIDTH    = 6                       // log(FIFO_LENGTH) + 1
+  parameter COUNTER_WIDTH    = 6                       // log2(FIFO_LENGTH) + 1
+//--------------------------------------------------------------------------
 ) ( 
-    input                                        RST          ,
-    input                                        Clk          ,
-    input               [BRAM_COL_WIDTH  - 1 :0] SrcAddrIn    ,
-    input               [BRAM_COL_WIDTH  - 1 :0] DstAddrIn    ,
-    input                                        LastSrcTrans ,
-    input                                        LastDstTrans ,
-    input                                        EnqueueSrc   ,
-    input                                        EnqueueDst   ,
-    input                                        RXDATFLITV   ,
-    input   DataFlit                             RXDATFLIT    ,
-    output                                       RXDATLCRDV   ,
-    input                                        DequeueBS    ,
-    output  reg        [CHI_DATA_WIDTH*8 - 1 :0] DataOut      ,
-    output  reg                                  EmptyBS      ,
-    output                                       BSFULLSrc    ,
-    output                                       BSFULLDst
+    input                                         RST          ,
+    input                                         Clk          ,
+    input               [BRAM_COL_WIDTH   - 1 :0] SrcAddrIn    ,
+    input               [BRAM_COL_WIDTH   - 1 :0] DstAddrIn    ,
+    input                                         LastSrcTrans ,
+    input                                         LastDstTrans ,
+    input                                         EnqueueSrc   ,
+    input                                         EnqueueDst   ,
+    input                                         RXDATFLITV   ,
+    input   DataFlit                              RXDATFLIT    ,
+    output                                        RXDATLCRDV   ,
+    input                                         DequeueBS    ,
+    input              [SIZE_FIFO_WIDTH  - 1 : 0] SizeIn       ,
+    output             [CHI_DATA_WIDTH   - 1 : 0] SizeDataOut  ,
+    output  reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ,
+    output  reg                                   EmptyBS      ,
+    output                                        BSFULLSrc    ,
+    output                                        BSFULLDst
     );
     
     enum int unsigned { StartState         = 0 , 
@@ -75,8 +81,12 @@ module BarrelShifter#(
    wire                            DstEmpty         ; 
    wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ; // Data FIFO
    wire                            DataEmpty        ;
+   wire [SIZE_FIFO_WIDTH  - 1 : 0] SizeFIFO         ; // Size FIFO
    
    wire                            EmptyFIFO        ; // Or of every FIFO Empty
+    
+    
+
             // SrcAddr FIFO
    FIFO #(  
        BRAM_COL_WIDTH      ,  //FIFO_WIDTH       
@@ -144,21 +154,40 @@ module BarrelShifter#(
        FIFO_LENGTH         //FIFO_LENGTH   
        )     
        FIFOData        (             
-       .RST            ( RST         ),     
-       .Clk            ( Clk         ),     
-       .Inp            ( RXFLITDAT   ),
-       .Enqueue        ( RXFLITDATV  ),
-       .Dequeue        ( DeqSrcAddr  ),
-       .Outp           ( DataFIFO    ),
-       .FULL           (             ),
-       .Empty          ( DataEmpty   )
+       .RST            ( RST            ),     
+       .Clk            ( Clk            ),     
+       .Inp            ( RXDATFLIT.Data ),
+       .Enqueue        ( RXDATFLITV     ),
+       .Dequeue        ( DeqSrcAddr     ),
+       .Outp           ( DataFIFO       ),
+       .FULL           (                ),
+       .Empty          ( DataEmpty      )
        );                           
+    
+    
+       // Size FIFO
+   FIFO #(  
+       SIZE_FIFO_WIDTH      ,  //FIFO_WIDTH       
+       FIFO_LENGTH             //FIFO_LENGTH   
+       )     
+       FIFOSize (     
+       .RST        ( RST        ) ,      
+       .Clk        ( Clk        ) ,      
+       .Inp        ( SizeIn     ) , 
+       .Enqueue    ( EnqueueDst ) , 
+       .Dequeue    ( DeqDstAddr ) , 
+       .Outp       ( SizeFIFO   ) , 
+       .FULL       (            ) , 
+       .Empty      (            ) 
+       );
+         
+    assign SizeDataOut = (DstAddrLast) ? ~({CHI_DATA_WIDTH{1'b1}}<<SizeFIFO) : ~({CHI_DATA_WIDTH{1'b1}}>>SizeFIFO) ;
     
     assign EmptyFIFO = SrcEmpty | DstEmpty | DataEmpty ;
     
-    assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SHIFT_WIDTH],{SHIFT_WIDTH{1'b0}}};
-    assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : SHIFT_WIDTH],{SHIFT_WIDTH{1'b0}}};
-    assign shift          = ((SrcAddr- AlignedSrcAddr) - (DstAddr - AlignedDstAddr))<<3    ;//*8
+    assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
+    assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
+    assign shift          = ((SrcAddr - AlignedSrcAddr) - (DstAddr - AlignedDstAddr))<<3   ;//*8
     
     // ---------------------Barrel Shifter comb---------------------
     /*Barrel Shifter comb does a circular right shifts of its Data input by
@@ -218,24 +247,24 @@ module BarrelShifter#(
      case(state)
        StartState :
          begin                           
-           if(!EmptyFIFO & !LastSrcTrans  & ((!LastDstTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr)) | ((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read and Write then in the next state 2 Read Data shoudld be merged to create the Write Data word
+           if(!EmptyFIFO & !SrcAddrLast  & ((!DstAddrLast & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr)) | ((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read and Write then in the next state 2 Read Data shoudld be merged to create the Write Data word
              next_state = MergeReadDataState ;
-           else if(!EmptyFIFO & !LastDstTrans & LastSrcTrans & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
+           else if(!EmptyFIFO & !DstAddrLast & SrcAddrLast & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
              next_state = ExtraWriteState ;
            else                       // When Data needs no shift or it is the last Read/Write trans or CHI-Conv dont need the data yet(!DequeueBS)
              next_state = StartState ; 
          end
        MergeReadDataState :
          begin
-           if(LastSrcTrans & LastDstTrans & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
+           if(SrcAddrLast & DstAddrLast & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
              next_state = StartState ;
-           else if (LastSrcTrans & !LastDstTrans & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
+           else if (SrcAddrLast & !DstAddrLast & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
              next_state = ExtraWriteState ;
            else                                  // When next Write Trans needs alsa to merge data   
              next_state = MergeReadDataState ;            
          end
        ExtraWriteState : 
-         if(LastSrcTrans & LastDstTrans & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (DequeueBS)
+         if(SrcAddrLast & DstAddrLast & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (DequeueBS)
            next_state = StartState ;
          else
            next_state = ExtraWriteState ;
@@ -256,21 +285,21 @@ module BarrelShifter#(
              PrvShftdDataWE = 0 ;
            end
            else begin
-             if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & !LastSrcTrans)begin  // When Data must be shifted right and its not last Read then no enough data for a write so BSEmnpty  
+             if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & !SrcAddrLast)begin  // When Data must be shifted right and its not last Read then no enough data for a write so BSEmnpty  
                EmptyBS        = 1           ; // Barrel Shifter is empty because there are not enough data for a Write
                DeqDstAddr     = 0           ; // Dont Dequeue DstFIFO 
                DeqSrcAddr     = 1           ; // Dequeue SrcFIFO 
                PrvShftdDataWE = 1           ; // Write shifted Data in register
                DataOut        = 0           ; // Output Data 
              end
-             else if(LastSrcTrans & !LastDstTrans & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
+             else if(SrcAddrLast & !DstAddrLast & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
                EmptyBS        = 0           ;
                DeqDstAddr     = DequeueBS   ;
                DeqSrcAddr     = 0           ;
                PrvShftdDataWE = DequeueBS   ;
                DataOut        = ShiftedData ;
              end
-             else if((LastSrcTrans & LastDstTrans) | (!LastSrcTrans & !LastDstTrans & (DstAddr - AlignedDstAddr) >= (SrcAddr - AlignedSrcAddr)))begin // when last Read-Write or no shift or left shift of data then give Data for Write
+             else if((SrcAddrLast & DstAddrLast) | (!SrcAddrLast & !DstAddrLast & (DstAddr - AlignedDstAddr) >= (SrcAddr - AlignedSrcAddr)))begin // when last Read-Write or no shift or left shift of data then give Data for Write
                EmptyBS        = 0           ;
                DeqDstAddr     = DequeueBS   ;
                DeqSrcAddr     = DequeueBS   ;
@@ -296,19 +325,19 @@ module BarrelShifter#(
              PrvShftdDataWE = 0 ;
            end
            else begin
-             if((LastSrcTrans & LastDstTrans) | (!LastSrcTrans & !LastDstTrans))begin  // If both of Read and Write are last  trans or not tehn create the right DataOut and dequeue SrcAddr DstAddr FIFOs
+             if((SrcAddrLast & DstAddrLast) | (!SrcAddrLast & !DstAddrLast))begin  // If both of Read and Write are last  trans or not tehn create the right DataOut and dequeue SrcAddr DstAddr FIFOs
                EmptyBS        = 0                                                                                                        ;
                DeqDstAddr     = DequeueBS                                                                                                ;
                DeqSrcAddr     = DequeueBS                                                                                                ;
                PrvShftdDataWE = DequeueBS                                                                                                ;
-               DataOut        = (ShiftedData & !{CHI_DATA_WIDTH{1'b1}} >> shift) | (PrevShiftedData & ({CHI_DATA_WIDTH{1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
+               DataOut        = (ShiftedData & (~({CHI_DATA_WIDTH{1'b1}} >> shift))) | (PrevShiftedData & ({CHI_DATA_WIDTH{1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
-             else if(LastSrcTrans & !LastDstTrans)begin  // If it is the last Read and but not the last Write create the right DataOut and dequeue only DstAddr FIFO
+             else if(SrcAddrLast & !DstAddrLast)begin  // If it is the last Read and but not the last Write create the right DataOut and dequeue only DstAddr FIFO
                EmptyBS        = 0                                                                                                        ;
                DeqDstAddr     = DequeueBS                                                                                                ;
                DeqSrcAddr     = 0                                                                                                        ;
                PrvShftdDataWE = DequeueBS                                                                                                ;
-               DataOut        = (ShiftedData & !{CHI_DATA_WIDTH{1'b1}} >> shift) | (PrevShiftedData & ({CHI_DATA_WIDTH{1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
+               DataOut        = (ShiftedData &( ~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end                                                                                                                                             
              else begin // it should never go to else
                EmptyBS        = 1 ;
@@ -335,13 +364,13 @@ module BarrelShifter#(
              PrvShftdDataWE = 0               ;
            end
        default :
-         begin
-           EmptyBS        = 0               ;
-           DeqDstAddr     = DequeueBS       ;
-           DeqSrcAddr     = DequeueBS       ;
-           DataOut        = PrevShiftedData ;
-           PrvShftdDataWE = 0               ;
-         end
+         begin                
+           EmptyBS        = 1 ;
+           DeqDstAddr     = 0 ;
+           DeqSrcAddr     = 0 ;
+           DataOut        = 0 ;
+           PrvShftdDataWE = 0 ;
+         end                  
     endcase ;
   end
     
