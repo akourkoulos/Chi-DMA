@@ -46,7 +46,7 @@ module BarrelShifter#(
     output                                        RXDATLCRDV   ,
     input                                         DequeueBS    ,
     input              [SIZE_FIFO_WIDTH  - 1 : 0] SizeIn       ,
-    output             [CHI_DATA_WIDTH   - 1 : 0] SizeDataOut  ,
+    output             [CHI_DATA_WIDTH   - 1 : 0] BEOut        ,
     output  reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ,
     output  reg                                   EmptyBS      ,
     output                                        BSFULLSrc    ,
@@ -181,7 +181,7 @@ module BarrelShifter#(
        .Empty      (            ) 
        );
          
-    assign SizeDataOut = (DstAddrLast) ? ~({CHI_DATA_WIDTH{1'b1}}<<SizeFIFO) : ~({CHI_DATA_WIDTH{1'b1}}>>SizeFIFO) ;
+    assign BEOut = (DstAddrLast) ? ~({CHI_DATA_WIDTH{1'b1}}<<SizeFIFO) : ~({CHI_DATA_WIDTH{1'b1}}>>SizeFIFO) ;
     
     assign EmptyFIFO = SrcEmpty | DstEmpty | DataEmpty ;
     
@@ -330,7 +330,7 @@ module BarrelShifter#(
                DeqDstAddr     = DequeueBS                                                                                                ;
                DeqSrcAddr     = DequeueBS                                                                                                ;
                PrvShftdDataWE = DequeueBS                                                                                                ;
-               DataOut        = (ShiftedData & (~({CHI_DATA_WIDTH{1'b1}} >> shift))) | (PrevShiftedData & ({CHI_DATA_WIDTH{1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
+               DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
              else if(SrcAddrLast & !DstAddrLast)begin  // If it is the last Read and but not the last Write create the right DataOut and dequeue only DstAddr FIFO
                EmptyBS        = 0                                                                                                        ;
