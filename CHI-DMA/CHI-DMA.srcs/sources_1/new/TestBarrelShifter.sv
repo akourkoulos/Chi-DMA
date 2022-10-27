@@ -28,7 +28,7 @@ module TestBarrelShifte#(
   parameter BRAM_COL_WIDTH   = 32                    ,
   parameter FIFO_LENGTH      = 32                    ,
   parameter COUNTER_WIDTH    = 6                     , // log2(FIFO_LENGTH) + 1
-  parameter Chunk            = 5
+  parameter Chunck           = 5
 //--------------------------------------------------------------------------
 );
      reg                                   RST          ;
@@ -93,36 +93,43 @@ module TestBarrelShifte#(
     reg [BRAM_COL_WIDTH   - 1 :0] CountReadTrans  ;
     reg [BRAM_COL_WIDTH   - 1 :0] CountWriteTrans ;
    
-    always
+    always_ff@(negedge Clk)
     begin
       if(RST)begin
         SrcAddrInput = $urandom_range(0,64*1000      ); 
         DstAddrInput = $urandom_range(64*1000+1,2**32);
-        LengthInput  = $urandom_range(0,64*Chuck     );
+        LengthInput  = $urandom_range(0,64*Chunck    );
       end
       else begin
         if(NextTrans)begin
           SrcAddrInput = $urandom_range(0,64*1000      ); 
           DstAddrInput = $urandom_range(64*1000+1,2**32);
-          LengthInput  = $urandom_range(0,64*Chuck     );
+          LengthInput  = $urandom_range(0,64*Chunck     );
         end                                            
       end
-      #period;
     end
     
-    
-    always
+    assign AlignedSrcAddr = {SrcAddrInput[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
+    assign AlignedDstAddr = {DstAddrInput[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
+    assign NextCountWrite = CountWriteTrans + ((DstAddrInput-AlignedDstAddr >= CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (DstAddrInput-AlignedDstAddr));
+    assign NextCountRead  = CountReadTrans + ((SrcAddrInput-AlignedSrcAddr >= CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (SrcAddrInput-AlignedSrcAddr ));
+    assign NextTrans      = (NextCountRead == LengthInput & NextCountWrite == LengthInput) ;
+   
+    always_ff@(negedge Clk)
     begin
       if(RST) begin
-        NextTrans       = 0;
-        CountWriteTrans = 0 ;
-        CountReadTrans  = 0 ;
+        CountWriteTrans <= 0 ;
+        CountReadTrans  <= 0 ;
       end
       else begin
-        if(CountWriteTrans < LengthInput)
-          CountWriteTrans = CountWriteTrans + ((LengthInput-CountWriteTrans > CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (LengthInput-CountWriteTrans));
-        if(CountReadTrans < LengthInput)
-          CountReadTrans = CountReadTrans + ((LengthInput-CountReadTrans > CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (LengthInput-CountReadTrans));
+        if(NextCountWrite < LengthInput)
+          CountWriteTrans <= NextCountWrite ;
+        if(NextCountRead  < LengthInput)
+          CountReadTrans = NextCountRead ;
+        if(NextCountRead == LengthInput & NextCountWrite == LengthInput)begin
+          CountWriteTrans <= 0 ;
+          CountReadTrans  <= 0 ;
+        end
       end      
     end
     
@@ -155,46 +162,32 @@ module TestBarrelShifte#(
         
         #(period*2); // wait for period
         # period   ; // wait for period
-        
-        RST             <= 0              ;
-        SrcAddrIn       <= 'd64 + 'd9     ;
-        DstAddrIn       <= 'd64*'d15 + 'd1;
-        LastSrcTrans    <= 0              ;
-        LastDstTrans    <= 1              ;
-        EnqueueSrc      <= 1              ;
-        EnqueueDst      <= 1              ;
-        RXDATFLITV      <= 0              ;
-        RXDATFLIT.Data  <= randVect       ;
-        SizeIn          <= 'd63           ;
-        
+        for(int j = 0 ; j < 20 ; j++)begin    
+          RST             <= 0              ;
+          SrcAddrIn       <= SrcAddrInput ;
+          DstAddrIn       <= DstAddrInput ;
+          if(NextCountRead == LengthInput)
+            LastSrcTrans    <= 1              ;
+          else 
+            LastSrcTrans    <= 0              ;
+          if(NextCountWrite == LengthInput)
+            LastDstTrans    <= 1              ;
+          else 
+            LastDstTrans    <= 0              ;            
+          if(CountReadTrans != LengthInput)
+            EnqueueSrc      <= 1              ;
+          else
+            EnqueueSrc      <= 0              ;
+          if(CountWriteTrans != LengthInput)
+            EnqueueDst      <= 1              ;
+          else
+            EnqueueDst      <= 0              ;
+          RXDATFLITV      <= 1                ;
+          RXDATFLIT.Data  <= randVect         ;
+          SizeIn          <= NextCountWrite   ;
+   
         #(period*2); // wait for period
-        
-        RST             <= 0              ;
-        SrcAddrIn       <= 'd64 + 'd9     ;
-        DstAddrIn       <= 'd64*'d15 + 'd1;
-        LastSrcTrans    <= 1              ;
-        LastDstTrans    <= 0              ;
-        EnqueueSrc      <= 1              ;
-        EnqueueDst      <= 0              ;
-        RXDATFLITV      <= 1              ;
-        RXDATFLIT.Data  <= randVect       ;
-        SizeIn          <= 'd0            ;
-        
-         #(period*2); // wait for period
-        
-        RST             <= 0              ;
-        SrcAddrIn       <= 'd64 + 'd9     ;
-        DstAddrIn       <= 'd64*'d15 + 'd1;
-        LastSrcTrans    <= 0              ;
-        LastDstTrans    <= 0              ;
-        EnqueueSrc      <= 0              ;
-        EnqueueDst      <= 0              ;
-        RXDATFLITV      <= 1              ;
-        RXDATFLIT.Data  <= randVect       ;
-        SizeIn          <= 'd0            ;
-        
-        #(period*2); // wait for period
-                
+        end        
         RST             <= 0              ;
         SrcAddrIn       <= 'd64           ;
         DstAddrIn       <= 'd64*'d15 + 'd1;
@@ -206,7 +199,7 @@ module TestBarrelShifte#(
         RXDATFLIT.Data  <= randVect       ;
         SizeIn          <= 0              ;
         
-        #(period*10); // wait for period
+        #(period*30); // wait for period
         $stop;
         end
 endmodule
