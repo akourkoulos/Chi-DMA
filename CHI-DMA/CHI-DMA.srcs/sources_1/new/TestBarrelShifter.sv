@@ -86,6 +86,7 @@ module TestBarrelShifte#(
       end 
     endgenerate;
     
+    
     reg                           NextTrans       ;
     reg [BRAM_COL_WIDTH   - 1 :0] SrcAddrInput    ;
     reg [BRAM_COL_WIDTH   - 1 :0] DstAddrInput    ;
@@ -93,6 +94,11 @@ module TestBarrelShifte#(
     reg [BRAM_COL_WIDTH   - 1 :0] CountReadTrans  ;
     reg [BRAM_COL_WIDTH   - 1 :0] CountWriteTrans ;
    
+    wire [BRAM_COL_WIDTH   - 1 :0] NextCountWrite ;
+    wire [BRAM_COL_WIDTH   - 1 :0] NextCountRead  ;
+    wire [BRAM_COL_WIDTH   - 1 :0] AlignedSrcAddr ;
+    wire [BRAM_COL_WIDTH   - 1 :0] AlignedDstAddr ;
+    
     always_ff@(negedge Clk)
     begin
       if(RST)begin
@@ -109,10 +115,11 @@ module TestBarrelShifte#(
       end
     end
     
+    
     assign AlignedSrcAddr = {SrcAddrInput[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
     assign AlignedDstAddr = {DstAddrInput[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
-    assign NextCountWrite = CountWriteTrans + ((DstAddrInput-AlignedDstAddr >= CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (DstAddrInput-AlignedDstAddr));
-    assign NextCountRead  = CountReadTrans + ((SrcAddrInput-AlignedSrcAddr >= CHI_DATA_WIDTH) ? CHI_DATA_WIDTH : (SrcAddrInput-AlignedSrcAddr ));
+    assign NextCountWrite = CountWriteTrans + ((DstAddrInput-AlignedDstAddr <= CHI_DATA_WIDTH) ? (DstAddrInput-AlignedDstAddr) : CHI_DATA_WIDTH );
+    assign NextCountRead  = CountReadTrans + ((SrcAddrInput-AlignedSrcAddr <= CHI_DATA_WIDTH) ? (SrcAddrInput-AlignedSrcAddr ) : CHI_DATA_WIDTH);
     assign NextTrans      = (NextCountRead == LengthInput & NextCountWrite == LengthInput) ;
    
     always_ff@(negedge Clk)
@@ -122,13 +129,13 @@ module TestBarrelShifte#(
         CountReadTrans  <= 0 ;
       end
       else begin
-        if(NextCountWrite < LengthInput)
-          CountWriteTrans <= NextCountWrite ;
-        if(NextCountRead  < LengthInput)
-          CountReadTrans = NextCountRead ;
         if(NextCountRead == LengthInput & NextCountWrite == LengthInput)begin
           CountWriteTrans <= 0 ;
           CountReadTrans  <= 0 ;
+        end
+        else begin
+          CountWriteTrans <= NextCountWrite ;
+          CountReadTrans  <= NextCountRead  ;
         end
       end      
     end

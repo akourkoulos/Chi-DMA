@@ -37,51 +37,54 @@ module BarrelShifter#(
     input                                         Clk          ,
     input               [BRAM_COL_WIDTH   - 1 :0] SrcAddrIn    ,
     input               [BRAM_COL_WIDTH   - 1 :0] DstAddrIn    ,
-    input                                         LastSrcTrans ,
-    input                                         LastDstTrans ,
-    input                                         EnqueueSrc   ,
-    input                                         EnqueueDst   ,
+    input               [BRAM_COL_WIDTH   - 1 :0] LengthIn     ,
+    input                                         EnqueueIn    ,
     input                                         RXDATFLITV   ,
     input   DataFlit                              RXDATFLIT    ,
     output                                        RXDATLCRDV   ,
     input                                         DequeueBS    ,
-    input              [SIZE_FIFO_WIDTH  - 1 : 0] SizeIn       ,
-    output             [CHI_DATA_WIDTH   - 1 : 0] BEOut        ,
+    output  reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut        ,
     output  reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ,
     output  reg                                   EmptyBS      ,
-    output                                        BSFULLSrc    ,
-    output                                        BSFULLDst
+    output                                        BSFULL
     );
     
     enum int unsigned { StartState         = 0 , 
                         MergeReadDataState = 1 , 
                         ExtraWriteState    = 2  } state , next_state ; 
                         
-                        
-
-   reg [`MaxCrds          - 1 : 0] DataCrdInbound   ; // Credits for inbound Data Chanel
-   reg [COUNTER_WIDTH     - 1 : 0] GivenDataCrd     ; // counter used in order not to take more DataRsp than FIFO length
-  
-   reg  [CHI_DATA_WIDTH*8 - 1 : 0]  PrevShiftedData ; // Register that stores the shifted data that came to the previous DataRsp 
-   reg                              PrvShftdDataWE  ; // WE of register
-   wire [CHI_DATA_WIDTH*8 - 1 : 0]  ShiftedData     ; // Out of Barrel Shifted comb 
-
+   
+   // Transactions counters
+   reg  [BRAM_COL_WIDTH   - 1 : 0]  CountWriteBytes ;     
+   reg                              CntReadWE       ;  
+   wire [BRAM_COL_WIDTH   - 1 : 0]  NextReadCnt     ;  
+   wire [BRAM_COL_WIDTH   - 1 : 0]  NextSrcAddr     ;
+   reg  [BRAM_COL_WIDTH   - 1 : 0]  CountReadBytes  ;    
+   reg                              CntWriteWE      ;  
+   wire [BRAM_COL_WIDTH   - 1 : 0]  NextWriteCnt    ; 
+   wire [BRAM_COL_WIDTH   - 1 : 0]  NextDstAddr     ; 
+   // Crds register
+   reg  [`MaxCrds          - 1 : 0] DataCrdInbound  ; // Credits for inbound Data Chanel
+   reg  [COUNTER_WIDTH     - 1 : 0] GivenDataCrd    ; // counter used in order not to take more DataRsp than FIFO length
+   // BS merge register and signals
+   reg  [CHI_DATA_WIDTH*8 - 1 : 0] PrevShiftedData  ; // Register that stores the shifted data that came to the previous DataRsp 
+   reg                             PrvShftdDataWE   ; // WE of register
+   wire [CHI_DATA_WIDTH*8 - 1 : 0] ShiftedData      ; // Out of Barrel Shifted comb 
+   // Aligned Addresses
    wire [BRAM_COL_WIDTH   - 1 : 0] AlignedSrcAddr   ;
    wire [BRAM_COL_WIDTH   - 1 : 0] AlignedDstAddr   ;
-  
-   wire [SHIFT_WIDTH      - 1 : 0] shift            ; // shift of Barrel Shifter
-  
-   wire                            SrcEmpty         ; // SrcAddr FIFO
-   reg                             DeqSrcAddr       ;
-   wire                            SrcAddrLast      ;
+  //shift
+   wire [SHIFT_WIDTH      - 1 : 0] shift            ; // shift amount of Barrel Shifter
+  // signals of Src,Dst,Length FIFOs
+   wire                            EmptySrc         ; 
+   reg                             DeqFIFO          ;
+   reg                             DeqData          ;
    wire [BRAM_COL_WIDTH   - 1 : 0] SrcAddr          ;
-   reg                             DeqDstAddr       ; // DstAddr FIFO
-   wire                            DstAddrLast      ;
    wire [BRAM_COL_WIDTH   - 1 : 0] DstAddr          ;
-   wire                            DstEmpty         ; 
-   wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ; // Data FIFO
+   wire [BRAM_COL_WIDTH   - 1 : 0] Legnth           ;
+  // signals of Src,Dst,Length FIFOs
+   wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ;
    wire                            DataEmpty        ;
-   wire [SIZE_FIFO_WIDTH  - 1 : 0] SizeFIFO         ; // Size FIFO
    
    wire                            EmptyFIFO        ; // Or of every FIFO Empty
     
@@ -96,29 +99,13 @@ module BarrelShifter#(
        .RST        ( RST        ) ,      
        .Clk        ( Clk        ) ,      
        .Inp        ( SrcAddrIn  ) , 
-       .Enqueue    ( EnqueueSrc ) , 
-       .Dequeue    ( DeqSrcAddr ) , 
+       .Enqueue    ( EnqueueIn  ) , 
+       .Dequeue    ( DeqFIFO    ) , 
        .Outp       ( SrcAddr    ) , 
-       .FULL       ( BSFULLSrc  ) , 
-       .Empty      ( SrcEmpty   ) 
+       .FULL       ( BSFULL     ) , 
+       .Empty      ( EmptySrc   ) 
        );
-       
-           // LastSrcTrans FIFO
-   FIFO #(  
-       1              ,  //FIFO_WIDTH       
-       FIFO_LENGTH       //FIFO_LENGTH  
-       )     
-       FIFOLastSrc  (              
-       .RST         ( RST          ),     
-       .Clk         ( Clk          ),     
-       .Inp         ( LastSrcTrans ),
-       .Enqueue     ( EnqueueSrc   ),
-       .Dequeue     ( DeqSrcAddr   ),
-       .Outp        ( SrcAddrLast  ),
-       .FULL        ( BSFULLDst    ),
-       .Empty       (              )
-       );
-          // DstAddr FIFO
+            // DstAddr FIFO
    FIFO #(  
       BRAM_COL_WIDTH  ,  //FIFO_WIDTH       
       FIFO_LENGTH        //FIFO_LENGTH   
@@ -127,63 +114,78 @@ module BarrelShifter#(
        .RST         ( RST         ),     
        .Clk         ( Clk         ),     
        .Inp         ( DstAddrIn   ),
-       .Enqueue     ( EnqueueDst  ), 
-       .Dequeue     ( DeqDstAddr  ),
+       .Enqueue     ( EnqueueIn   ), 
+       .Dequeue     ( DeqFIFO     ),
        .Outp        ( DstAddr     ),
        .FULL        (             ),
-       .Empty       ( DstEmpty    )      
-       );
-           // LastDstTrans FIFO
+       .Empty       (             )      
+       );          
+            // Length FIFO
    FIFO #(  
-       1           ,  //FIFO_WIDTH       
-       FIFO_LENGTH    //FIFO_LENGTH   
-       )     
-       FIFOLastDst     (             
-       .RST            ( RST         ),     
-       .Clk            ( Clk         ),     
-       .Inp            ( LastDstTrans),
-       .Enqueue        ( EnqueueDst  ),
-       .Dequeue        ( DeqDstAddr  ),
-       .Outp           ( DstAddrLast ),
-       .FULL           (             ),
-       .Empty          (             )
-       );                           
+      BRAM_COL_WIDTH  ,  //FIFO_WIDTH       
+      FIFO_LENGTH        //FIFO_LENGTH   
+      )     
+       FIFOLength   (     
+       .RST         ( RST         ),     
+       .Clk         ( Clk         ),     
+       .Inp         ( LengthIn    ),
+       .Enqueue     ( EnqueueIn   ), 
+       .Dequeue     ( DeqFIFO     ),
+       .Outp        ( Length      ),
+       .FULL        (             ),
+       .Empty       (             )      
+       );                 
           // Data FIFO
    FIFO #(  
        CHI_DATA_WIDTH*8 ,  //FIFO_WIDTH       
        FIFO_LENGTH         //FIFO_LENGTH   
        )     
        FIFOData        (             
-       .RST            ( RST            ),     
-       .Clk            ( Clk            ),     
-       .Inp            ( RXDATFLIT.Data ),
-       .Enqueue        ( RXDATFLITV     ),
-       .Dequeue        ( DeqSrcAddr     ),
-       .Outp           ( DataFIFO       ),
-       .FULL           (                ),
-       .Empty          ( DataEmpty      )
+       .RST            ( RST                              ),     
+       .Clk            ( Clk                              ),     
+       .Inp            ( RXDATFLIT.Data                   ),
+       .Enqueue        ( RXDATFLITV & DataCrdInbound != 0 ),
+       .Dequeue        ( DeqData                          ),
+       .Outp           ( DataFIFO                         ),
+       .FULL           (                                  ),
+       .Empty          ( DataEmpty                        )
        );                           
     
+    // Manage counters 
+    assign NextSrcAddr  = (CountReadBytes  + SrcAddr);
+    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - SrcAddr) < Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - SrcAddr) : Length ;
+    assign NextDstAddr  = (CountWriteBytes + DstAddr);
+    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - DstAddr) < Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - DstAddr) : Length ;
+    always_ff@(posedge Clk)begin
+      if(RST)begin
+        CountWriteBytes <= 0 ;
+        CountReadBytes  <= 0 ;
+      end
+      else begin
+        if(CntReadWE == 1 | DeqFIFO == 1)begin
+          CountReadBytes = (DeqFIFO) ? 0 : NextReadCnt ;
+        end
+        if(CntWriteWE == 1 | DeqFIFO == 1)begin
+          CountWriteBytes = (DeqFIFO) ? 0 : NextWriteCnt ;
+        end
+      end      
+    end
     
-       // Size FIFO
-   FIFO #(  
-       SIZE_FIFO_WIDTH      ,  //FIFO_WIDTH       
-       FIFO_LENGTH             //FIFO_LENGTH   
-       )     
-       FIFOSize (     
-       .RST        ( RST        ) ,      
-       .Clk        ( Clk        ) ,      
-       .Inp        ( SizeIn     ) , 
-       .Enqueue    ( EnqueueDst ) , 
-       .Dequeue    ( DeqDstAddr ) , 
-       .Outp       ( SizeFIFO   ) , 
-       .FULL       (            ) , 
-       .Empty      (            ) 
-       );
-         
-    assign BEOut = (DstAddrLast) ? ~({CHI_DATA_WIDTH{1'b1}}<<SizeFIFO) : ~({CHI_DATA_WIDTH{1'b1}}>>SizeFIFO) ;
-    
-    assign EmptyFIFO = SrcEmpty | DstEmpty | DataEmpty ;
+    // Enable the corect Bytes to be written 
+    always_comb begin
+      if(NextDstAddr == Length)begin
+        if(Length < CHI_DATA_WIDTH &  AlignedDstAddr + CHI_DATA_WIDTH - DstAddr > Length)begin
+          BEOut = ({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr)) & ~({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr + Length)); 
+        end
+        else begin
+          BEOut = ~({CHI_DATA_WIDTH{1'b1}}<<(NextReadCnt - CountWriteBytes)) ;
+        end
+      end
+      else begin
+         BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextReadCnt - CountWriteBytes)) ;
+      end
+    end
+    assign EmptyFIFO = EmptySrc | DataEmpty ;
     
     assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
     assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};

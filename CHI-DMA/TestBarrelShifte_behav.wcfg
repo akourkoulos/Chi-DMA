@@ -13,14 +13,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="340001fs"></ZoomEndTime>
-      <Cursor1Time time="200000fs"></Cursor1Time>
+      <ZoomEndTime time="639261fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="246"></ValueColumnWidth>
+      <ValueColumnWidth column_width="241"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="34" />
    <wvobject fp_name="/TestBarrelShifte/RST" type="logic">
       <obj_property name="ElementShortName">RST</obj_property>
       <obj_property name="ObjectShortName">RST</obj_property>
@@ -219,5 +219,37 @@
    <wvobject fp_name="/TestBarrelShifte/UUT/next_state" type="array">
       <obj_property name="ElementShortName">next_state[31:0]</obj_property>
       <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/NextTrans" type="logic">
+      <obj_property name="ElementShortName">NextTrans</obj_property>
+      <obj_property name="ObjectShortName">NextTrans</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/CountReadTrans" type="array">
+      <obj_property name="ElementShortName">CountReadTrans[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CountReadTrans[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/CountWriteTrans" type="array">
+      <obj_property name="ElementShortName">CountWriteTrans[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CountWriteTrans[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/NextCountWrite" type="array">
+      <obj_property name="ElementShortName">NextCountWrite[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NextCountWrite[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/NextCountRead" type="array">
+      <obj_property name="ElementShortName">NextCountRead[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NextCountRead[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/SrcAddrInput" type="array">
+      <obj_property name="ElementShortName">SrcAddrInput[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcAddrInput[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/DstAddrInput" type="array">
+      <obj_property name="ElementShortName">DstAddrInput[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DstAddrInput[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/LengthInput" type="array">
+      <obj_property name="ElementShortName">LengthInput[31:0]</obj_property>
+      <obj_property name="ObjectShortName">LengthInput[31:0]</obj_property>
    </wvobject>
 </wave_config>

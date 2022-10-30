@@ -2,3 +2,6 @@ Running: xsim.dir/TestCHIConverter_behav/xsimk.exe -simmode gui -wdb TestCHIConv
 Design successfully loaded
 Design Loading Memory Usage: 6668 KB (Peak: 6668 KB)
 Design Loading CPU Usage: 78 ms
+Simulation completed
+Simulation Memory Usage: 10968 KB (Peak: 10968 KB)
+Simulation CPU Usage: 265 ms
