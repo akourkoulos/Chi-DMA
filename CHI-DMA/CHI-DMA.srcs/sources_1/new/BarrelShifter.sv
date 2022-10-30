@@ -173,16 +173,16 @@ module BarrelShifter#(
     
     // Enable the corect Bytes to be written 
     always_comb begin
-      if(NextDstAddr == Length)begin
-        if(Length < CHI_DATA_WIDTH &  AlignedDstAddr + CHI_DATA_WIDTH - DstAddr > Length)begin
+      if(NextDstAddr == Length)begin // if last trans
+        if(Length < CHI_DATA_WIDTH &  AlignedDstAddr + CHI_DATA_WIDTH - DstAddr > Length)begin // if address range of Data that should be written is internal of CHI_DATA_WIDTH
           BEOut = ({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr)) & ~({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr + Length)); 
         end
         else begin
-          BEOut = ~({CHI_DATA_WIDTH{1'b1}}<<(NextReadCnt - CountWriteBytes)) ;
+          BEOut = ~({CHI_DATA_WIDTH{1'b1}}<<(NextReadCnt - CountWriteBytes)) ;  // Enable the least significant bits 
         end
       end
       else begin
-         BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextReadCnt - CountWriteBytes)) ;
+         BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextReadCnt - CountWriteBytes)) ; // enable the most significant or all bytes 
       end
     end
     assign EmptyFIFO = EmptySrc | DataEmpty ;
@@ -249,24 +249,24 @@ module BarrelShifter#(
      case(state)
        StartState :
          begin                           
-           if(!EmptyFIFO & !SrcAddrLast  & ((!DstAddrLast & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr)) | ((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read and Write then in the next state 2 Read Data shoudld be merged to create the Write Data word
+           if(!EmptyFIFO & NextReadCnt < Length & ((NextWriteCnt < Length & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr)) | ((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read and Write then in the next state 2 Read Data shoudld be merged to create the Write Data word
              next_state = MergeReadDataState ;
-           else if(!EmptyFIFO & !DstAddrLast & SrcAddrLast & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
+           else if(!EmptyFIFO & NextWriteCnt < Length & NextReadCnt == Length & DequeueBS & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
              next_state = ExtraWriteState ;
            else                       // When Data needs no shift or it is the last Read/Write trans or CHI-Conv dont need the data yet(!DequeueBS)
              next_state = StartState ; 
          end
        MergeReadDataState :
          begin
-           if(SrcAddrLast & DstAddrLast & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
+           if( NextReadCnt == Length &  NextWriteCnt == Length & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
              next_state = StartState ;
-           else if (SrcAddrLast & !DstAddrLast & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
+           else if ( NextReadCnt == Length &  NextWriteCnt < Length & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
              next_state = ExtraWriteState ;
            else                                  // When next Write Trans needs alsa to merge data   
              next_state = MergeReadDataState ;            
          end
        ExtraWriteState : 
-         if(SrcAddrLast & DstAddrLast & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (DequeueBS)
+         if(NextReadCnt == Length &  NextWriteCnt == Length & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (DequeueBS)
            next_state = StartState ;
          else
            next_state = ExtraWriteState ;
@@ -281,18 +281,22 @@ module BarrelShifter#(
          begin                      
            if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
              EmptyBS        = 1 ;
-             DeqDstAddr     = 0 ;
-             DeqSrcAddr     = 0 ;
+             CntReadWE      = 0 ;
+             CntWriteWE     = 0 ;
              DataOut        = 0 ;
              PrvShftdDataWE = 0 ;
+             DeqFIFO        = 0 ;
+             DeqData        = 0 ;
            end
            else begin
-             if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & !SrcAddrLast)begin  // When Data must be shifted right and its not last Read then no enough data for a write so BSEmnpty  
+             if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & NextReadCnt < Length)begin  // When Data must be shifted right and its not last Read then no enough data for a write  
                EmptyBS        = 1           ; // Barrel Shifter is empty because there are not enough data for a Write
-               DeqDstAddr     = 0           ; // Dont Dequeue DstFIFO 
-               DeqSrcAddr     = 1           ; // Dequeue SrcFIFO 
-               PrvShftdDataWE = 1           ; // Write shifted Data in register
-               DataOut        = 0           ; // Output Data 
+               CntReadWE      = 1           ; // Update Read Counter
+               CntWriteWE     = 0           ; // Dont update Write Counter because there are not enough data for a Write
+               DataOut        = 0           ; // Output Data
+               PrvShftdDataWE = 1           ; // Write shifted Data in register 
+               DeqFIFO        = 0           ; // Dont Dequeue FIFOs (SrcAddr,DstAddr,Legnth)
+               DeqData        = 1           ; // Dequeue Data FIFO because there are Data that have been read
              end
              else if(SrcAddrLast & !DstAddrLast & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
                EmptyBS        = 0           ;
