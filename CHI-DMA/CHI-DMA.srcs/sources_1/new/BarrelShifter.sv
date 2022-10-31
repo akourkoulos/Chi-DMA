@@ -290,92 +290,113 @@ module BarrelShifter#(
            end
            else begin
              if((DstAddr - AlignedDstAddr) < (SrcAddr - AlignedSrcAddr) & NextReadCnt < Length)begin  // When Data must be shifted right and its not last Read then no enough data for a write  
-               EmptyBS        = 1           ; // Barrel Shifter is empty because there are not enough data for a Write
-               CntReadWE      = 1           ; // Update Read Counter
-               CntWriteWE     = 0           ; // Dont update Write Counter because there are not enough data for a Write
-               DataOut        = 0           ; // Output Data
-               PrvShftdDataWE = 1           ; // Write shifted Data in register 
-               DeqFIFO        = 0           ; // Dont Dequeue FIFOs (SrcAddr,DstAddr,Legnth)
-               DeqData        = 1           ; // Dequeue Data FIFO because there are Data that have been read
+               EmptyBS        = 1 ; // Barrel Shifter is empty because there are not enough data for a Write
+               CntReadWE      = 1 ; // Update Read Counter
+               CntWriteWE     = 0 ; // Dont update Write Counter because there are not enough data for a Write
+               DataOut        = 0 ; // Output Data
+               PrvShftdDataWE = 1 ; // Write shifted Data in register 
+               DeqFIFO        = 0 ; // Dont Dequeue FIFOs (SrcAddr,DstAddr,Legnth)
+               DeqData        = 1 ; // Dequeue Data FIFO because there are Data that have been read
              end
-             else if(SrcAddrLast & !DstAddrLast & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
+             else if(NextReadCnt == Length & NextWriteCnt < Length & (DstAddr - AlignedDstAddr) > (SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
                EmptyBS        = 0           ;
-               DeqDstAddr     = DequeueBS   ;
-               DeqSrcAddr     = 0           ;
-               PrvShftdDataWE = DequeueBS   ;
-               DataOut        = ShiftedData ;
+               CntReadWE      = 0           ; // Dont Update Read Counter because it is the last Read but not last write
+               CntWriteWE     = DequeueBS   ; // Update Write Counter
+               DataOut        = ShiftedData ; 
+               PrvShftdDataWE = DequeueBS   ; 
+               DeqFIFO        = 0           ;
+               DeqData        = 0           ;
              end
-             else if((SrcAddrLast & DstAddrLast) | (!SrcAddrLast & !DstAddrLast & (DstAddr - AlignedDstAddr) >= (SrcAddr - AlignedSrcAddr)))begin // when last Read-Write or no shift or left shift of data then give Data for Write
-               EmptyBS        = 0           ;
-               DeqDstAddr     = DequeueBS   ;
-               DeqSrcAddr     = DequeueBS   ;
-               PrvShftdDataWE = DequeueBS   ;
-               DataOut        = ShiftedData ;
+             else if((NextReadCnt == Length & NextWriteCnt == Length ) | (NextReadCnt < Length  & NextWriteCnt < Length  & (DstAddr - AlignedDstAddr) >= (SrcAddr - AlignedSrcAddr)))begin // when last Read-Write or no shift or left shift of data needed then give Data for Write
+               EmptyBS        = 0                                                             ;
+               CntReadWE      = DequeueBS                                                     ;
+               CntWriteWE     = DequeueBS                                                     ;
+               DataOut        = ShiftedData                                                   ;
+               PrvShftdDataWE = DequeueBS                                                     ;
+               DeqFIFO        = (DequeueBS & NextReadCnt == Length & NextWriteCnt == Length ) ;
+               DeqData        = DequeueBS                                                     ;             
              end
              else begin // it should never go to else 
                EmptyBS        = 1 ;
-               DeqDstAddr     = 0 ;
-               DeqSrcAddr     = 0 ;
-               PrvShftdDataWE = 0 ;
+               CntReadWE      = 0 ;
+               CntWriteWE     = 0 ;
                DataOut        = 0 ;
-             end
+               PrvShftdDataWE = 0 ;
+               DeqFIFO        = 0 ;
+               DeqData        = 0 ;
+             end              
            end
          end
        MergeReadDataState : 
          begin        
            if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
              EmptyBS        = 1 ;
-             DeqDstAddr     = 0 ;
-             DeqSrcAddr     = 0 ;
+             CntReadWE      = 0 ;
+             CntWriteWE     = 0 ;
              DataOut        = 0 ;
              PrvShftdDataWE = 0 ;
+             DeqFIFO        = 0 ;
+             DeqData        = 0 ;
            end
            else begin
-             if((SrcAddrLast & DstAddrLast) | (!SrcAddrLast & !DstAddrLast))begin  // If both of Read and Write are last  trans or not tehn create the right DataOut and dequeue SrcAddr DstAddr FIFOs
-               EmptyBS        = 0                                                                                                        ;
-               DeqDstAddr     = DequeueBS                                                                                                ;
-               DeqSrcAddr     = DequeueBS                                                                                                ;
-               PrvShftdDataWE = DequeueBS                                                                                                ;
+             if((NextReadCnt == Length & NextWriteCnt == Length ) | (NextReadCnt < Length & NextWriteCnt < Length ))begin  // If both of Read and Write are last trans then create the right DataOut and dequeue FIFO else just create the right DataOut
+               EmptyBS        = 0                                                                                                                    ;
+               CntReadWE      = DequeueBS                                                                                                            ;
+               CntWriteWE     = DequeueBS                                                                                                            ;
+               PrvShftdDataWE = DequeueBS                                                                                                            ;
+               DeqFIFO        = (DequeueBS & NextReadCnt == Length & NextWriteCnt == Length )                                                        ;
+               DeqData        = DequeueBS                                                                                                            ;    
                DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
-             else if(SrcAddrLast & !DstAddrLast)begin  // If it is the last Read and but not the last Write create the right DataOut and dequeue only DstAddr FIFO
-               EmptyBS        = 0                                                                                                        ;
-               DeqDstAddr     = DequeueBS                                                                                                ;
-               DeqSrcAddr     = 0                                                                                                        ;
-               PrvShftdDataWE = DequeueBS                                                                                                ;
+             else if(NextReadCnt == Length & NextWriteCnt < Length)begin  // If it is the last Read and but not the last Write create the right DataOut and next cycle do an extra write
+               EmptyBS        = 0                                                                                                                    ;
+               CntReadWE      = 0                                                                                                                    ;
+               CntWriteWE     = DequeueBS                                                                                                            ;
+               PrvShftdDataWE = DequeueBS                                                                                                            ;
+               DeqFIFO        = 0                                                                                                                    ;
+               DeqData        = 0                                                                                                                    ;  
                DataOut        = (ShiftedData &( ~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end                                                                                                                                             
              else begin // it should never go to else
-               EmptyBS        = 1 ;
-               DeqDstAddr     = 0 ;
-               DeqSrcAddr     = 0 ;
+               EmptyBS        = 0 ;
+               CntReadWE      = 0 ;
+               CntWriteWE     = 0 ;
                PrvShftdDataWE = 0 ;
-               DataOut        = 0 ;
+               DeqFIFO        = 0 ;
+               DeqData        = 0 ;  
+               DataOut        = 0 ; 
+             
              end
            end
          end
        ExtraWriteState : 
           if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
              EmptyBS        = 1 ;
-             DeqDstAddr     = 0 ;
-             DeqSrcAddr     = 0 ;
-             DataOut        = 0 ;
+             CntReadWE      = 0 ;
+             CntWriteWE     = 0 ;
              PrvShftdDataWE = 0 ;
+             DeqFIFO        = 0 ;
+             DeqData        = 0 ;  
+             DataOut        = 0 ; 
            end
            else begin
              EmptyBS        = 0               ;
-             DeqDstAddr     = DequeueBS       ;
-             DeqSrcAddr     = DequeueBS       ;
-             DataOut        = PrevShiftedData ;
+             CntReadWE      = 1               ;
+             CntWriteWE     = 1               ;
              PrvShftdDataWE = 0               ;
+             DeqFIFO        = 1               ;
+             DeqData        = 1               ;
+             DataOut        = PrevShiftedData ; 
            end
        default :
          begin                
            EmptyBS        = 1 ;
-           DeqDstAddr     = 0 ;
-           DeqSrcAddr     = 0 ;
-           DataOut        = 0 ;
+           CntReadWE      = 0 ;
+           CntWriteWE     = 0 ;
            PrvShftdDataWE = 0 ;
+           DeqFIFO        = 0 ;
+           DeqData        = 0 ;  
+           DataOut        = 0 ; 
          end                  
     endcase ;
   end
