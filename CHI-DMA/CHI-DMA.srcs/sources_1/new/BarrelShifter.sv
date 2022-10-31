@@ -81,8 +81,8 @@ module BarrelShifter#(
    reg                             DeqData          ;
    wire [BRAM_COL_WIDTH   - 1 : 0] SrcAddr          ;
    wire [BRAM_COL_WIDTH   - 1 : 0] DstAddr          ;
-   wire [BRAM_COL_WIDTH   - 1 : 0] Legnth           ;
-  // signals of Src,Dst,Length FIFOs
+   wire [BRAM_COL_WIDTH   - 1 : 0] Length           ;
+  // signals of Data FIFO
    wire [CHI_DATA_WIDTH*8 - 1 : 0] DataFIFO         ;
    wire                            DataEmpty        ;
    
