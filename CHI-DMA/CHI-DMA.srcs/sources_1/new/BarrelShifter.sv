@@ -39,10 +39,10 @@ module BarrelShifter#(
     input               [BRAM_COL_WIDTH   - 1 :0] DstAddrIn    ,
     input               [BRAM_COL_WIDTH   - 1 :0] LengthIn     ,
     input                                         EnqueueIn    ,
+    input                                         DequeueBS    ,
     input                                         RXDATFLITV   ,
     input   DataFlit                              RXDATFLIT    ,
     output                                        RXDATLCRDV   ,
-    input                                         DequeueBS    ,
     output  reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut        ,
     output  reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ,
     output  reg                                   EmptyBS      ,
@@ -173,18 +173,20 @@ module BarrelShifter#(
     
     // Enable the corect Bytes to be written 
     always_comb begin
-      if(NextDstAddr == Length)begin // if last trans
+      if(NextWriteCnt == Length)begin // if last trans
         if(Length < CHI_DATA_WIDTH &  AlignedDstAddr + CHI_DATA_WIDTH - DstAddr > Length)begin // if address range of Data that should be written is internal of CHI_DATA_WIDTH
           BEOut = ({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr)) & ~({CHI_DATA_WIDTH{1'b1}}<<(DstAddr - AlignedDstAddr + Length)); 
         end
         else begin
-          BEOut = ~({CHI_DATA_WIDTH{1'b1}}<<(NextReadCnt - CountWriteBytes)) ;  // Enable the least significant bits 
+          BEOut = ~({CHI_DATA_WIDTH{1'b1}}<<(NextWriteCnt - CountWriteBytes)) ;  // Enable the least significant bits 
         end
       end
       else begin
-         BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextReadCnt - CountWriteBytes)) ; // enable the most significant or all bytes 
+         BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextWriteCnt - CountWriteBytes)) ; // enable the most significant or all bytes 
       end
     end
+    
+    // or of FIFO's empty
     assign EmptyFIFO = EmptySrc | DataEmpty ;
     
     assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};

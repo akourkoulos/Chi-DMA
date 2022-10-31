@@ -10,9 +10,7 @@ Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
 Compiling package xil_defaultlib.CHIFlitsPkg
 Compiling module xil_defaultlib.FIFO(FIFO_LENGTH=32)
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=1,FIFO_LENGTH=32...
 Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=512,FIFO_LENGTH=...
-Compiling module xil_defaultlib.FIFO(FIFO_WIDTH=7,FIFO_LENGTH=32...
 Compiling module xil_defaultlib.BarrelShifter_default
 Compiling module xil_defaultlib.TestBarrelShifte
 Compiling module xil_defaultlib.glbl
