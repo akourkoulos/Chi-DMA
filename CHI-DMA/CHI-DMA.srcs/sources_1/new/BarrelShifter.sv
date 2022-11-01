@@ -25,12 +25,13 @@ import CHIFlitsPkg::*;
 
 module BarrelShifter#(
 //--------------------------------------------------------------------------
-  parameter CHI_DATA_WIDTH   = 64                    , // Bytes
-  parameter SIZE_FIFO_WIDTH  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
-  parameter SHIFT_WIDTH      = 9                     , // log2(CHI_DATA_WIDTH*8)
-  parameter BRAM_COL_WIDTH   = 32                    ,
-  parameter FIFO_LENGTH      = 32                    ,
-  parameter COUNTER_WIDTH    = 6                       // log2(FIFO_LENGTH) + 1
+  parameter CHI_DATA_WIDTH      = 64                    , // Bytes
+  parameter ADDR_WIDTH_OF_DATA  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
+  parameter SHIFT_WIDTH         = 9                     , // log2(CHI_DATA_WIDTH*8)
+  parameter BRAM_COL_WIDTH      = 32                    ,
+  parameter FIFO_LENGTH         = 32                    ,
+  parameter DATA_FIFO_LENGTH    = 32                    ,
+  parameter COUNTER_WIDTH       = 6                       // log2(FIFO_LENGTH) + 1
 //--------------------------------------------------------------------------
 ) ( 
     input                                         RST          ,
@@ -138,7 +139,7 @@ module BarrelShifter#(
           // Data FIFO
    FIFO #(  
        CHI_DATA_WIDTH*8 ,  //FIFO_WIDTH       
-       FIFO_LENGTH         //FIFO_LENGTH   
+       DATA_FIFO_LENGTH    //FIFO_LENGTH   
        )     
        FIFOData        (             
        .RST            ( RST                              ),     
@@ -153,9 +154,9 @@ module BarrelShifter#(
     
     // Manage counters 
     assign NextSrcAddr  = (CountReadBytes  + SrcAddr);
-    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - SrcAddr) < Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - SrcAddr) : Length ;
+    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - SrcAddr) < Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - SrcAddr) : Length ;
     assign NextDstAddr  = (CountWriteBytes + DstAddr);
-    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - DstAddr) < Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}} - DstAddr) : Length ;
+    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - DstAddr) < Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - DstAddr) : Length ;
     always_ff@(posedge Clk)begin
       if(RST)begin
         CountWriteBytes <= 0 ;
@@ -189,8 +190,8 @@ module BarrelShifter#(
     // or of FIFO's empty
     assign EmptyFIFO = EmptySrc | DataEmpty ;
     
-    assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
-    assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : SIZE_FIFO_WIDTH - 1],{SIZE_FIFO_WIDTH - 1{1'b0}}};
+    assign AlignedSrcAddr = {SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}};
+    assign AlignedDstAddr = {DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}};
     assign shift          = ((SrcAddr - AlignedSrcAddr) - (DstAddr - AlignedDstAddr))<<3   ;//*8
     
     // ---------------------Barrel Shifter comb---------------------
@@ -229,9 +230,9 @@ module BarrelShifter#(
        else if(!RXDATLCRDV & (DataCrdInbound != 0 & RXDATFLITV))
          DataCrdInbound <= DataCrdInbound - 1 ;
        // Count the number of given Data Crds in order not to give more than DATA FIFO length
-       if(RXDATLCRDV & !DequeueBS)
+       if(RXDATLCRDV & !DeqData)
          GivenDataCrd <= GivenDataCrd + 1 ;       
-       else if(!RXDATLCRDV & DequeueBS)
+       else if(!RXDATLCRDV & DeqData)
          GivenDataCrd <= GivenDataCrd - 1 ;
      end
    end

@@ -569,11 +569,15 @@ module CHIConverter#(
          
      end
    end
-   
+   ///////////////////
+   //     |  No Rst //
+   //     |  In comb//
+   //     V         //
+   ///////////////////
    // Give an extra Crd in outbound Rsp Chanel
-   assign RXRSPLCRDV = !RST & (GivenRspCrd  < DATA_FIFO_LENGTH & RspCrdInbound  < `MaxCrds) ;
+   assign RXRSPLCRDV = (!RST & ((GivenRspCrd  < DATA_FIFO_LENGTH) & (RspCrdInbound  < `MaxCrds))) ;
    // Give an extra Crd in outbound Data Chanel
-   assign RXDATLCRDV = !RST & (GivenDataCrd < DATA_FIFO_LENGTH & DataCrdInbound < `MaxCrds) ;
+   assign RXDATLCRDV = (!RST & ((GivenDataCrd < DATA_FIFO_LENGTH) & (DataCrdInbound < `MaxCrds))) ;
    
    
     // ****************** Data Sender ******************
