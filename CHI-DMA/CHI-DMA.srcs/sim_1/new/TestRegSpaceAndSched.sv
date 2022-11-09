@@ -23,13 +23,15 @@ import DataPkg::*;
 
 
 module TestRegSpaceAndSched#(
-  parameter BRAM_NUM_COL      = 8                           ,
-  parameter BRAM_COL_WIDTH    = 32                          ,
-  parameter BRAM_ADDR_WIDTH   = 10                          ,
-  parameter DATA_WIDTH        = BRAM_NUM_COL*BRAM_COL_WIDTH ,
-  parameter CHI_Word_Width    = 64                          ,
-  parameter Chunk             = 5                           ,
-  parameter MEMAddrWidth      = 32                          
+  parameter BRAM_NUM_COL        = 8                           ,
+  parameter BRAM_COL_WIDTH      = 32                          ,
+  parameter BRAM_ADDR_WIDTH     = 10                          ,
+  parameter DATA_WIDTH          = BRAM_NUM_COL*BRAM_COL_WIDTH ,
+  parameter CHI_Word_Width      = 64                          ,
+  parameter Chunk               = 5                           ,
+  parameter MEMAddrWidth        = 32                          ,
+  parameter NUM_OF_REPETITIONS  = 1000
+
 );
     reg                             Clk                  ;
     reg                             RST                  ;
@@ -38,7 +40,7 @@ module TestRegSpaceAndSched#(
     reg  [BRAM_ADDR_WIDTH - 1 : 0]  addrA                ;
     Data_packet                     dinA                 ;
     reg                             ValidArbIn           ;
-    reg                             ReadyArbProc         ;
+    wire                            ReadyArbProc         ;
     reg                             InpReadyBRAM         ; // From Arbiter BRAM
     reg                             InpCmdFIFOFULL       ; // From CHI-convert 
     Data_packet                     BRAMdoutA            ;
@@ -108,13 +110,13 @@ module TestRegSpaceAndSched#(
       end
    end
     
-    always @(posedge Clk)
+    initial
         begin
         
         // Reset 
         RST              = 1        ;
         enaA             = 1        ;
-        weA              = 'b111111 ;
+        weA              = 'b0      ;
         addrA            = 'd0      ;
         dinA.SrcAddr     = 'd20     ;
         dinA.DstAddr     = 'd200    ;
@@ -126,7 +128,7 @@ module TestRegSpaceAndSched#(
         InpCmdFIFOFULL   = 0        ;
         #period // signals change at the negedge of Clk
         #(period*2); // wait for period begin  
-        // Proc Writes 1st Desc
+      /*  // Proc Writes 1st Desc
         RST              = 0        ;            
         enaA             = 1        ; 
         weA              = 'b111111 ;
@@ -289,12 +291,12 @@ module TestRegSpaceAndSched#(
         dinA.Status      = 'd0      ;            
         ValidArbIn       = 0        ;  
         InpReadyBRAM     = 1        ;
-        InpCmdFIFOFULL   = 0        ; 
+        InpCmdFIFOFULL   = 0        ; */
         flag             = 1        ; //enable flag to begin random ReadyBRAM and CmdFIFOFULL operation
          
-        #(period*120); // schedule every transaction of Descriptors 
+        //#(period*120); // schedule every transaction of Descriptors 
          
-        for(int j = 1 ; j < 50 ; j++)begin //wriet 50 transactions in Descriptors
+        for(int j = 1 ; j < NUM_OF_REPETITIONS ; j++)begin //write NUM_OF_REPETITIONS transactions in Descriptors
         
           RST              = 0   ;                                       
           enaA             = 1   ;                            
@@ -333,10 +335,75 @@ module TestRegSpaceAndSched#(
         dinA.SentBytes   = 'd0      ;                 
         dinA.Status      = 'd0      ;            
         ValidArbIn       = 0        ; 
-        #(period*1200);   // shcedule every transaction of Descriptors
-       
-        $stop;
+        #(period*2);   // shcedule every transaction of Descriptors      
         end
         
+         //@@@@@@@@@@@@@@@@@@@@@@@@@Check functionality@@@@@@@@@@@@@@@@@@@@@@@@@
+        // Vector that keeps information for ckecking the operation of Barrel Shifter
+        reg [BRAM_COL_WIDTH - 1 : 0]TestVector[5 - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : Length , 1 : SrcAddr, 2 : DstAddr, 3 : ReadData, 4 : WriteData
+        
+        always_ff@(posedge Clk) begin
+          if(RST)begin
+            TestVector     <= '{default:0};
+          end
+          else begin
+            if(enaA == 1 & weA != 0 & ReadyArbProc & ValidArbIn)begin
+              for(int i = 0 ; i < 4 ; i++)begin
+                if(weA[i])begin
+                  TestVector[i][addrA] <= dinA[i*BRAM_COL_WIDTH +: BRAM_COL_WIDTH] ;
+                  end
+              end
+            end
+            
+            if(!InpCmdFIFOFULL & OutIssueValid) begin
+              if((TestVector[0][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutReadAddr) & (TestVector[1][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutWriteAddr))begin
+                TestVector[3][OutFinishedDescAddr] <= TestVector[3][OutFinishedDescAddr]+OutReadLength ;
+                TestVector[4][OutFinishedDescAddr] <= OutFinishedDescValid ;
+              end
+              else begin
+                $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Addr : %d, ExpReadAddr : %d , TrueReadAddr : %d" , OutFinishedDescAddr,TestVector[0][OutFinishedDescAddr]+TestVector[3][OutFinishedDescAddr],OutReadAddr);
+                $stop;
+              end
+            end
+            
+            if(OutFinishedDescValid & UUT.DequeueFIFO & UUT.AddrPointerFIFO.state == 1) begin
+              printCheckList ;
+            end
+          end
+        end
 
+     
+     //task that checks if results are corect
+      int errorflag = 0;
+      task printCheckList ;
+      begin
+        #(period*3);
+        if(UUT.AddrPointerFIFO.Empty)begin
+          for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)  begin // for every addr of testVector
+            if((TestVector[2][i] == TestVector[3][i]) & (TestVector[4][i] & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) | (!TestVector[4][i] & ((TestVector[0][i] != 0 | TestVector[1][i] != 0) & TestVector[2][i] == 0))) begin
+              $display("Correct :: At Addr -> %d  BTS -> %d == SB -> %d and FinishedDescriptor == %d ", i ,  TestVector[2][i],  TestVector[3][i] ,TestVector[4][i]);
+            end
+            else if((TestVector[2][i] != TestVector[3][i]) & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) begin
+              $display("--ERROR :: At Addr -> %d  BTS -> %d != SB -> %d ", i ,  TestVector[2][i],  TestVector[3][i]);
+              $stop;
+            end
+            else if(!TestVector[4][i] & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) begin
+              $display("--ERROR :: At Addr -> %d  Descriptor is not Finished ", i);
+              $stop;
+            end
+          end
+       
+          for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)  begin//Check corectness of BRAM
+            if(UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2] != UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3] & UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4] != 1)begin
+              errorflag = 1;
+              $display("--ERROR :: BRAM addr :%d SecAdr:%d , DstAddr : %d , BTS : %d , SB : %d , Status : %d",i,UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*1 - 1 : BRAM_COL_WIDTH*0],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*2 - 1 : BRAM_COL_WIDTH*1],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4]);  
+              $stop;
+            end
+          end
+          if(errorflag == 0)
+            $display("Corect BRAM");
+            $stop;
+        end
+      end         
+      endtask      
 endmodule

@@ -32,7 +32,7 @@ module TestBarrelShifte#(
   parameter DATA_FIFO_LENGTH    = 32                    ,
   parameter COUNTER_WIDTH       = 6                     , // log2(FIFO_LENGTH) + 1
   parameter Chunk               = 5                     ,
-  parameter NUM_OF_REPETITIONS  = 50
+  parameter NUM_OF_REPETITIONS  = 500
 //--------------------------------------------------------------------------
 );
      reg                                   RST         ;
@@ -134,6 +134,8 @@ module TestBarrelShifte#(
       #period;
     end
     
+    
+    // manage inputs
     always@(posedge Clk)
         begin       
         RST            <= 1 ;
@@ -168,6 +170,89 @@ module TestBarrelShifte#(
         end
         
         #(period*2000); // wait for period
-        $stop;
+        
         end
+        
+      //@@@@@@@@@@@@@@@@@@@@@@@@@Check functionality@@@@@@@@@@@@@@@@@@@@@@@@@
+      // Vector that keeps information for ckecking the operation of Barrel Shifter
+      reg [CHI_DATA_WIDTH*8*Chunk - 1 : 0]TestVector[5 - 1 : 0][NUM_OF_REPETITIONS - 1 : 0] ; // first dimention 0 : Length , 1 : SrcAddr, 2 : DstAddr, 3 : ReadData, 4 : WriteData
+      
+      int WriteCounter   = 0 ; // repetition counter for Write Data
+      int EnqueueCounter = 0 ; // counts the number of enqueues in BS
+      int ReadCounter    = 0 ; // repetition counter for Read Data
+      int DataPointerR   = 0 ; // used to place new read Data to the  right position
+      int DataPointerW   = 0 ; // used to place new write Data to the right position
+      always@(posedge Clk) begin
+        if(RST)begin
+          WriteCounter   <= 0           ;
+          EnqueueCounter <= 0           ;
+          ReadCounter    <= 0           ;
+          TestVector     <= '{default:0};
+          DataPointerR   <= 0           ;
+          DataPointerW   <= 0           ;
+        end
+        else begin
+          if(EnqueueIn & !BSFULL) begin
+            // When Enqueue comand in BS add SrcAddr,DstAddr,Length in TestVector
+            TestVector[0][EnqueueCounter] <= {{(CHI_DATA_WIDTH*8*Chunk - BRAM_COL_WIDTH){1'b0}},LengthIn}  ;
+            TestVector[1][EnqueueCounter] <= {{(CHI_DATA_WIDTH*8*Chunk - BRAM_COL_WIDTH){1'b0}},SrcAddrIn} ; 
+            TestVector[2][EnqueueCounter] <= {{(CHI_DATA_WIDTH*8*Chunk - BRAM_COL_WIDTH){1'b0}},DstAddrIn} ;
+            EnqueueCounter                <= EnqueueCounter + 1                                            ;
+          end
+          
+          if(DequeueBS & !EmptyBS) begin
+          // add extra write Data in TestVector 
+            TestVector[4][WriteCounter] <= TestVector[4][WriteCounter] | (DataOut << DataPointerW*CHI_DATA_WIDTH*8) ;
+            if(!UUT.DeqFIFO)
+              DataPointerW <= DataPointerW + 1 ;   
+            else begin
+              WriteCounter <= WriteCounter  + 1 ;  
+              DataPointerW <= 0                 ;
+            end         
+          end
+          
+          if(UUT.DeqData != 0)begin
+          // add extra read Data in TestVector 
+            TestVector[3][ReadCounter]<= TestVector[3][ReadCounter] | (UUT.DataFIFO << DataPointerR*CHI_DATA_WIDTH*8) ;
+            if(!UUT.DeqFIFO)
+              DataPointerR <= DataPointerR + 1 ;  
+            else begin
+              ReadCounter  <= ReadCounter  + 1 ; 
+              DataPointerR <= 0                ;            
+            end      
+          end
+          // If testbench is finished check results 
+          if(ReadCounter == NUM_OF_REPETITIONS - 1 & WriteCounter == NUM_OF_REPETITIONS - 1 & UUT.DeqFIFO == 1)begin
+            printCheckList; // calling task that checks if results are corect
+          end
+        end
+      end
+      
+      //task that checks if results are corect
+      task printCheckList ;
+      begin
+         #period;
+         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every comand in BS check
+              automatic int errflag = 0 ;
+              for(int j = 0 ; j < CHI_DATA_WIDTH*8*Chunk ; j ++)begin
+              // Ckeck if Read data have been re-positioned with the right way to create WriteDAta
+                if(TestVector[4][i][j + ((TestVector[2][i][SHIFT_WIDTH - 1 : 0]%64)*8)] != TestVector[3][i][j + ((TestVector[1][i][SHIFT_WIDTH - 1 : 0]%64)*8)] & j < 8*TestVector[0][i])
+                // if there is e problem Display it
+                begin
+                errflag = 1 ;
+                $display("--ERROR :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Length -> %d :: Bit %d of Data does not match",i,TestVector[1][i][BRAM_COL_WIDTH - 1 : 0]%64 ,TestVector[2][i][BRAM_COL_WIDTH - 1 : 0]%64,TestVector[0][i][BRAM_COL_WIDTH - 1 : 0],j);
+                $display("DataSrc : %h",TestVector[3][i]);
+                $display("DataDst : %h",TestVector[4][i]);
+                $stop;
+                break;
+                end
+              end
+              if(errflag == 0)begin
+              $display("Corect :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Shift -> %d , Length -> %d ",i,TestVector[1][i][BRAM_COL_WIDTH - 1 : 0]%64 ,TestVector[2][i][BRAM_COL_WIDTH - 1 : 0]%64, TestVector[5][i][BRAM_COL_WIDTH - 1 : 0]/8 , TestVector[0][i][BRAM_COL_WIDTH - 1 : 0]);
+              $display("DataSrc : %h",TestVector[3][i]);
+              $display("DataDst : %h",TestVector[4][i]);
+              end
+            end
+      end         
+      endtask
 endmodule

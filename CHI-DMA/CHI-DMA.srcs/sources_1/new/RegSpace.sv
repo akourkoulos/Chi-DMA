@@ -34,7 +34,6 @@ module bytewrite_tdp_ram_rf#(
   );
   // Core Memory
   reg [DATA_WIDTH-1:0] ram_block [(2**BRAM_ADDR_WIDTH)-1:0];
-  
   // index of for loops
   integer i;
   
