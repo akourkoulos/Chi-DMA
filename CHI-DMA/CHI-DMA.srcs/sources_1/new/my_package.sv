@@ -1,20 +1,67 @@
 `timescale 1ns / 1ps
-
+// DescBRAM Data packet
 package DataPkg;
+   parameter BRAM_COL_WIDTH    = 32 ;
    typedef struct packed {
-     bit [31:0]  Reserved3   ;  // not used 
-     bit [31:0]  Reserved2   ;  // not used 
-     bit [31:0]  Reserved1   ;  // not used 
-     bit [31:0]  Status      ; 
-     bit [31:0]  SentBytes   ;
-     bit [31:0]  BytesToSend ;
-     bit [31:0]  DstAddr     ;
-     bit [31:0]  SrcAddr     ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved3   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved2   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved1   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Status      ; 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  SentBytes   ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  BytesToSend ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr     ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr     ;
  } Data_packet;
  endpackage
 
+// Packets for Completer module
+package DataPkg;
+   parameter BRAM_COL_WIDTH    = 32 ;
+   typedef struct packed {
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved3   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved2   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved1   ;  // not used 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Status      ; 
+     bit [BRAM_COL_WIDTH  - 1 : 0]  SentBytes   ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  BytesToSend ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr     ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr     ;
+ } Data_packet;
+ endpackage
+ 
+// Packets for Chi-Converter FIFOs
+package CHIFIFOsPkg;
+   parameter BRAM_ADDR_WIDTH   = 10 ;
+   parameter BRAM_COL_WIDTH    = 32 ;
+   typedef struct packed {
+     bit                            LastDescTrans ; // Indicates that this is the last transaction of Descriptor and when it finish status must be updated 
+     bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  Length        ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr       ;
+     bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr       ;
+ } CHI_Command; // Width = 129
+ 
+ 
+   typedef struct packed {
+     bit [7:0]  DBID   ;
+     bit [1:0]  RspErr ;
+ } CHI_FIFO_DBID_Packet;
+ 
+ 
+   typedef struct packed {
+     bit [511:0]  Data   ;
+     bit [1  :0]  RspErr ;
+ } CHI_FIFO_Data_Packet;
+ 
+    typedef struct packed {
+     bit                            LastDescTrans ; // Indicates that this is the last transaction of Descriptor and when it finish status must be updated 
+     bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ; // BRAM_ADDR_WIDTH
+     bit [7               - 1 : 0]  Size          ; // log2(512/8)+1 (64Bytes)
+ } CHI_FIFO_Size_Packet;
+ 
+ endpackage
 
-
+// CHI FLits
 package CHIFlitsPkg;
    typedef struct packed {
      bit [3 : 0] QoS           ; 

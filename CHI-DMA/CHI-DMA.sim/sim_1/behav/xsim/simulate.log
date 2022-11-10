@@ -999,5 +999,5 @@ Correct :: At Addr ->         996  BTS ->        200 == SB ->        200 and Fin
 Correct :: At Addr ->         997  BTS ->        200 == SB ->        200 and FinishedDescriptor ==          1 
 Correct :: At Addr ->         998  BTS ->       1000 == SB ->       1000 and FinishedDescriptor ==          1 
 Correct :: At Addr ->         999  BTS ->        400 == SB ->        400 and FinishedDescriptor ==          1 
-Corect BRAM
-$stop called at time : 521940 ns : File "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestRegSpaceAndSched.sv" Line 405
+--ERROR :: BRAM addr :          1 SecAdr:     22560 , DstAddr :   77150000 , BTS :        600 , SB :        600 , Status :          0
+$stop called at time : 521940 ns : File "C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestRegSpaceAndSched.sv" Line 404

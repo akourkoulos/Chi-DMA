@@ -339,15 +339,15 @@ module TestRegSpaceAndSched#(
         end
         
          //@@@@@@@@@@@@@@@@@@@@@@@@@Check functionality@@@@@@@@@@@@@@@@@@@@@@@@@
-        // Vector that keeps information for ckecking the operation of Barrel Shifter
-        reg [BRAM_COL_WIDTH - 1 : 0]TestVector[5 - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : Length , 1 : SrcAddr, 2 : DstAddr, 3 : ReadData, 4 : WriteData
+        // Vector that keeps information for ckecking the operation of module
+        reg [BRAM_COL_WIDTH - 1 : 0]TestVector[5 - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : SrcAddr , 1 : DstAddr, 2 : BTS, 3 : SB, 4 : LastDescValid
         
         always_ff@(posedge Clk) begin
           if(RST)begin
             TestVector     <= '{default:0};
           end
           else begin
-            if(enaA == 1 & weA != 0 & ReadyArbProc & ValidArbIn)begin
+            if(enaA == 1 & weA != 0 & ReadyArbProc & ValidArbIn)begin  // when store someting in Descriptor update TestVector's SrcAddr ,DstAddr ,BTS fields
               for(int i = 0 ; i < 4 ; i++)begin
                 if(weA[i])begin
                   TestVector[i][addrA] <= dinA[i*BRAM_COL_WIDTH +: BRAM_COL_WIDTH] ;
@@ -355,17 +355,18 @@ module TestRegSpaceAndSched#(
               end
             end
             
-            if(!InpCmdFIFOFULL & OutIssueValid) begin
+            if(!InpCmdFIFOFULL & OutIssueValid) begin //When scheduler send command to the CHI-Converter Check correctness and update TestVector's SB and LastDescValid field 
+              // if ReadAddr in command is SrcAddr+SB and WriteAddr = DstAddr + SB
               if((TestVector[0][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutReadAddr) & (TestVector[1][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutWriteAddr))begin
                 TestVector[3][OutFinishedDescAddr] <= TestVector[3][OutFinishedDescAddr]+OutReadLength ;
                 TestVector[4][OutFinishedDescAddr] <= OutFinishedDescValid ;
               end
-              else begin
+              else begin // if Expected ReadAddr is different from the real output ReadAddr display an Error
                 $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Addr : %d, ExpReadAddr : %d , TrueReadAddr : %d" , OutFinishedDescAddr,TestVector[0][OutFinishedDescAddr]+TestVector[3][OutFinishedDescAddr],OutReadAddr);
                 $stop;
               end
             end
-            
+            // if every Descriptor has been scheduled then call task that checks the results
             if(OutFinishedDescValid & UUT.DequeueFIFO & UUT.AddrPointerFIFO.state == 1) begin
               printCheckList ;
             end
@@ -380,21 +381,24 @@ module TestRegSpaceAndSched#(
         #(period*3);
         if(UUT.AddrPointerFIFO.Empty)begin
           for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)  begin // for every addr of testVector
+           //Check if every non-Empty Descriptor's fields BTS == SB and lastDescValid is on .(If Desc has 0 BTS then lastDescValid field should be 0)
             if((TestVector[2][i] == TestVector[3][i]) & (TestVector[4][i] & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) | (!TestVector[4][i] & ((TestVector[0][i] != 0 | TestVector[1][i] != 0) & TestVector[2][i] == 0))) begin
               $display("Correct :: At Addr -> %d  BTS -> %d == SB -> %d and FinishedDescriptor == %d ", i ,  TestVector[2][i],  TestVector[3][i] ,TestVector[4][i]);
             end
+            //if every non-Empty Descriptor's fields BTS != SB print Error
             else if((TestVector[2][i] != TestVector[3][i]) & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) begin
               $display("--ERROR :: At Addr -> %d  BTS -> %d != SB -> %d ", i ,  TestVector[2][i],  TestVector[3][i]);
               $stop;
             end
+            // if an non-Empty Descriptor has LastDescValid 0 then print error message
             else if(!TestVector[4][i] & (TestVector[0][i] != 0 | TestVector[1][i] != 0 | TestVector[2][i] != 0)) begin
               $display("--ERROR :: At Addr -> %d  Descriptor is not Finished ", i);
               $stop;
             end
           end
-       
-          for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)  begin//Check corectness of BRAM
-            if(UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2] != UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3] & UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4] != 1)begin
+          //Check corectness of BRAM
+          for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)  begin// Check if Every BRAM's fields BTS==SB and status is 0
+            if(UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2] != UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3] | UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4] != 0)begin
               errorflag = 1;
               $display("--ERROR :: BRAM addr :%d SecAdr:%d , DstAddr : %d , BTS : %d , SB : %d , Status : %d",i,UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*1 - 1 : BRAM_COL_WIDTH*0],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*2 - 1 : BRAM_COL_WIDTH*1],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3],UUT.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4]);  
               $stop;
