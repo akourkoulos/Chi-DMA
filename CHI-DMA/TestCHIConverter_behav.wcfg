@@ -5,7 +5,9 @@
    <db_ref_list>
       <db_ref path="TestCHIConverter_behav.wdb" id="1">
          <top_modules>
+            <top_module name="CHIFIFOsPkg" />
             <top_module name="CHIFlitsPkg" />
+            <top_module name="CompleterPkg" />
             <top_module name="DataPkg" />
             <top_module name="TestCHIConverter" />
             <top_module name="glbl" />
@@ -13,15 +15,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="552001fs"></ZoomEndTime>
-      <Cursor1Time time="220000fs"></Cursor1Time>
+      <ZoomStartTime time="4104000fs"></ZoomStartTime>
+      <ZoomEndTime time="6290001fs"></ZoomEndTime>
+      <Cursor1Time time="4740000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="636"></ValueColumnWidth>
+      <ValueColumnWidth column_width="205"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="12" />
+   <WVObjectSize size="17" />
    <wvobject fp_name="/TestCHIConverter/Clk" type="logic">
       <obj_property name="ElementShortName">Clk</obj_property>
       <obj_property name="ObjectShortName">Clk</obj_property>
@@ -33,69 +35,66 @@
    <wvobject fp_name="group1517" type="group">
       <obj_property name="label">Inp</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/TestCHIConverter/SrcAddr" type="array">
-         <obj_property name="ElementShortName">SrcAddr[43:0]</obj_property>
-         <obj_property name="ObjectShortName">SrcAddr[43:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/DstAddr" type="array">
-         <obj_property name="ElementShortName">DstAddr[43:0]</obj_property>
-         <obj_property name="ObjectShortName">DstAddr[43:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/Length" type="array">
-         <obj_property name="ElementShortName">Length[43:0]</obj_property>
-         <obj_property name="ObjectShortName">Length[43:0]</obj_property>
-      </wvobject>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestCHIConverter/IssueValid" type="logic">
          <obj_property name="ElementShortName">IssueValid</obj_property>
          <obj_property name="ObjectShortName">IssueValid</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/DescAddr" type="array">
-         <obj_property name="ElementShortName">DescAddr[9:0]</obj_property>
-         <obj_property name="ObjectShortName">DescAddr[9:0]</obj_property>
+      <wvobject fp_name="/TestCHIConverter/UUT/DataBRAM" type="array">
+         <obj_property name="ElementShortName">DataBRAM</obj_property>
+         <obj_property name="ObjectShortName">DataBRAM</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/FinishedDescValid" type="logic">
-         <obj_property name="ElementShortName">FinishedDescValid</obj_property>
-         <obj_property name="ObjectShortName">FinishedDescValid</obj_property>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReadyBRAM" type="logic">
+         <obj_property name="ElementShortName">ReadyBRAM</obj_property>
+         <obj_property name="ObjectShortName">ReadyBRAM</obj_property>
       </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/Command" type="array">
+         <obj_property name="ElementShortName">Command</obj_property>
+         <obj_property name="ObjectShortName">Command</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group243" type="group">
+      <obj_property name="label">Outp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
       <wvobject fp_name="/TestCHIConverter/CmdFIFOFULL" type="logic">
          <obj_property name="ElementShortName">CmdFIFOFULL</obj_property>
          <obj_property name="ObjectShortName">CmdFIFOFULL</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ValidBRAM" type="logic">
+         <obj_property name="ElementShortName">ValidBRAM</obj_property>
+         <obj_property name="ObjectShortName">ValidBRAM</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/AddrBRAM" type="array">
+         <obj_property name="ElementShortName">AddrBRAM[9:0]</obj_property>
+         <obj_property name="ObjectShortName">AddrBRAM[9:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/DescStatus" type="array">
+         <obj_property name="ElementShortName">DescStatus</obj_property>
+         <obj_property name="ObjectShortName">DescStatus</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/WEBRAM" type="array">
+         <obj_property name="ElementShortName">WEBRAM[7:0]</obj_property>
+         <obj_property name="ObjectShortName">WEBRAM[7:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group169" type="group">
       <obj_property name="label">Queues</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/UUT/FIFODstAddr/MyQueue" type="array">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][31:0]</obj_property>
-         <obj_property name="label">DstAddrQueue[15:0][31:0]DstAddr</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/FIFOSrcAddr/MyQueue" type="array">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][31:0]</obj_property>
-         <obj_property name="label">SrcAddrMyQueue[15:0][31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject fp_name="group168" type="group">
          <obj_property name="label">DataQueue</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[2]" type="array">
-            <obj_property name="ElementShortName">[2][511:0]</obj_property>
-            <obj_property name="ObjectShortName">[2][511:0]</obj_property>
+            <obj_property name="ElementShortName">[2][513:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][513:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[1]" type="array">
-            <obj_property name="ElementShortName">[1][511:0]</obj_property>
-            <obj_property name="ObjectShortName">[1][511:0]</obj_property>
+            <obj_property name="ElementShortName">[1][513:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][513:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[0]" type="array">
-            <obj_property name="ElementShortName">[0][511:0]</obj_property>
-            <obj_property name="ObjectShortName">[0][511:0]</obj_property>
+            <obj_property name="ElementShortName">[0][513:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][513:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/FULL" type="logic">
             <obj_property name="ElementShortName">FULL</obj_property>
@@ -106,37 +105,25 @@
             <obj_property name="ObjectShortName">state[31:0]</obj_property>
          </wvobject>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/FIFOSize/MyQueue" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/CommandFIFO/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][6:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][6:0]</obj_property>
-         <obj_property name="label">SizeQueue[15:0][6:0]Size</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][106:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][106:0]</obj_property>
+         <obj_property name="label">CommandMyQueue[31:0][106:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/TestCHIConverter/UUT/FIFODBID/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][7:0]</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][9:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][9:0]</obj_property>
          <obj_property name="label">DBIDMyQueue[15:0][7:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/FIFOTXNIDR/MyQueue" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/SizeFIFO/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[127:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[127:0][7:0]</obj_property>
-         <obj_property name="label">RTxnIDMyQueue[31:0][7:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/FIFOTXNIDW/MyQueue" type="array">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[127:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[127:0][7:0]</obj_property>
-         <obj_property name="label">WTxnIDMyQueue[31:0][7:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="ElementShortName">MyQueue[31:0][17:0]</obj_property>
+         <obj_property name="ObjectShortName">MyQueue[31:0][17:0]</obj_property>
+         <obj_property name="label">SizeMyQueue[31:0][17:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group170" type="group">
@@ -357,5 +344,21 @@
          <obj_property name="CustomSignalColor">#800080</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/NextReadTxnID" type="array">
+      <obj_property name="ElementShortName">NextReadTxnID[8:0]</obj_property>
+      <obj_property name="ObjectShortName">NextReadTxnID[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FreeReadTxnID" type="array">
+      <obj_property name="ElementShortName">FreeReadTxnID[8:0]</obj_property>
+      <obj_property name="ObjectShortName">FreeReadTxnID[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/NextWriteTxnID" type="array">
+      <obj_property name="ElementShortName">NextWriteTxnID[8:0]</obj_property>
+      <obj_property name="ObjectShortName">NextWriteTxnID[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCHIConverter/UUT/FreeWriteTxnID" type="array">
+      <obj_property name="ElementShortName">FreeWriteTxnID[8:0]</obj_property>
+      <obj_property name="ObjectShortName">FreeWriteTxnID[8:0]</obj_property>
    </wvobject>
 </wave_config>

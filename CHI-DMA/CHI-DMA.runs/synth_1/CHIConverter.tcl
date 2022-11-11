@@ -30,8 +30,9 @@ set_property ip_output_repo c:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-
 set_property ip_cache_permissions {read write} [current_project]
 read_verilog -library xil_defaultlib -sv {
   C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv
+  C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Completer.sv
   C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv
-  C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv
+  C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv
 }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -44,12 +45,12 @@ foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
 set_param ips.enableIPCacheLiteLoad 1
 close [open __synthesis_is_running__ w]
 
-synth_design -top BarrelShifter -part xc7vx485tffg1157-1
+synth_design -top CHIConverter -part xc7vx485tffg1157-1
 
 
 # disable binary constraint mode for synth run checkpoints
 set_param constraints.enableBinaryConstraints false
-write_checkpoint -force -noxdef BarrelShifter.dcp
-create_report "synth_1_synth_report_utilization_0" "report_utilization -file BarrelShifter_utilization_synth.rpt -pb BarrelShifter_utilization_synth.pb"
+write_checkpoint -force -noxdef CHIConverter.dcp
+create_report "synth_1_synth_report_utilization_0" "report_utilization -file CHIConverter_utilization_synth.rpt -pb CHIConverter_utilization_synth.pb"
 file delete __synthesis_is_running__
 close [open __synthesis_is_complete__ w]

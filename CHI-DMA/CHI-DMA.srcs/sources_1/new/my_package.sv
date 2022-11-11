@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 // DescBRAM Data packet
 package DataPkg;
+`define RspErrWidth       2
    parameter BRAM_COL_WIDTH    = 32 ;
    typedef struct packed {
      bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved3   ;  // not used 
@@ -15,18 +16,14 @@ package DataPkg;
  endpackage
 
 // Packets for Completer module
-package DataPkg;
-   parameter BRAM_COL_WIDTH    = 32 ;
+package CompleterPkg;
+   parameter BRAM_ADDR_WIDTH   = 10 ;
    typedef struct packed {
-     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved3   ;  // not used 
-     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved2   ;  // not used 
-     bit [BRAM_COL_WIDTH  - 1 : 0]  Reserved1   ;  // not used 
-     bit [BRAM_COL_WIDTH  - 1 : 0]  Status      ; 
-     bit [BRAM_COL_WIDTH  - 1 : 0]  SentBytes   ;
-     bit [BRAM_COL_WIDTH  - 1 : 0]  BytesToSend ;
-     bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr     ;
-     bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr     ;
- } Data_packet;
+     bit                            LastDescTrans ; // Indicates that this is the last transaction of Descriptor and when it finish status must be updated 
+     bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ; // BRAM_ADDR_WIDTH
+     bit [`RspErrWidth    - 1 : 0]  DBIDRespErr    ;
+     bit [`RspErrWidth    - 1 : 0]  DataRespErr    ;
+ } Completer_Packet;
  endpackage
  
 // Packets for Chi-Converter FIFOs
@@ -43,14 +40,14 @@ package CHIFIFOsPkg;
  
  
    typedef struct packed {
-     bit [7:0]  DBID   ;
-     bit [1:0]  RspErr ;
+     bit [7                : 0]  DBID    ;
+     bit [`RspErrWidth - 1 : 0]  RespErr ;
  } CHI_FIFO_DBID_Packet;
  
  
    typedef struct packed {
-     bit [511:0]  Data   ;
-     bit [1  :0]  RspErr ;
+     bit [511              : 0]  Data    ;
+     bit [`RspErrWidth - 1 : 0]  RespErr ;
  } CHI_FIFO_Data_Packet;
  
     typedef struct packed {

@@ -50,12 +50,8 @@ reg                                   Clk               ;
 reg                                   RST               ;
 Data_packet                           DataBRAM          ; // From BRAM
 reg                                   ReadyBRAM         ; // From Arbiter_BRAM
-reg         [MEM_ADDR_WIDTH  - 1 : 0] SrcAddr           ;
-reg         [MEM_ADDR_WIDTH  - 1 : 0] DstAddr           ;
-reg         [MEM_ADDR_WIDTH  - 1 : 0] Length            ;
+CHI_Command                           Command           ;
 reg                                   IssueValid        ; 
-reg         [BRAM_ADDR_WIDTH - 1 : 0] DescAddr          ; // Address of a finished Descriptor in BRAM
-reg                                   FinishedDescValid ;
 reg                                   TXREQFLITPEND     ; // Request outbound Channel
 reg                                   TXREQFLITV        ;
 ReqFlit                               TXREQFLIT         ;
@@ -90,12 +86,8 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
      .RST               (RST               ) ,
      .DataBRAM          (DataBRAM          ) ,
      .ReadyBRAM         (ReadyBRAM         ) ,
-     .SrcAddr           (SrcAddr           ) ,
-     .DstAddr           (DstAddr           ) ,
-     .Length            (Length            ) ,
+     .Command           (Command           ) ,
      .IssueValid        (IssueValid        ) ,
-     .DescAddr          (DescAddr          ) ,
-     .FinishedDescValid (FinishedDescValid ) ,
      .TXREQFLITPEND     (TXREQFLITPEND     ) ,
      .TXREQFLITV        (TXREQFLITV        ) ,
      .TXREQFLIT         (TXREQFLIT         ) ,  
@@ -354,23 +346,23 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     end
     
     int temp = 0 ; //to insert probability
-    always @(negedge Clk)
+    initial
         begin
           // Reset;
-         RST               = 1      ;
-         SrcAddr           = 'd10   ;
-         DstAddr           = 'd1000 ;
-         Length            = 'd320  ;
-         IssueValid        = 0      ;
-         DescAddr          = 'd1    ;
-         FinishedDescValid = 0      ;
+         RST                       = 1      ;
+         Command.SrcAddr           = 'd10   ;
+         Command.DstAddr           = 'd1000 ;
+         Command.Length            = 'd320  ;
+         IssueValid                = 0      ;
+         Command.DescAddr          = 'd1    ;
+         Command.LastDescTrans     = 0      ;
          
          #(period*2); // wait for period   
          
          for(int i = 1 ; i<50 ; i = i)begin
-           RST                 = 0                                      ;
-           SrcAddr             = 'd10    * $urandom_range(10000)        ;
-           DstAddr             = 'd10000 * $urandom_range(10000)        ;
+           RST                         = 0                                      ;
+           Command.SrcAddr             = 'd10    * $urandom_range(10000)        ;
+           Command.DstAddr             = 'd10000 * $urandom_range(10000)        ;
            if(CmdFIFOFULL)begin                                       
              IssueValid        = 0                                      ;
            end                                                          
@@ -378,41 +370,40 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
              IssueValid        = 1                                      ;
              i++                                                        ;
            end                                                          
-           DescAddr            = i                                      ;
+           Command.DescAddr    = i                                      ;
            temp                = $urandom_range(0,5)                    ;
            if(temp[2] == 1)begin //20% chance to be the last transaction of Desc
-             FinishedDescValid = 1                                      ; 
-             Length            = $urandom_range(1,CHI_DATA_WIDTH*Chunk) ;
+             Command.LastDescTrans = 1                                          ; 
+             Command.Length            = $urandom_range(1,CHI_DATA_WIDTH*Chunk) ;
            end
            else begin
-             FinishedDescValid = 0                                      ; 
-             Length            = CHI_DATA_WIDTH*Chunk                   ;
+             Command.LastDescTrans = 0                                          ; 
+             Command.Length            = CHI_DATA_WIDTH*Chunk                   ;
            end
           
            #(period*2); // wait for period  
            
            if(IssueValid == 1)begin
-             RST               = 0  ;                                   
-             SrcAddr           = 0  ;      
-             DstAddr           = 0  ;
-             Length            = 0  ;
-             IssueValid        = 0  ;                                   
-             DescAddr          = 0  ;                                   
-             FinishedDescValid = 0  ;                                   
+             RST                       = 0  ;                                   
+             Command.SrcAddr           = 0  ;      
+             Command.DstAddr           = 0  ;
+             Command.Length            = 0  ;
+             IssueValid                = 0  ;                                   
+             Command.DescAddr          = 0  ;                                   
+             Command.LastDescTrans     = 0  ;                                   
              
              #(period*2 + 2*period*$urandom_range(4));
            end
          end
          //stop
-         RST               = 0  ;                                   
-         SrcAddr           = 0  ;      
-         DstAddr           = 0  ;
-         Length            = 0  ;
-         IssueValid        = 0  ;                                   
-         DescAddr          = 0  ;                                   
-         FinishedDescValid = 0  ;                                   
+         RST                       = 0  ;                                   
+         Command.SrcAddr           = 0  ;      
+         Command.DstAddr           = 0  ;
+         Command.Length            = 0  ;
+         IssueValid                = 0  ;                                   
+         Command.DescAddr          = 0  ;                                   
+         Command.LastDescTrans     = 0  ;                                   
          
          #(period*2500); // wait for period   
-        $stop;
         end
 endmodule

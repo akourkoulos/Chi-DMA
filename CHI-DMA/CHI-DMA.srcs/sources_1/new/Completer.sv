@@ -9,8 +9,8 @@ enables the ValidUpdate signal then the address of Descripotr is enqueued in com
 FIFO. Then it requests from BRAM's Arbiter permission to access the BRAM and when it is 
 obtained then the status of Descriptor is updated.*/
 //////////////////////////////////////////////////////////////////////////////////
-import DataPkg::*; 
-
+import DataPkg     ::*; 
+import CompleterPkg::*; 
 // Indexes of Descriptor's fields
 `define SRCRegIndx        0
 `define DSTRegIndx        1
@@ -25,87 +25,53 @@ import DataPkg::*;
 `define NoError           0
 
 module Completer#( 
-  parameter BRAM_ADDR_WIDTH   = 10 ,
-  parameter FIFO_Length       = 32 ,
-  parameter BRAM_NUM_COL      = 8    // As the Data_packet fields
+  parameter BRAM_ADDR_WIDTH   = 10                                   ,
+  parameter BRAM_NUM_COL      = 8                                    ,  // As the Data_packet fields
+  parameter FIFO_Length       = 32                                   ,
+  parameter FIFO_WIDTH        = BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // Width is DescAdd + RespErrorWidth + LastDescTrans
 )(
-    input                                         RST         ,
-    input                                         Clk         ,
-    input             [BRAM_ADDR_WIDTH       : 0] DescAddr    , //From CHI-Conv
-    input             [`RspErrWidth      - 1 : 0] DBIDRespErr ,
-    input             [`RspErrWidth      - 1 : 0] DataRespErr ,
-    input                                         ValidUpdate ,
-    input Data_packet                             DescData    , //From BRAM
-    input                                         ReadyBRAM   , //From Arbiter_BRAM
-    output                                        ValidBRAM   , //For Arbiter_BRAM
-    output            [BRAM_ADDR_WIDTH   - 1 : 0] AddrOut     , //For BRAM
-    output Data_packet                            DataOut     ,
-    output reg        [BRAM_NUM_COL      - 1 : 0] WE          , 
-    output                                        FULL          //For CHI-Conv
+    input                                                RST          ,
+    input                                                Clk          ,
+    input  Completer_Packet                              CompDataPack , //From CHI-Conv
+    input                                                ValidUpdate  ,
+    input  Data_packet                                   DescData     , //From BRAM
+    input                                                ReadyBRAM    , //From Arbiter_BRAM
+    output                                               ValidBRAM    , //For Arbiter_BRAM
+    output                   [BRAM_ADDR_WIDTH   - 1 : 0] AddrOut      , //For BRAM
+    output Data_packet                                   DataOut      ,
+    output reg               [BRAM_NUM_COL      - 1 : 0] WE           , 
+    output                                               FULL           //For CHI-Conv
     ); 
     
      enum int unsigned { ReadState      = 0 , 
                          WriteState     = 1  } state , next_state ; 
                         
-    wire                            Enqueue    ;
-    reg                             Dequeue    ;
-    wire                            Empty      ;
+    wire              Enqueue    ;
+    reg               Dequeue    ;
+    wire              Empty      ;
+    Completer_Packet  FIFODATA   ;
     
-    wire [`RspErrWidth    - 1 : 0] SigDBIDErr ;
-    wire [`RspErrWidth    - 1 : 0] SigDataErr ;
     
-    assign Enqueue =  ValidUpdate & (DescAddr[BRAM_ADDR_WIDTH] | DBIDRespErr != `NoError |  DataRespErr != `NoError ) ;
+    assign Enqueue =  ValidUpdate & (CompDataPack.LastDescTrans | CompDataPack.DBIDRespErr != `NoError |  CompDataPack.DataRespErr != `NoError ) ;
     
     // Address FIFO 
        FIFO #(     
-       BRAM_ADDR_WIDTH ,   //FIFO_WIDTH       
-       FIFO_Length         //FIFO_LENGTH      
+       FIFO_WIDTH   ,   //FIFO_WIDTH       
+       FIFO_Length      //FIFO_LENGTH      
        )     
        FIFODescAddr (     
-       .RST         ( RST                               ) ,      
-       .Clk         ( Clk                               ) ,      
-       .Inp         ( DescAddr[BRAM_ADDR_WIDTH - 1 : 0] ) , 
-       .Enqueue     ( Enqueue                           ) , 
-       .Dequeue     ( Dequeue                           ) , 
-       .Outp        ( AddrOut                           ) , 
-       .FULL        ( FULL                              ) , 
-       .Empty       ( Empty                             ) 
+       .RST         ( RST          ) ,      
+       .Clk         ( Clk          ) ,      
+       .Inp         ( CompDataPack ) , 
+       .Enqueue     ( Enqueue      ) , 
+       .Dequeue     ( Dequeue      ) , 
+       .Outp        ( FIFODATA     ) , 
+       .FULL        ( FULL         ) , 
+       .Empty       ( Empty        ) 
        );
        
-       // DBID Error FIFO 
-       FIFO #(     
-       `RspErrWidth      ,    //FIFO_WIDTH       
-       FIFO_Length            //FIFO_LENGTH      
-       )     
-       FIFODBIDErr (     
-       .RST        ( RST          ) ,      
-       .Clk        ( Clk          ) ,      
-       .Inp        ( DBIDRespErr  ) , 
-       .Enqueue    ( Enqueue      ) , 
-       .Dequeue    ( Dequeue      ) , 
-       .Outp       ( SigDBIDErr   ) , 
-       .FULL       (              ) , 
-       .Empty      (              ) 
-       );
-       
-       // Data Error FIFO 
-       FIFO #(     
-       `RspErrWidth     ,      //FIFO_WIDTH       
-       FIFO_Length             //FIFO_LENGTH      
-       )     
-       FIFODataErr (     
-       .RST        ( RST          ) ,      
-       .Clk        ( Clk          ) ,      
-       .Inp        ( DataRespErr  ) , 
-       .Enqueue    ( Enqueue      ) , 
-       .Dequeue    ( Dequeue      ) , 
-       .Outp       ( SigDataErr   ) , 
-       .FULL       (              ) , 
-       .Empty      (              ) 
-       );
-       
-   
-   assign ValidBRAM = !Empty ;
+   assign AddrOut   = FIFODATA.DescAddr ;      
+   assign ValidBRAM = !Empty            ;
     
    //FSM's state
    always_ff @ (posedge Clk) begin
@@ -119,7 +85,7 @@ module Completer#(
      case(state)
        ReadState :
          begin                           
-           if(ValidBRAM & ReadyBRAM & SigDBIDErr == `NoError & SigDataErr == `NoError)  
+           if(ValidBRAM & ReadyBRAM & FIFODATA.DBIDRespErr == `NoError & FIFODATA.DataRespErr == `NoError)  
              next_state = WriteState ;  
            else
              next_state = ReadState ;
@@ -137,7 +103,7 @@ module Completer#(
        ReadState :
          begin            
          // if Error Update error Status               
-           if(ValidBRAM & ReadyBRAM & (SigDBIDErr != `NoError | SigDataErr != `NoError))begin
+           if(ValidBRAM & ReadyBRAM & (FIFODATA.DBIDRespErr != `NoError | FIFODATA.DataRespErr != `NoError))begin
              WE      = ('d1 << `StatusRegIndx)                  ;
              DataOut = '{ default : 0 , Status : `StatusError } ; 
              Dequeue = 1                                        ;
@@ -150,7 +116,8 @@ module Completer#(
          end
        WriteState :
          begin
-           if(ValidBRAM & ReadyBRAM & DescData.Status != `StatusError)begin
+         // if there is control of BRAM and status is non-Error update Status to IdleStatus
+           if(ValidBRAM & ReadyBRAM & DescData.Status != `StatusError)begin 
              WE      = ('d1 << `StatusRegIndx) ;
              DataOut = '{ default : 0 , Status : `StatusIdle } ;
              Dequeue = 1                                       ;

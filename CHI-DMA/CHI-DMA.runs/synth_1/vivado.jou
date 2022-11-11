@@ -2,11 +2,11 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Mon Oct 31 11:49:01 2022
-# Process ID: 12908
+# Start of session at: Thu Nov 10 16:35:36 2022
+# Process ID: 9304
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
-# Command line: vivado.exe -log BarrelShifter.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source BarrelShifter.tcl
-# Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/BarrelShifter.vds
+# Command line: vivado.exe -log CHIConverter.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
+# Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHIConverter.vds
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
-source BarrelShifter.tcl -notrace
+source CHIConverter.tcl -notrace

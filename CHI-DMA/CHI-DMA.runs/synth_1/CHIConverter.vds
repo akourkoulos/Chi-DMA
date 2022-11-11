@@ -1,13 +1,14 @@
-
-*** Running vivado
-    with args -log CHIConverter.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
-
-
-****** Vivado v2019.2 (64-bit)
-  **** SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
-  **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
-
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Thu Nov 10 16:35:36 2022
+# Process ID: 9304
+# Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
+# Command line: vivado.exe -log CHIConverter.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
+# Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHIConverter.vds
+# Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
 source CHIConverter.tcl -notrace
 create_project: Time (s): cpu = 00:00:09 ; elapsed = 00:00:11 . Memory (MB): peak = 412.617 ; gain = 111.855
 Command: synth_design -top CHIConverter -part xc7vx485tffg1157-1
