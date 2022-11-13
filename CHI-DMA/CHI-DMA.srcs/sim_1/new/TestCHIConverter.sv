@@ -27,8 +27,13 @@ import CHIFlitsPkg::*;
 `define WriteUniquePtl    6'h18
 //Data opcoed
 `define CompData          4'h4
-//Rsp opcode
+// Rsp opcode
+`define DBIDResp          4'h3
 `define CompDBIDResp      4'h5
+//Data opcode
+`define NonCopyBackWrData 4'h3
+`define NCBWrDataCompAck  4'hc
+`define CompData          4'h4
 
 `define MaxCrds           15
 
@@ -36,13 +41,14 @@ import CHIFlitsPkg::*;
 
 module TestCHIConverter#(
 //--------------------------------------------------------------------------
-  parameter BRAM_ADDR_WIDTH  = 10  ,
-  parameter BRAM_NUM_COL     = 8   , // As the Data_packet fields
-  parameter BRAM_COL_WIDTH   = 32  ,
-  parameter MEM_ADDR_WIDTH   = 44  ,//<------ should be the same with BRAM_COL_WIDTH
-  parameter CHI_DATA_WIDTH   = 64  , //Bytes
-  parameter Chunk            = 5   ,
-  parameter FIFO_Length      = 120
+  parameter BRAM_ADDR_WIDTH    = 10  ,
+  parameter BRAM_NUM_COL       = 8   , // As the Data_packet fields
+  parameter BRAM_COL_WIDTH     = 32  ,
+  parameter MEM_ADDR_WIDTH     = 44  ,//<------ should be the same with BRAM_COL_WIDTH
+  parameter CHI_DATA_WIDTH     = 64  , //Bytes
+  parameter Chunk              = 5   ,
+  parameter NUM_OF_REPETITIONS = 50 ,
+  parameter FIFO_Length        = 120
 //----------------------------------------------------------------------
 );
 
@@ -116,8 +122,11 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     );
     
     //Crds signals
-    int                               CountDataCrds = 0  ; 
-    int                               CountRspCrds  = 0  ;
+    int                               CountDataCrdsInb  = 0  ; 
+    int                               CountRspCrdsInb   = 0  ;
+    int                               CountReqCrdsOutb  = 0  ; 
+    int                               CountDataCrdsOutb = 0  ;
+    int                               CountRspCrdsOutb  = 0  ;
     reg     [31 : 0]                  GivenReqCrds       ;// use in order not to give more crds than fifo length
     //FIFO signals
     reg                               SigDeqReqR         ;
@@ -193,21 +202,44 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
       end
     end
     
+    //Manage Received Crds
+    always_ff@(posedge Clk) begin
+      if(RST)begin
+        CountDataCrdsOutb = 0 ;
+        CountRspCrdsOutb  = 0 ;
+        CountReqCrdsOutb  = 0 ;
+      end
+      else begin
+        if(TXDATLCRDV & !TXDATFLITV)
+          CountDataCrdsOutb++;
+        else if(!TXDATLCRDV & TXDATFLITV)
+          CountDataCrdsOutb--;
+        if(TXRSPLCRDV & !TXRSPFLITV) 
+          CountRspCrdsOutb++; 
+        else if(!TXRSPLCRDV & TXRSPFLITV) 
+          CountRspCrdsOutb--; 
+        if(TXREQLCRDV & !TXREQFLITV) 
+          CountReqCrdsOutb++; 
+        else if(!TXREQLCRDV & TXREQFLITV) 
+          CountReqCrdsOutb--; 
+      end
+    end
+    
     //Manage given Crds
     always_ff@(posedge Clk) begin
       if(RST)begin
-        CountDataCrds = 0 ;
-        CountRspCrds  = 0 ;
+        CountDataCrdsInb = 0 ;
+        CountRspCrdsInb  = 0 ;
       end
       else begin
         if(RXDATLCRDV & !RXDATFLITV)
-          CountDataCrds++;
+          CountDataCrdsInb++;
         else if(!RXDATLCRDV & RXDATFLITV)
-          CountDataCrds--;
+          CountDataCrdsInb--;
         if(RXRSPLCRDV & !RXRSPFLITV) 
-          CountRspCrds++; 
+          CountRspCrdsInb++; 
         else if(!RXRSPLCRDV & RXRSPFLITV) 
-          CountRspCrds--; 
+          CountRspCrdsInb--; 
       end
     end
     
@@ -246,7 +278,8 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
       else begin
         TXRSPLCRDV = 0;
         #(2*period*$urandom_range(5));
-        TXRSPLCRDV = 1;
+        if(CountRspCrdsOutb < `MaxCrds)
+          TXRSPLCRDV = 1;
         #(2*period);
       end
     end
@@ -258,7 +291,8 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
       else begin
         TXDATLCRDV = 0;
         #(2*period*$urandom_range(5));
-        TXDATLCRDV = 1;
+        if(CountDataCrdsOutb < `MaxCrds)
+          TXDATLCRDV = 1;
         #(2*period);
       end
     end
@@ -266,7 +300,7 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     
     // Data Response
     always begin     
-      if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrds != 0)begin
+      if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrdsInb != 0)begin
         //Response delay
         if(SrcAddrReg + 64 != SigTXREQFLITR.Addr)begin // 0 delay if addresses are continuous
           RXDATFLITPEND     = 0      ;
@@ -312,7 +346,7 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     
     //DBID Respose 
     always begin
-      if(!SigReqEmptyW & SigTXREQFLITW.Opcode == `WriteUniquePtl & CountRspCrds != 0)begin
+      if(!SigReqEmptyW & SigTXREQFLITW.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0)begin
         RXRSPFLITPEND     = 0      ;
         RXRSPFLITV        = 0      ;
         RXRSPFLIT         = 0      ;
@@ -359,7 +393,7 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
          
          #(period*2); // wait for period   
          
-         for(int i = 1 ; i<50 ; i = i)begin
+         for(int i = 1 ; i < NUM_OF_REPETITIONS ; i = i)begin
            RST                         = 0                                      ;
            Command.SrcAddr             = 'd10    * $urandom_range(10000)        ;
            Command.DstAddr             = 'd10000 * $urandom_range(10000)        ;
@@ -405,5 +439,177 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
          Command.LastDescTrans     = 0  ;                                   
          
          #(period*2500); // wait for period   
+    end
+    
+    //@@@@@@@@@@@@@@@@@@@@@@@@@Check functionality@@@@@@@@@@@@@@@@@@@@@@@@@
+      // Vector that keeps information for ckecking the operation of CHI-COnverter
+      CHI_Command [NUM_OF_REPETITIONS       - 1 : 0]  TestVectorCommand     ; 
+      ReqFlit     [NUM_OF_REPETITIONS*Chunk - 1 : 0]  TestVectorReadReq     ; 
+      ReqFlit     [NUM_OF_REPETITIONS*Chunk - 1 : 0]  TestVectorWriteReq    ; 
+      DataFlit    [NUM_OF_REPETITIONS*Chunk - 1 : 0]  TestVectorDataIn      ; 
+      RspFlit     [NUM_OF_REPETITIONS*Chunk - 1 : 0]  TestVectorRspIn       ; 
+      DataFlit    [NUM_OF_REPETITIONS*Chunk - 1 : 0]  TestVectorDataOut     ; 
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  CommandPointer        ;
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  ReadReqPointer        ;
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  WriteReqPointer       ;
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  DataInPointer         ;
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  RspInPointer          ;
+      reg         [NUM_OF_REPETITIONS*Chunk - 1 : 0]  DataOutPointer        ;
+      int                                             CountFinishedCommands ;
+      //Create TestVector
+      always_ff@(posedge Clk) begin 
+        if(RST) begin 
+          TestVectorCommand     <= '{default : 0} ;
+          TestVectorReadReq     <= '{default : 0} ;
+          TestVectorWriteReq    <= '{default : 0} ;
+          TestVectorDataIn      <= '{default : 0} ;
+          TestVectorRspIn       <= '{default : 0} ;
+          TestVectorDataOut     <= '{default : 0} ;
+          ReadReqPointer        <= 0              ;
+          WriteReqPointer       <= 0              ;
+          DataInPointer         <= 0              ;
+          RspInPointer          <= 0              ;
+          DataOutPointer        <= 0              ;         
+          CountFinishedCommands <= 0              ;  
+          CommandPointer        <= 0              ;
         end
+        else begin
+          if(IssueValid & !CmdFIFOFULL)begin
+            TestVectorCommand[CommandPointer]= Command ;
+            CommandPointer++ ;
+          end
+          if(TXREQFLITV & (TXREQFLIT.Opcode == `ReadOnce) & CountReqCrdsOutb != 0 )begin
+            TestVectorReadReq[ReadReqPointer] <= TXREQFLIT ;
+            ReadReqPointer++;
+          end
+          if(TXREQFLITV & (TXREQFLIT.Opcode == `WriteUniquePtl) & CountReqCrdsOutb != 0 )begin
+            TestVectorWriteReq[WriteReqPointer] <= TXREQFLIT ;
+            WriteReqPointer++;
+          end
+          if(RXRSPFLITV & CountRspCrdsInb != 0 )begin
+            TestVectorRspIn[RspInPointer] <= RXRSPFLIT ;
+            RspInPointer++;
+          end
+          if(RXDATFLITV & CountDataCrdsInb != 0 )begin
+            TestVectorDataIn[DataInPointer] <= RXDATFLIT ;
+            DataInPointer++;
+          end
+          if(TXDATFLITV & CountDataCrdsOutb != 0 )begin
+            TestVectorDataOut[DataOutPointer] <= TXDATFLIT ;
+            DataOutPointer++;
+          end
+          if(UUT.SigDeqCommand)
+            CountFinishedCommands++;
+          if(CountFinishedCommands == NUM_OF_REPETITIONS)begin
+            CountFinishedCommands = 0 ;
+            printCheckList            ;
+          end
+        end
+      end
+        
+      //task that checks if results are corect
+      int j=0 ;
+      task printCheckList ;
+      begin
+        #(period*2);
+        for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every command in BS check
+          automatic int lengthCount = 0 ;
+          $display("SrcAddr : %d,DstAddr : %d,Length : %d,DescAddr : %d,LastDesc : %d", TestVectorCommand[i].SrcAddr,TestVectorCommand[i].DstAddr,TestVectorCommand[i].Length,TestVectorCommand[i].DescAddr,TestVectorCommand[i].LastDescTrans);
+          while(lengthCount<TestVectorCommand[i].Length)begin
+            automatic int unqRTxnID = uniqueReadTxnID(j);
+            automatic int unqWTxnID = uniqueWriteTxnID(j);
+            
+            if((TestVectorReadReq[j].Opcode == `ReadOnce & (TestVectorReadReq[j].Addr == (TestVectorCommand[i].SrcAddr + lengthCount)) & unqRTxnID)
+            &(TestVectorDataIn[j].Opcode == `CompData & (TestVectorDataIn[j].TxnID == (TestVectorReadReq[j].TxnID))))
+              $display("Correct Read Trans");
+            else if(TestVectorReadReq[j].Opcode != `ReadOnce)begin
+              $display("--ERROR :: ReadReq Opcode is not ReadOnce");
+              $stop;
+            end
+            else if(TestVectorReadReq[j].Addr != (TestVectorCommand[i].SrcAddr + lengthCount))begin
+              $display("--ERROR :: Requested ReadAddr is : %d , but it should be : %d",TestVectorReadReq[j].Addr ,TestVectorCommand[i].SrcAddr + lengthCount);
+              $stop;
+            end
+            else if(!unqRTxnID)begin
+              $display("--ERROR :: TxnID : %d is reused",TestVectorReadReq[j].TxnID);
+              $stop;
+            end
+            else if(TestVectorDataIn[j].Opcode != `CompData)begin
+              $display("--ERROR :: DataRsp Opcode is not CompData");
+              $stop;
+            end
+            else begin
+              $display("--ERROR :: DataRsp TxnID :%d is not the same with ReadReq TxnID :%d",TestVectorDataIn[j].TxnID ,TestVectorReadReq[j].TxnID);
+              $stop;
+            end
+            
+            if((TestVectorWriteReq[j].Opcode == `WriteUniquePtl & (TestVectorWriteReq[j].Addr == (TestVectorCommand[i].DstAddr + lengthCount)) & unqWTxnID)
+            &(((TestVectorRspIn[j].Opcode == `DBIDResp) | (TestVectorRspIn[j].Opcode == `CompDBIDResp)) & (TestVectorRspIn[j].TxnID == (TestVectorWriteReq[j].TxnID)))
+            &((TestVectorDataOut[j].Opcode == `NonCopyBackWrData) & (TestVectorRspIn[j].DBID == TestVectorDataOut[j].TxnID)) )
+              if((TestVectorCommand[i].Length<(lengthCount+CHI_DATA_WIDTH)) & (TestVectorDataOut[j].BE != ~({CHI_DATA_WIDTH{1'b1}} << (TestVectorCommand[i].Length - lengthCount))))begin
+                $display("--Error :: BE is : %d and it should be :%d",TestVectorDataOut[j].BE ,~({CHI_DATA_WIDTH{1'b1}} << (TestVectorCommand[i].Length - lengthCount)));
+                $stop;
+              end
+              else 
+                $display("Correct Write Trans");
+            else if(TestVectorReadReq[j].Opcode != `WriteUniquePtl)begin
+              $display("--ERROR :: WriteReq Opcode is not WriteUniquePtl");
+              $stop;
+            end
+            else if(TestVectorWriteReq[j].Addr != (TestVectorCommand[i].DstAddr + lengthCount))begin
+              $display("--ERROR :: Requested WriteAddr is : %d , but it should be : %d",TestVectorWriteReq[j].Addr ,TestVectorCommand[i].DstAddr + lengthCount);
+              $stop;
+            end
+            else if(!unqWTxnID)begin
+              $display("--ERROR :: TxnID : %d is reused",TestVectorWriteReq[j].TxnID);
+              $stop;
+            end
+            else if(TestVectorRspIn[j].Opcode != `DBIDResp & TestVectorRspIn[j].Opcode != `CompDBIDResp )begin
+              $display("--ERROR :: DataRsp Opcode is not DBIDResp or CompDBIDResp");
+              $stop;
+            end
+            else if(TestVectorRspIn[j].TxnID != (TestVectorWriteReq[j].TxnID)) begin
+              $display("--ERROR :: DBIDRsp TxnID :%d is not the same with WriteReq TxnID :%d",TestVectorRspIn[j].TxnID ,TestVectorWriteReq[j].TxnID);
+              $stop;
+            end
+            else if(TestVectorDataOut[j].Opcode != `NonCopyBackWrData) begin
+              $display("--ERROR :: Data In Opcode is not NonCopyBackWrData");
+              $stop;
+            end
+            else begin
+              $display("--ERROR :: DBIDRsp DBID :%d is not the same with Data Out DBID :%d",TestVectorRspIn[j].DBID , TestVectorDataOut[j].TxnID);
+              $stop;
+            end
+            lengthCount=lengthCount+CHI_DATA_WIDTH;
+            j++;
+          end
+        end
+      end
+      endtask ;
+      
+      
+      function int uniqueReadTxnID(input int j);
+        automatic int  k = j ;
+        while(TestVectorDataIn[k].TxnID!= TestVectorReadReq[j].TxnID) begin
+          if(TestVectorReadReq[j].TxnID == TestVectorReadReq[k].TxnID | TestVectorReadReq[j].TxnID == TestVectorWriteReq[k].TxnID)begin
+            $display("--Error :: In ReadReq TxnID -> %d is already used",TestVectorReadReq[j].TxnID );
+            return 0;
+          end
+          k++;
+        end
+        return 1 ;
+  endfunction
+  
+  function int uniqueWriteTxnID(input int j);
+        automatic int  k = j ;
+        while(TestVectorRspIn[k].TxnID!= TestVectorWriteReq[j].TxnID) begin
+          if(TestVectorWriteReq[j].TxnID == TestVectorWriteReq[k].TxnID | TestVectorWriteReq[j].TxnID == TestVectorReadReq[k].TxnID)begin
+            $display("--Error :: In ReadReq TxnID -> %d is already used",TestVectorReadReq[j].TxnID );
+            return 0;
+          end
+          k++;
+        end
+        return 1 ;
+  endfunction
+  
 endmodule

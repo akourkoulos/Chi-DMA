@@ -232,7 +232,7 @@ module TestBarrelShifte#(
       task printCheckList ;
       begin
          #period;
-         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every comand in BS check
+         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every command in BS check
               automatic int errflag = 0 ;
               for(int j = 0 ; j < CHI_DATA_WIDTH*8*Chunk ; j ++)begin
               // Ckeck if Read data have been re-positioned with the right way to create WriteDAta

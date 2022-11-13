@@ -4,7 +4,7 @@ Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xe
 Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 51 for port 'TXRSPFLIT' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:97]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 51 for port 'TXRSPFLIT' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:103]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis
