@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1668090927">
+<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1668517846">
   <File Type="PA-TCL" Name="CHIConverter.tcl"/>
   <File Type="REPORTS-TCL" Name="CHIConverter_reports.tcl"/>
   <File Type="RDS-RDS" Name="CHIConverter.vds"/>

@@ -131,11 +131,14 @@ module CHIConverter#(
    wire                                             ReadReqArbReady   ;
    wire                                             ReadReqV          ;
    ReqFlit                                          ReadReqFlit       ;
+   wire                                             SigDeqRead        ;
    //Write Requester signals
    wire                                             WriteReqArbValid  ; 
    wire                                             WriteReqArbReady  ;
    wire                                             WriteReqV         ;
    ReqFlit                                          WriteReqFlit      ;
+   wire                 [CHI_DATA_WIDTH    - 1 : 0] SigDataSize       ;
+   wire                                             SigDeqWrite       ;
    //Updater signal
    wire                                             FULLUpdater       ;
    //Arbiter signal
@@ -270,8 +273,8 @@ module CHIConverter#(
         if(TXREQFLITV & TXREQFLIT.Opcode == `WriteUniquePtl)begin // if a Wriet Request is happening
           if(!(RXRSPFLITV & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))) // decrease number of available TxnID if there is not a DBIDRsp
             FreeWriteTxnID <= FreeWriteTxnID - 1;
-          if(NextReadTxnID == 255) // update TxnID that will be used for the next Write
-            NextWriteTxnID <= NextWriteTxnID + 1 ;
+          if(NextWriteTxnID == 255) // update TxnID that will be used for the next Write
+            NextWriteTxnID <= 'd128 ;
           else 
             NextWriteTxnID <= NextWriteTxnID + 1 ;
         end
@@ -286,11 +289,11 @@ module CHIConverter#(
    // ################## Read Requester ##################
    
    // Request chanel from Arbiter
-   assign ReadReqArbValid = (!SigCommandEmpty & ReqCrd != 0 & FreeReadTxnID != 0 & (SigCommand.Length != ReadReqBytes)) ? 1 : 0 ;
+   assign ReadReqArbValid = (!SigCommandEmpty & ReqCrd != 0 & FreeReadTxnID != 0 & (SigCommand.Length != ReadReqBytes));
    // Enable valid for CHI-Request transaction 
-   assign ReadReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeReadTxnID != 0 & ReadReqArbReady & (SigCommand.Length != ReadReqBytes)) ? 1 : 0 ;
+   assign ReadReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeReadTxnID != 0 & ReadReqArbReady & (SigCommand.Length != ReadReqBytes));
    // Dequeue Read command FIFO 
-   assign SigDeqRead = ((SigCommand.Length - ReadReqBytes <= CHI_DATA_WIDTH & ReadReqArbValid & ReadReqArbReady) | (SigCommand.Length == ReadReqBytes)) ? 1 : 0 ;
+   assign SigDeqRead = ((SigCommand.Length - ReadReqBytes <= CHI_DATA_WIDTH & ReadReqArbValid & ReadReqArbReady) | (SigCommand.Length == ReadReqBytes)) & !SigCommandEmpty ;
    // Create Request Read flit 
    assign ReadReqFlit  = '{default       : 0                                                                           ,                       
                            QoS           : QoS                                                                         ,
@@ -332,11 +335,11 @@ module CHIConverter#(
    // ****************** Write Requester ******************
    
    // Request chanel from Arbiter
-   assign WriteReqArbValid = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & !SigSizeFULL & (SigCommand.Length != WriteReqBytes)) ? 1 : 0 ;
+   assign WriteReqArbValid = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & !SigSizeFULL & (SigCommand.Length != WriteReqBytes));
    // Enable valid for CHI-Request transaction 
-   assign WriteReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & !SigSizeFULL & WriteReqArbReady & (SigCommand.Length != WriteReqBytes)) ? 1 : 0 ;
+   assign WriteReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & !SigSizeFULL & WriteReqArbReady & (SigCommand.Length != WriteReqBytes)) ;
    // Dequeue Write command FIFO 
-   assign SigDeqWrite = ((SigCommand.Length - WriteReqBytes <= CHI_DATA_WIDTH & WriteReqArbValid & WriteReqArbReady) | (SigCommand.Length == WriteReqBytes)) ? 1 : 0 ;
+   assign SigDeqWrite = ((SigCommand.Length - WriteReqBytes <= CHI_DATA_WIDTH & WriteReqArbValid & WriteReqArbReady) | (SigCommand.Length == WriteReqBytes)) & !SigCommandEmpty ; ;
    // Size of Data that will be sent
    assign SigDataSize = (SigCommand.Length - WriteReqBytes <= CHI_DATA_WIDTH ) ? (SigCommand.Length - WriteReqBytes) : CHI_DATA_WIDTH ;
    // Create Request Write flit 
@@ -386,6 +389,10 @@ module CHIConverter#(
      else begin
        if(ReadReqArbValid & WriteReqArbValid)
          AccessReg <= !AccessReg ;
+       else if(ReadReqArbValid & !WriteReqArbValid)
+         AccessReg <= 1 ;
+       else if(!ReadReqArbValid & WriteReqArbValid)
+         AccessReg <= 0 ;
      end  
    end
    

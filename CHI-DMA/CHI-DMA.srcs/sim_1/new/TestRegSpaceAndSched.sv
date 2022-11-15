@@ -406,7 +406,6 @@ module TestRegSpaceAndSched#(
           end
           if(errorflag == 0)
             $display("Corect BRAM");
-            $stop;
         end
       end         
       endtask      

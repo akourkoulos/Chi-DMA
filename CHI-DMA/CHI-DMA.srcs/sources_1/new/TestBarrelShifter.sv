@@ -136,7 +136,7 @@ module TestBarrelShifte#(
     
     
     // manage inputs
-    always@(posedge Clk)
+    initial
         begin       
         RST            <= 1 ;
         SrcAddrIn      <= 0 ;

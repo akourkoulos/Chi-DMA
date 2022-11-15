@@ -26,6 +26,7 @@ package CompleterPkg;
  } Completer_Packet;
  endpackage
  
+
 // Packets for Chi-Converter FIFOs
 package CHIFIFOsPkg;
    parameter BRAM_ADDR_WIDTH   = 10 ;

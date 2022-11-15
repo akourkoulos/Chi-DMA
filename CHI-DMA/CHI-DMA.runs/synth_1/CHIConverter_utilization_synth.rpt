@@ -1,7 +1,7 @@
 Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-| Date         : Thu Nov 10 16:44:32 2022
+| Date         : Tue Nov 15 15:20:19 2022
 | Host         : Aggelos-PC running 64-bit Service Pack 1  (build 7601)
 | Command      : report_utilization -file CHIConverter_utilization_synth.rpt -pb CHIConverter_utilization_synth.pb
 | Design       : CHIConverter
@@ -30,11 +30,11 @@ Table of Contents
 +-------------------------+-------+-------+-----------+-------+
 |        Site Type        |  Used | Fixed | Available | Util% |
 +-------------------------+-------+-------+-----------+-------+
-| Slice LUTs*             | 13692 |     0 |    303600 |  4.51 |
-|   LUT as Logic          | 13692 |     0 |    303600 |  4.51 |
+| Slice LUTs*             | 18368 |     0 |    303600 |  6.05 |
+|   LUT as Logic          | 18368 |     0 |    303600 |  6.05 |
 |   LUT as Memory         |     0 |     0 |    130800 |  0.00 |
-| Slice Registers         | 17239 |     0 |    607200 |  2.84 |
-|   Register as Flip Flop | 17239 |     0 |    607200 |  2.84 |
+| Slice Registers         | 21529 |     0 |    607200 |  3.55 |
+|   Register as Flip Flop | 21529 |     0 |    607200 |  3.55 |
 |   Register as Latch     |     0 |     0 |    607200 |  0.00 |
 | F7 Muxes                |     0 |     0 |    151800 |  0.00 |
 | F8 Muxes                |     0 |     0 |     75900 |  0.00 |
@@ -56,8 +56,8 @@ Table of Contents
 | 0     |          Yes |           - |            - |
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
-| 1     |          Yes |         Set |            - |
-| 17238 |          Yes |       Reset |            - |
+| 3     |          Yes |         Set |            - |
+| 21526 |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -90,7 +90,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+--------+
 |          Site Type          | Used | Fixed | Available |  Util% |
 +-----------------------------+------+-------+-----------+--------+
-| Bonded IOB                  | 1789 |     0 |       600 | 298.17 |
+| Bonded IOB                  | 1833 |     0 |       600 | 305.50 |
 | Bonded IPADs                |    0 |     0 |        62 |   0.00 |
 | Bonded OPADs                |    0 |     0 |        40 |   0.00 |
 | PHY_CONTROL                 |    0 |     0 |        14 |   0.00 |
@@ -151,18 +151,18 @@ Table of Contents
 +----------+-------+---------------------+
 | Ref Name |  Used | Functional Category |
 +----------+-------+---------------------+
-| FDRE     | 17238 |        Flop & Latch |
-| LUT3     |  8410 |                 LUT |
-| LUT6     |  6507 |                 LUT |
-| LUT5     |  2580 |                 LUT |
+| FDRE     | 21526 |        Flop & Latch |
+| LUT3     |  8411 |                 LUT |
+| LUT5     |  6780 |                 LUT |
+| LUT6     |  6773 |                 LUT |
 | OBUF     |  1155 |                  IO |
-| IBUF     |   631 |                  IO |
-| LUT2     |   264 |                 LUT |
-| LUT1     |   180 |                 LUT |
-| LUT4     |   122 |                 LUT |
-| CARRY4   |    89 |          CarryLogic |
+| IBUF     |   675 |                  IO |
+| LUT2     |   400 |                 LUT |
+| LUT4     |   177 |                 LUT |
+| LUT1     |   161 |                 LUT |
+| CARRY4   |   128 |          CarryLogic |
 | OBUFT    |     3 |                  IO |
-| FDSE     |     1 |        Flop & Latch |
+| FDSE     |     3 |        Flop & Latch |
 | BUFG     |     1 |               Clock |
 +----------+-------+---------------------+
 
