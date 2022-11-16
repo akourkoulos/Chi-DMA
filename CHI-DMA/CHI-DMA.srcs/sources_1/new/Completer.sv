@@ -123,9 +123,9 @@ module Completer#(
              Dequeue = 1                                       ;
            end
            else begin
-             WE      = 'b0 ;   
-             DataOut = 'b0 ;
-             Dequeue = 0   ;
+             WE      = 'b0                     ;   
+             DataOut = 'b0                     ;
+             Dequeue = ValidBRAM & ReadyBRAM   ;
            end
          end
        default begin

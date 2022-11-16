@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestCompleter_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="CompleterPkg" />
+            <top_module name="DataPkg" />
+            <top_module name="TestCompleter" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="1879500fs"></ZoomStartTime>
+      <ZoomEndTime time="2236501fs"></ZoomEndTime>
+      <Cursor1Time time="1960000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="233"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="22" />
+   <wvobject fp_name="/TestCompleter/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/CompDataPack" type="array">
+      <obj_property name="ElementShortName">CompDataPack</obj_property>
+      <obj_property name="ObjectShortName">CompDataPack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/ValidUpdate" type="logic">
+      <obj_property name="ElementShortName">ValidUpdate</obj_property>
+      <obj_property name="ObjectShortName">ValidUpdate</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/DescData" type="array">
+      <obj_property name="ElementShortName">DescData</obj_property>
+      <obj_property name="ObjectShortName">DescData</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/ReadyBRAM" type="logic">
+      <obj_property name="ElementShortName">ReadyBRAM</obj_property>
+      <obj_property name="ObjectShortName">ReadyBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/ValidBRAM" type="logic">
+      <obj_property name="ElementShortName">ValidBRAM</obj_property>
+      <obj_property name="ObjectShortName">ValidBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/AddrOut" type="array">
+      <obj_property name="ElementShortName">AddrOut[9:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrOut[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/DataOut" type="array">
+      <obj_property name="ElementShortName">DataOut</obj_property>
+      <obj_property name="ObjectShortName">DataOut</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/WE" type="array">
+      <obj_property name="ElementShortName">WE[7:0]</obj_property>
+      <obj_property name="ObjectShortName">WE[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/FULL" type="logic">
+      <obj_property name="ElementShortName">FULL</obj_property>
+      <obj_property name="ObjectShortName">FULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/FIFODescAddr/Dequeue" type="logic">
+      <obj_property name="ElementShortName">Dequeue</obj_property>
+      <obj_property name="ObjectShortName">Dequeue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/FIFODescAddr/state" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+      <obj_property name="label">fifostate[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/FIFODescAddr/MyQueue" type="array">
+      <obj_property name="ElementShortName">MyQueue[31:0][14:0]</obj_property>
+      <obj_property name="ObjectShortName">MyQueue[31:0][14:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/NUM_OF_REPETITIONS" type="array">
+      <obj_property name="ElementShortName">NUM_OF_REPETITIONS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NUM_OF_REPETITIONS[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/BRAM_ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">BRAM_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAM_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/BRAM_NUM_COL" type="array">
+      <obj_property name="ElementShortName">BRAM_NUM_COL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAM_NUM_COL[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/FIFO_Length" type="array">
+      <obj_property name="ElementShortName">FIFO_Length[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_Length[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/FIFO_WIDTH" type="array">
+      <obj_property name="ElementShortName">FIFO_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+</wave_config>
