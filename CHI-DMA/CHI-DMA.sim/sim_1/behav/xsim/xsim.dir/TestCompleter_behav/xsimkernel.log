@@ -2,3 +2,6 @@ Running: xsim.dir/TestCompleter_behav/xsimk.exe -simmode gui -wdb TestCompleter_
 Design successfully loaded
 Design Loading Memory Usage: 6548 KB (Peak: 6548 KB)
 Design Loading CPU Usage: 77 ms
+Simulation completed
+Simulation Memory Usage: 10284 KB (Peak: 10284 KB)
+Simulation CPU Usage: 733 ms

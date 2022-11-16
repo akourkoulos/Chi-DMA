@@ -153,11 +153,11 @@ module TestCompleter#(
            pointerOutp       <= 0              ;
            RepetPointer      <= 0              ;
          end     
-         else begin
+         else begin // if a Valid non-Empty DataPacket update testvector 
            if(ValidUpdate & (CompDataPack.LastDescTrans != 0 | CompDataPack.DBIDRespErr != 0 | CompDataPack.DataRespErr != 0))begin
              TestVectorPackIn[pointerInp] <= CompDataPack   ;
              pointerInp                   <= pointerInp + 1 ;      
-           end
+           end // if write DescBRAM or read it but not write it because it is already written update testvectors
            if((ValidBRAM & ReadyBRAM & WE != 0)|(ValidBRAM & ReadyBRAM & UUT.state == UUT.WriteState))begin
              TestVectorAddrOut  [pointerOutp] <= AddrOut         ;
              TestVectorDataOut  [pointerOutp] <= DataOut         ;
@@ -188,17 +188,21 @@ module TestCompleter#(
       begin
         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)begin
           if(TestVectorPackIn[i] != 0)begin
+            // for every repetition if addrOut is the same with DescAddr , WE is on when or WE is of but Desc is already written with error and StatusOut is idle when desc is not written and 0 when it is already written with error then corect process
             if(TestVectorPackIn[i].DescAddr == TestVectorAddrOut[i] & ((TestVectorWE[i] == ('d1 << `StatusRegIndx)) | (TestVectorWE[i] == 0 & TestVectorDescData[i].Status == `StatusError))
             & ((TestVectorDescData[i].Status != `StatusError & TestVectorDataOut[i].Status == `StatusIdle) | (TestVectorDescData[i].Status == `StatusError & TestVectorWE[i] == 0) | (TestVectorDataOut[i].Status == `StatusError)))
               $display("%d. Correct",i);
+            // if DataPack Addr is Different from AddrOut Wrong
             else if (TestVectorPackIn[i].DescAddr != TestVectorAddrOut[i])begin
               $display("%d. --Error:: Wrong Addr. Expected :%d but Addr was %d ",i,TestVectorPackIn[i].DescAddr,TestVectorAddrOut[i]);
               $stop;
             end
+            // if WE isnt on or it is off when DescStatus is not Error Wrong WE
             else if ((TestVectorWE[i] != ('d1 << `StatusRegIndx)) & !(TestVectorWE[i] == 0 & TestVectorDescData[i].Status == `StatusError))begin
               $display("%d. --Error:: Wrong WE. Expected :%d but WE was %d ",i,('d1 << `StatusRegIndx),TestVectorWE[i]);
               $stop;
             end
+            // Wrong DataOut
             else begin
               $display("%d. --Error:: Wrong Status Out . Status shouldnt be %d ",i,TestVectorDataOut[i].Status,TestVectorDescData[i].Status);
               $stop;
