@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 import DataPkg::*;
+import CHIFIFOsPkg ::*; 
 
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -45,12 +46,7 @@ module TestRegSpaceAndSched#(
     reg                             InpCmdFIFOFULL       ; // From CHI-convert 
     Data_packet                     BRAMdoutA            ;
     wire                            OutIssueValid        ;
-    wire [BRAM_COL_WIDTH  - 1 : 0]  OutReadAddr          ;
-    wire [BRAM_COL_WIDTH  - 1 : 0]  OutReadLength        ;
-    wire [BRAM_COL_WIDTH  - 1 : 0]  OutWriteAddr         ;
-    wire [BRAM_COL_WIDTH  - 1 : 0]  OutWriteLength       ;
-    wire [BRAM_ADDR_WIDTH - 1 : 0]  OutFinishedDescAddr  ;
-    wire                            OutFinishedDescValid ;
+    CHI_Command                     Command              ;
     wire                            OutValidBRAM         ;
     // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns
     localparam period = 20;  
@@ -68,12 +64,7 @@ module TestRegSpaceAndSched#(
       .InpCmdFIFOFULL       (InpCmdFIFOFULL      ),
       .BRAMdoutA            (BRAMdoutA           ),
       .OutIssueValid        (OutIssueValid       ),
-      .OutReadAddr          (OutReadAddr         ),
-      .OutReadLength        (OutReadLength       ),
-      .OutWriteAddr         (OutWriteAddr        ),
-      .OutWriteLength       (OutWriteLength      ),
-      .OutFinishedDescAddr  (OutFinishedDescAddr ),
-      .OutFinishedDescValid (OutFinishedDescValid),
+      .Command              (Command             ),
       .OutValidBRAM         (OutValidBRAM        )
     );
     
@@ -357,17 +348,17 @@ module TestRegSpaceAndSched#(
             
             if(!InpCmdFIFOFULL & OutIssueValid) begin //When scheduler send command to the CHI-Converter Check correctness and update TestVector's SB and LastDescValid field 
               // if ReadAddr in command is SrcAddr+SB and WriteAddr = DstAddr + SB
-              if((TestVector[0][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutReadAddr) & (TestVector[1][OutFinishedDescAddr] + TestVector[3][OutFinishedDescAddr] == OutWriteAddr))begin
-                TestVector[3][OutFinishedDescAddr] <= TestVector[3][OutFinishedDescAddr]+OutReadLength ;
-                TestVector[4][OutFinishedDescAddr] <= OutFinishedDescValid ;
+              if((TestVector[0][Command.DescAddr] + TestVector[3][Command.DescAddr] == Command.SrcAddr) & (TestVector[1][Command.DescAddr] + TestVector[3][Command.DescAddr] == Command.DstAddr))begin
+                TestVector[3][Command.DescAddr] <= TestVector[3][Command.DescAddr] + Command.Length ;
+                TestVector[4][Command.DescAddr] <= Command.LastDescTrans ;
               end
               else begin // if Expected ReadAddr is different from the real output ReadAddr display an Error
-                $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Addr : %d, ExpReadAddr : %d , TrueReadAddr : %d" , OutFinishedDescAddr,TestVector[0][OutFinishedDescAddr]+TestVector[3][OutFinishedDescAddr],OutReadAddr);
+                $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Addr : %d, ExpReadAddr : %d , TrueReadAddr : %d" , Command.DescAddr,TestVector[0][Command.DescAddr]+TestVector[3][Command.DescAddr],Command.SrcAddr);
                 $stop;
               end
             end
             // if every Descriptor has been scheduled then call task that checks the results
-            if(OutFinishedDescValid & UUT.DequeueFIFO & UUT.AddrPointerFIFO.state == 1) begin
+            if(Command.LastDescTrans & UUT.DequeueFIFO & UUT.AddrPointerFIFO.state == 1) begin
               printCheckList ;
             end
           end

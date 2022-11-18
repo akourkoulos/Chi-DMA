@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "RSParameters.vh"
+import CHIFIFOsPkg ::*; 
 import DataPkg::*; 
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -45,12 +46,7 @@ module TestScheduler#(
     wire                               ValidFIFO         ; //sig for FIFO 's Arbiter     
     wire       [BRAM_ADDR_WIDTH  -1:0] DescAddrPointer   ;                               
     wire                               IssueValid        ; //sig for chi-converter       
-    wire       [MEMAddrWidth     -1:0] ReadAddr          ;                               
-    wire       [MEMAddrWidth     -1:0] ReadLength        ;                               
-    wire       [MEMAddrWidth     -1:0] WriteAddr         ;                               
-    wire       [MEMAddrWidth     -1:0] WriteLength       ;                               
-    wire       [BRAM_ADDR_WIDTH  -1:0] FinishedDescAddr  ;                               
-    wire                               FinishedDescValid ;                               
+    CHI_Command                        Command           ;                             
     
     // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns
     localparam period = 20;  
@@ -72,12 +68,7 @@ module TestScheduler#(
     .ValidFIFO        (ValidFIFO        ) ,
     .DescAddrPointer  (DescAddrPointer  ) ,
     .IssueValid       (IssueValid       ) ,
-    .ReadAddr         (ReadAddr         ) , 
-    .ReadLength       (ReadLength       ) ,    
-    .WriteAddr        (WriteAddr        ) , 
-    .WriteLength      (WriteLength      ) ,
-    .FinishedDescAddr (FinishedDescAddr ) ,
-    .FinishedDescValid(FinishedDescValid)
+    .Command          (Command          ) 
     );
     
     always 

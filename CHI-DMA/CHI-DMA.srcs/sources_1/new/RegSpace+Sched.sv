@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 import DataPkg::*;
+import CHIFIFOsPkg ::*; 
 
 //////////////////////////////////////////////////////////////////////////////////
 /*Conect BRAM Scheduler Arbiter of FIFO and FIFO*/
@@ -27,12 +28,7 @@ module BRAMAndSched#(
     output                            ReadyArbProc         , 
     output Data_packet                BRAMdoutA            ,                   
     output                            OutIssueValid        ,                   
-    output [BRAM_COL_WIDTH  - 1 : 0]  OutReadAddr          ,                   
-    output [BRAM_COL_WIDTH  - 1 : 0]  OutReadLength        ,                   
-    output [BRAM_COL_WIDTH  - 1 : 0]  OutWriteAddr         ,                   
-    output [BRAM_COL_WIDTH  - 1 : 0]  OutWriteLength       , 
-    output [BRAM_ADDR_WIDTH - 1 : 0]  OutFinishedDescAddr  ,
-    output                            OutFinishedDescValid ,
+    output CHI_Command                Command              ,
     output                            OutValidBRAM           
     );
     
@@ -122,11 +118,6 @@ module BRAMAndSched#(
        .ValidFIFO         ( ValidArbSched        ) ,
        .DescAddrPointer   ( WriteBackPointer     ) ,
        .IssueValid        ( OutIssueValid        ) ,
-       .ReadAddr          ( OutReadAddr          ) ,
-       .ReadLength        ( OutReadLength        ) ,
-       .WriteAddr         ( OutWriteAddr         ) ,
-       .WriteLength       ( OutWriteLength       ) ,
-       .FinishedDescAddr  ( OutFinishedDescAddr  ) ,
-       .FinishedDescValid ( OutFinishedDescValid ) 
+       .Command           ( Command              ) 
     );
 endmodule

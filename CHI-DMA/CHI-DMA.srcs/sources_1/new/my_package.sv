@@ -12,7 +12,7 @@ package DataPkg;
      bit [BRAM_COL_WIDTH  - 1 : 0]  BytesToSend ;
      bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr     ;
      bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr     ;
- } Data_packet;
+   } Data_packet;
  endpackage
 
 // Packets for Completer module
@@ -23,7 +23,7 @@ package CompleterPkg;
      bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ; // BRAM_ADDR_WIDTH
      bit [`RspErrWidth    - 1 : 0]  DBIDRespErr    ;
      bit [`RspErrWidth    - 1 : 0]  DataRespErr    ;
- } Completer_Packet;
+   } Completer_Packet;
  endpackage
  
 
@@ -37,25 +37,25 @@ package CHIFIFOsPkg;
      bit [BRAM_COL_WIDTH  - 1 : 0]  Length        ;
      bit [BRAM_COL_WIDTH  - 1 : 0]  DstAddr       ;
      bit [BRAM_COL_WIDTH  - 1 : 0]  SrcAddr       ;
- } CHI_Command; // Width = 129
+   } CHI_Command; // Width = 129
  
  
    typedef struct packed {
      bit [7                : 0]  DBID    ;
      bit [`RspErrWidth - 1 : 0]  RespErr ;
- } CHI_FIFO_DBID_Packet;
+   } CHI_FIFO_DBID_Packet;
  
  
    typedef struct packed {
      bit [511              : 0]  Data    ;
      bit [`RspErrWidth - 1 : 0]  RespErr ;
- } CHI_FIFO_Data_Packet;
+   } CHI_FIFO_Data_Packet;
  
-    typedef struct packed {
+   typedef struct packed {
      bit                            LastDescTrans ; // Indicates that this is the last transaction of Descriptor and when it finish status must be updated 
      bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ; // BRAM_ADDR_WIDTH
      bit [7               - 1 : 0]  Size          ; // log2(512/8)+1 (64Bytes)
- } CHI_FIFO_Size_Packet;
+   } CHI_FIFO_Size_Packet;
  
  endpackage
 
@@ -84,8 +84,8 @@ package CHIFlitsPkg;
      bit         ExpCompAck    ;
      bit         TraceTag      ;
      //RSVDC   X = 0 No RSVDC bus . Reserved for customer use : X = 4, 12, 16, 24, 32 Permitted RSVDC bus widths
-   // Total bit: R=117 used
- } ReqFlit;
+     // Total bit: R=117 used
+   } ReqFlit;
  
    typedef struct packed {
      bit [3 : 0] QoS      ; 
@@ -99,8 +99,8 @@ package CHIFlitsPkg;
      bit [7 : 0] DBID     ; 
      bit [3 : 0] PCrdType ; 
      bit         TraceTag ;
-   //Total bit : T = 51 
- } RspFlit;
+    //Total bit : T = 51 
+  } RspFlit;
   
    typedef struct packed {
      bit [3  : 0] QoS        ;
@@ -122,6 +122,106 @@ package CHIFlitsPkg;
      bit [63 : 0] DataCheck  ; // it can be 0, 16, 32, 64
      bit [7  : 0] Poison     ; // It can be 0, 2, 4, 8 
     //Total bit : D = 706 = 512(Data) + 122 + 64(DataCheck) + 8(Poison) bit Data
- } DataFlit;
+  } DataFlit;
  
- endpackage
+endpackage
+
+ // Request Channel interface 
+ interface ReqChannel; 
+ import CHIFlitsPkg ::*; 
+   bit     TXREQFLITPEND ; 
+   bit     TXREQFLITV    ; 
+   ReqFlit TXREQFLIT     ; 
+   bit     TXREQLCRDV    ;
+   
+   //From external perspective
+   modport INBOUND (input TXREQFLITPEND ,
+                    input TXREQFLITV    ,
+                    input TXREQFLIT     ,
+                    output TXREQLCRDV    );  
+   //From CHI-Conv perspective
+   modport OUTBOUND (output TXREQFLITPEND ,
+                     output TXREQFLITV    ,
+                     output TXREQFLIT     ,
+                     input  TXREQLCRDV     );  //From DUT perspective
+  endinterface
+  
+  // Rsp Outbound Channel interface 
+ interface RspOutbChannel; 
+ import CHIFlitsPkg ::*; 
+   bit     TXRSPFLITPEND ; 
+   bit     TXRSPFLITV    ; 
+   RspFlit TXRSPFLIT     ; 
+   bit     TXRSPLCRDV    ;
+   
+   //From external perspective
+   modport INBOUND (input  TXRSPFLITPEND ,
+                    input  TXRSPFLITV    ,
+                    input  TXRSPFLIT     ,
+                    output TXRSPLCRDV     );  
+   //From CHI-Conv perspective
+   modport OUTBOUND (output TXRSPFLITPEND ,
+                     output TXRSPFLITV    ,
+                     output TXRSPFLIT     ,
+                     input  TXRSPLCRDV     );  //From DUT perspective
+  endinterface
+
+ // Data Outbound Channel interface 
+ interface DatOutbChannel; 
+ import CHIFlitsPkg ::*; 
+   bit      TXDATFLITPEND ; 
+   bit      TXDATFLITV    ; 
+   DataFlit TXDATFLIT     ; 
+   bit      TXDATLCRDV    ;
+   
+   //From external perspective
+   modport INBOUND (input  TXDATFLITPEND ,
+                    input  TXDATFLITV    ,
+                    input  TXDATFLIT     ,
+                    output TXDATLCRDV     );  
+   //From CHI-Conv perspective
+   modport OUTBOUND (output TXDATFLITPEND ,
+                     output TXDATFLITV    ,
+                     output TXDATFLIT     ,
+                     input  TXDATLCRDV     );  //From DUT perspective
+  endinterface
+  
+   // Rsp Inbound Channel interface 
+ interface RspInbChannel; 
+ import CHIFlitsPkg ::*; 
+   bit      RXRSPFLITPEND ; 
+   bit      RXRSPFLITV    ; 
+   RspFlit  RXRSPFLIT     ; 
+   bit      RXRSPLCRDV    ;
+   
+   //From CHI-Conv perspective
+   modport INBOUND (input  RXRSPFLITPEND ,
+                    input  RXRSPFLITV    ,
+                    input  RXRSPFLIT     ,
+                    output RXRSPLCRDV     );  
+   //From external perspective
+   modport OUTBOUND (output RXRSPFLITPEND ,
+                     output RXRSPFLITV    ,
+                     output RXRSPFLIT     ,
+                     input  RXRSPLCRDV     );  //From DUT perspective
+  endinterface
+  
+     // Data Inbound Channel interface 
+ interface DatInbChannel; 
+ import CHIFlitsPkg ::*; 
+   bit      RXDATFLITPEND ; 
+   bit      RXDATFLITV    ; 
+   DataFlit RXDATFLIT     ; 
+   bit      RXDATLCRDV    ;
+   
+   //From CHI-Conv perspective
+   modport INBOUND (input  RXDATFLITPEND ,
+                    input  RXDATFLITV    ,
+                    input  RXDATFLIT     ,
+                    output RXDATLCRDV     );  
+   //From external perspective
+   modport OUTBOUND (output RXDATFLITPEND ,
+                     output RXDATFLITV    ,
+                     output RXDATFLIT     ,
+                     input  RXDATLCRDV     );  //From DUT perspective
+  endinterface

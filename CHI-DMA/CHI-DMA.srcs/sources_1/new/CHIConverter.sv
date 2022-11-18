@@ -58,37 +58,22 @@ module CHIConverter#(
   parameter SrcID             = 1                                        //??
 //--------------------------------------------------------------------------
 )(
-    input                                        Clk               ,
-    input                                        RST               ,
-    input Data_packet                            DataBRAM          , // From BRAM
-    input                                        IssueValid        ,
-    input                                        ReadyBRAM         , // From Arbiter_BRAM
-    input CHI_Command                            Command           , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
-    output                                       TXREQFLITPEND     , // Request outbound Chanel
-    output                                       TXREQFLITV        , 
-    output ReqFlit                               TXREQFLIT         ,
-    input                                        TXREQLCRDV        ,
-    output                                       TXRSPFLITPEND     , // Response outbound Chanel
-    output                                       TXRSPFLITV        ,
-    output RspFlit                               TXRSPFLIT         ,
-    input                                        TXRSPLCRDV        ,
-    output                                       TXDATFLITPEND     , // Data outbound Chanel
-    output                                       TXDATFLITV        ,
-    output DataFlit                              TXDATFLIT         ,
-    input                                        TXDATLCRDV        ,
-    input                                        RXRSPFLITPEND     , // Response inbound Chanel
-    input                                        RXRSPFLITV        ,
-    input  RspFlit                               RXRSPFLIT         ,
-    output reg                                   RXRSPLCRDV        ,
-    input                                        RXDATFLITPEND     , // Data inbound Chanel
-    input                                        RXDATFLITV        ,
-    input  DataFlit                              RXDATFLIT         ,
-    output reg                                   RXDATLCRDV        ,
-    output                                       CmdFIFOFULL       , // For Scheduler
-    output                                       ValidBRAM         , // For Arbiter_BRAM
-    output             [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          , // For BRAM
-    output Data_packet                           DescStatus        ,
-    output             [BRAM_NUM_COL    - 1 : 0] WEBRAM        
+    input                                                 Clk               ,
+    input                                                 RST               ,
+    input          Data_packet                            DataBRAM          , // From BRAM
+    input                                                 IssueValid        ,
+    input                                                 ReadyBRAM         , // From Arbiter_BRAM
+    input          CHI_Command                            Command           , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
+    ReqChannel                                            ReqChan           , // Request ChannelS
+    RspOutbChannel                                        RspOutbChan       , // Response outbound Chanel
+    DatOutbChannel                                        DatOutbChan       , // Data outbound Chanel
+    RspInbChannel                                         RspInbChan        , // Response inbound Chanel
+    DatInbChannel                                         DatInbChan        , // Data inbound Chanel
+    output                                                CmdFIFOFULL       , // For Scheduler
+    output                                                ValidBRAM         , // For Arbiter_BRAM
+    output                      [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          , // For BRAM
+    output          Data_packet                           DescStatus        ,
+    output                      [BRAM_NUM_COL    - 1 : 0] WEBRAM        
     );                         
     
    // Command FIFO signals
@@ -147,8 +132,8 @@ module CHIConverter#(
    //CommandFIFO FIFO (SrcAddr,DstAddr,BTS,SB,DescAddr,LastDescTrans)
    assign SigDeqCommand = SigDeqRead & SigDeqWrite ;
    FIFO #(     
-       3*BRAM_COL_WIDTH + BRAM_ADDR_WIDTH + 1  ,  //FIFO_WIDTH   
-       CMD_FIFO_LENGTH                            //FIFO_LENGTH      
+       .FIFO_WIDTH  (3*BRAM_COL_WIDTH + BRAM_ADDR_WIDTH + 1 )  ,  //FIFO_WIDTH   
+       .FIFO_LENGTH (CMD_FIFO_LENGTH                        )     //FIFO_LENGTH      
        )     
        CommandFIFO (     
        .RST        ( RST             ) ,      
@@ -167,48 +152,48 @@ module CHIConverter#(
                             DescAddr      : SigCommand.DescAddr                    ,
                             LastDescTrans : SigCommand.LastDescTrans & SigDeqWrite  };
    FIFO #(     
-       SIZE_WIDTH        ,  //FIFO_WIDTH       
-       DATA_FIFO_LENGTH     //FIFO_LENGTH      
+       .FIFO_WIDTH  (SIZE_WIDTH       )  ,  //FIFO_WIDTH       
+       .FIFO_LENGTH (DATA_FIFO_LENGTH )     //FIFO_LENGTH      
        )     
        SizeFIFO (     
-       .RST     ( RST                                               ) ,      
-       .Clk     ( Clk                                               ) ,      
-       .Inp     ( SigSizeFIFOIn                                     ) , 
-       .Enqueue ( WriteReqArbValid & WriteReqArbReady & TXREQFLITV  ) , 
-       .Dequeue ( SigDeqData                                        ) , 
-       .Outp    ( SigSizePack                                       ) , 
-       .FULL    ( SigSizeFULL                                       ) , 
-       .Empty   ( SigSizeEmpty                                      ) 
+       .RST     ( RST                                                       ) ,      
+       .Clk     ( Clk                                                       ) ,      
+       .Inp     ( SigSizeFIFOIn                                             ) , 
+       .Enqueue ( WriteReqArbValid & WriteReqArbReady & ReqChan.TXREQFLITV  ) , 
+       .Dequeue ( SigDeqData                                                ) , 
+       .Outp    ( SigSizePack                                               ) , 
+       .FULL    ( SigSizeFULL                                               ) , 
+       .Empty   ( SigSizeEmpty                                              ) 
        );
        
    // Read Data FIFO
-   assign SigDataFIFOIn = '{default : 0                  ,
-                            Data    : RXDATFLIT.Data     ,
-                            RespErr  : RXDATFLIT.RespErr    };
+   assign SigDataFIFOIn = '{default : 0                             ,
+                            Data    : DatInbChan.RXDATFLIT.Data     ,
+                            RespErr  : DatInbChan.RXDATFLIT.RespErr   };
    FIFO #(     
-       CHI_DATA_WIDTH*8 + `RspErrWidth ,  //FIFO_WIDTH       
-       DATA_FIFO_LENGTH                   //FIFO_LENGTH      
+       .FIFO_WIDTH  (CHI_DATA_WIDTH*8 + `RspErrWidth ),  //FIFO_WIDTH       
+       .FIFO_LENGTH (DATA_FIFO_LENGTH                )   //FIFO_LENGTH      
        )     
        FIFOData  (     
-       .RST      ( RST                            ) ,      
-       .Clk      ( Clk                            ) ,      
-       .Inp      ( SigDataFIFOIn                  ) , 
-       .Enqueue  ( RXDATFLITV & DataCrdInbound!=0 ) , 
-       .Dequeue  ( SigDeqData                     ) , 
-       .Outp     ( SigDataPack                    ) , 
-       .FULL     (                                ) , 
-       .Empty    ( SigDataEmpty                   ) 
+       .RST      ( RST                                       ) ,      
+       .Clk      ( Clk                                       ) ,      
+       .Inp      ( SigDataFIFOIn                             ) , 
+       .Enqueue  ( DatInbChan.RXDATFLITV & DataCrdInbound!=0 ) , 
+       .Dequeue  ( SigDeqData                                ) , 
+       .Outp     ( SigDataPack                               ) , 
+       .FULL     (                                           ) , 
+       .Empty    ( SigDataEmpty                              ) 
        );
        
    // DBID FIFO
-   assign SigDBIDFIFOIn = '{default : 0                  ,
-                            DBID    : RXRSPFLIT.DBID     ,
-                            RespErr  : RXRSPFLIT.RespErr   };
+   assign SigDBIDFIFOIn = '{default : 0                                ,
+                            DBID    : RspInbChan.RXRSPFLIT.DBID     ,
+                            RespErr : RspInbChan.RXRSPFLIT.RespErr   };
                             
-   assign SigEnqDBID  = (RXRSPFLITV == 1 & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp) & RspCrdInbound != 0 );
+   assign SigEnqDBID  = (RspInbChan.RXRSPFLITV == 1 & (RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp) & RspCrdInbound != 0 );
    FIFO #(     
-       `DBIDRespWidth + `RspErrWidth  ,  //FIFO_WIDTH       
-       DATA_FIFO_LENGTH                  //FIFO_LENGTH      
+       .FIFO_WIDTH  ( `DBIDRespWidth + `RspErrWidth ),  //FIFO_WIDTH       
+       .FIFO_LENGTH ( DATA_FIFO_LENGTH              )   //FIFO_LENGTH      
        )     
        FIFODBID  (     
        .RST      ( RST            ) ,      
@@ -229,10 +214,10 @@ module CHIConverter#(
                             DBIDRespErr     : SigDBIDPack.RespErr       ,
                             DataRespErr     : SigDataPack.RespErr         };
    Completer #(     
-       BRAM_ADDR_WIDTH                       ,            
-       BRAM_NUM_COL                          ,        
-       DATA_FIFO_LENGTH                      , 
-       BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // FIFO_WIDTH is DescAdd + RespErrorWidth + LastDescTrans     
+       .BRAM_ADDR_WIDTH ( BRAM_ADDR_WIDTH                      ) ,            
+       .BRAM_NUM_COL    ( BRAM_NUM_COL                         ) ,        
+       .FIFO_Length     ( DATA_FIFO_LENGTH                     ) , 
+       .FIFO_WIDTH      ( BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1 )   // FIFO_WIDTH is DescAdd + RespErrorWidth + LastDescTrans     
        )
        myCompleter   (     
        .RST          ( RST           ) ,      
@@ -257,8 +242,8 @@ module CHIConverter#(
         FreeWriteTxnID <= 'd128 ;
       end
       else begin
-        if(TXREQFLITV & TXREQFLIT.Opcode == `ReadOnce)begin // if a Read Request is happening
-          if(!RXDATFLITV)
+        if(ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `ReadOnce)begin // if a Read Request is happening
+          if(!DatInbChan.RXDATFLITV)
             FreeReadTxnID <= FreeReadTxnID - 1; // decrease number of available TxnID if there is not a DataRsp
           if(NextReadTxnID == 127) // update TxnID that will be used for the next Read
             NextReadTxnID <= 0 ;
@@ -266,12 +251,12 @@ module CHIConverter#(
             NextReadTxnID <= NextReadTxnID + 1 ;
         end
         else begin
-          if(RXDATFLITV)  // if a Read Request is not happening increase number of available TxnID if there is a DataRsp
+          if(DatInbChan.RXDATFLITV)  // if a Read Request is not happening increase number of available TxnID if there is a DataRsp
             FreeReadTxnID <= FreeReadTxnID + 1;
         end
         
-        if(TXREQFLITV & TXREQFLIT.Opcode == `WriteUniquePtl)begin // if a Wriet Request is happening
-          if(!(RXRSPFLITV & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))) // decrease number of available TxnID if there is not a DBIDRsp
+        if(ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl)begin // if a Wriet Request is happening
+          if(!(RspInbChan.RXRSPFLITV & (RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp))) // decrease number of available TxnID if there is not a DBIDRsp
             FreeWriteTxnID <= FreeWriteTxnID - 1;
           if(NextWriteTxnID == 255) // update TxnID that will be used for the next Write
             NextWriteTxnID <= 'd128 ;
@@ -279,7 +264,7 @@ module CHIConverter#(
             NextWriteTxnID <= NextWriteTxnID + 1 ;
         end
         else begin
-          if(RXRSPFLITV & (RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp)) // if a Write Request is not happening increase number of available TxnID if there is a DBIDRsp
+          if(RspInbChan.RXRSPFLITV & (RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp)) // if a Write Request is not happening increase number of available TxnID if there is a DBIDRsp
             FreeWriteTxnID <= FreeWriteTxnID + 1;
         end
       end
@@ -400,8 +385,8 @@ module CHIConverter#(
    assign  ReadReqArbReady  = (ReadReqArbValid & !WriteReqArbValid) ? 1 : ((ReadReqArbValid & WriteReqArbValid) ? !AccessReg : 0) ;
    assign  WriteReqArbReady = (!ReadReqArbValid & WriteReqArbValid) ? 1 : ((ReadReqArbValid & WriteReqArbValid) ?  AccessReg : 0) ;
    // Request chanel signals
-   assign  TXREQFLIT    = WriteReqArbReady ? WriteReqFlit : (ReadReqArbReady ? ReadReqFlit : 0) ;
-   assign  TXREQFLITV   = WriteReqArbReady ? WriteReqV    : (ReadReqArbReady ? ReadReqV    : 0) ;
+   assign  ReqChan.TXREQFLIT    = WriteReqArbReady ? WriteReqFlit : (ReadReqArbReady ? ReadReqFlit : 0) ;
+   assign  ReqChan.TXREQFLITV   = WriteReqArbReady ? WriteReqV    : (ReadReqArbReady ? ReadReqV    : 0) ;
    // ################## End Arbiter ##################      
        
       
@@ -419,45 +404,45 @@ module CHIConverter#(
      end
      else begin
        // Request chanel Crd Counter
-       if(TXREQLCRDV & !(ReqCrd != 0 & TXREQFLITV) & ReqCrd < `MaxCrds)
+       if(ReqChan.TXREQLCRDV & !(ReqCrd != 0 & ReqChan.TXREQFLITV) & ReqCrd < `MaxCrds)
          ReqCrd <= ReqCrd + 1 ;
-       else if(!TXREQLCRDV & (ReqCrd != 0 & TXREQFLITV) & ReqCrd > 0)
+       else if(!ReqChan.TXREQLCRDV & (ReqCrd != 0 & ReqChan.TXREQFLITV) & ReqCrd > 0)
          ReqCrd <= ReqCrd - 1 ;
        // Outbound Response chanle Crd Counter
-       if(TXRSPLCRDV & !(RspCrdOutbound != 0 & TXRSPFLITV) & RspCrdOutbound < `MaxCrds)
+       if(RspOutbChan.TXRSPLCRDV & !(RspCrdOutbound != 0 & RspOutbChan.TXRSPFLITV) & RspCrdOutbound < `MaxCrds)
          RspCrdOutbound <= RspCrdOutbound + 1 ;
-       else if(!TXRSPLCRDV & (RspCrdOutbound != 0 & TXRSPFLITV) & RspCrdOutbound > 0)
+       else if(!RspOutbChan.TXRSPLCRDV & (RspCrdOutbound != 0 & RspOutbChan.TXRSPFLITV) & RspCrdOutbound > 0)
          RspCrdOutbound <= RspCrdOutbound - 1 ;
        // Outbound Data chanle Crd Counter
-       if(TXDATLCRDV & !(DataCrdOutbound != 0 & TXDATFLITV) & DataCrdOutbound <`MaxCrds)
+       if(DatOutbChan.TXDATLCRDV & !(DataCrdOutbound != 0 & DatOutbChan.TXDATFLITV) & DataCrdOutbound <`MaxCrds)
          DataCrdOutbound <= DataCrdOutbound + 1 ;
-       else if(!TXDATLCRDV & (DataCrdOutbound != 0 & TXDATFLITV) & DataCrdOutbound > 0 )
+       else if(!DatOutbChan.TXDATLCRDV & (DataCrdOutbound != 0 & DatOutbChan.TXDATFLITV) & DataCrdOutbound > 0 )
          DataCrdOutbound <= DataCrdOutbound - 1 ;
        // Inbound Response chanle Crd Counter
-       if(RXRSPLCRDV & !(RspCrdInbound != 0 & RXRSPFLITV))
+       if(RspInbChan.RXRSPLCRDV & !(RspCrdInbound != 0 & RspInbChan.RXRSPFLITV))
          RspCrdInbound <= RspCrdInbound + 1 ;
-       else if(!RXRSPLCRDV & (RspCrdInbound != 0 & RXRSPFLITV))
+       else if(!RspInbChan.RXRSPLCRDV & (RspCrdInbound != 0 & RspInbChan.RXRSPFLITV))
          RspCrdInbound <= RspCrdInbound - 1 ;
        // Count the number of given Rsp Crds in order not to give more than DBID FIFO length
-       if(RXRSPLCRDV & !SigDeqData & (!RXRSPFLITV | RspCrdInbound == 0 | RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))
+       if(RspInbChan.RXRSPLCRDV & !SigDeqData & (!RspInbChan.RXRSPFLITV | RspCrdInbound == 0 | RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd + 1 ;
-       else if(!RXRSPLCRDV & SigDeqData & (!RXRSPFLITV | RspCrdInbound == 0 | RXRSPFLIT.Opcode == `DBIDResp | RXRSPFLIT.Opcode == `CompDBIDResp))
+       else if(!RspInbChan.RXRSPLCRDV & SigDeqData & (!RspInbChan.RXRSPFLITV | RspCrdInbound == 0 | RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd - 1 ;
-       else if(!RXRSPLCRDV & !SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
+       else if(!RspInbChan.RXRSPLCRDV & !SigDeqData & (RspInbChan.RXRSPFLITV & RspCrdInbound != 0 & RspInbChan.RXRSPFLIT.Opcode != `DBIDResp & RspInbChan.RXRSPFLIT.Opcode != `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd - 1 ;
-       else if(!RXRSPLCRDV & SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
+       else if(!RspInbChan.RXRSPLCRDV & SigDeqData & (RspInbChan.RXRSPFLITV & RspCrdInbound != 0 & RspInbChan.RXRSPFLIT.Opcode != `DBIDResp & RspInbChan.RXRSPFLIT.Opcode != `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd - 2 ;
-         else if(RXRSPLCRDV & SigDeqData & (RXRSPFLITV & RspCrdInbound != 0 & RXRSPFLIT.Opcode != `DBIDResp & RXRSPFLIT.Opcode != `CompDBIDResp))
+         else if(RspInbChan.RXRSPLCRDV & SigDeqData & (RspInbChan.RXRSPFLITV & RspCrdInbound != 0 & RspInbChan.RXRSPFLIT.Opcode != `DBIDResp & RspInbChan.RXRSPFLIT.Opcode != `CompDBIDResp))
          GivenRspCrd <= GivenRspCrd - 1 ;
        // Inbound Data chanle Crd Counter
-       if(RXDATLCRDV & !(DataCrdInbound != 0 & RXDATFLITV))
+       if(DatInbChan.RXDATLCRDV & !(DataCrdInbound != 0 & DatInbChan.RXDATFLITV))
          DataCrdInbound <= DataCrdInbound + 1 ;
-       else if(!RXDATLCRDV & (DataCrdInbound != 0 & RXDATFLITV))
+       else if(!DatInbChan.RXDATLCRDV & (DataCrdInbound != 0 & DatInbChan.RXDATFLITV))
          DataCrdInbound <= DataCrdInbound - 1 ;
        // Count the number of given Data Crds in order not to give more than DATA FIFO length
-       if(RXDATLCRDV & !SigDeqData)
+       if(DatInbChan.RXDATLCRDV & !SigDeqData)
          GivenDataCrd <= GivenDataCrd + 1 ;       
-       else if(!RXDATLCRDV & SigDeqData)
+       else if(!DatInbChan.RXDATLCRDV & SigDeqData)
          GivenDataCrd <= GivenDataCrd - 1 ;      
          
      end
@@ -468,25 +453,25 @@ module CHIConverter#(
    //     V         //
    ///////////////////
    // Give an extra Crd in outbound Rsp Chanel
-   assign RXRSPLCRDV = (!RST & ((GivenRspCrd  < DATA_FIFO_LENGTH) & (RspCrdInbound  < `MaxCrds))) ;
+   assign RspInbChan.RXRSPLCRDV = (!RST & ((GivenRspCrd  < DATA_FIFO_LENGTH) & (RspCrdInbound  < `MaxCrds))) ;
    // Give an extra Crd in outbound Data Chanel
-   assign RXDATLCRDV = (!RST & ((GivenDataCrd < DATA_FIFO_LENGTH) & (DataCrdInbound < `MaxCrds))) ;
+   assign DatInbChan.RXDATLCRDV = (!RST & ((GivenDataCrd < DATA_FIFO_LENGTH) & (DataCrdInbound < `MaxCrds))) ;
    
    
     // ****************** Data Sender ******************
    // Enable valid of CHI-DATA chanel 
-   assign TXDATFLITV = (!SigDataEmpty & !SigDBIDEmpty & !FULLUpdater & DataCrdOutbound != 0) ? 1 : 0 ;
+   assign DatOutbChan.TXDATFLITV = (!SigDataEmpty & !SigDBIDEmpty & !FULLUpdater & DataCrdOutbound != 0) ? 1 : 0 ;
    // Dequeue FIFOs for DATA transfer 
-   assign SigDeqData = TXDATFLITV ;
+   assign SigDeqData = DatOutbChan.TXDATFLITV ;
    // Create Request Write flit 
-   assign TXDATFLIT    = '{default    : 0                                             ,                       
+   assign DatOutbChan.TXDATFLIT    = '{default    : 0                                             ,                       
                            QoS        : QoS                                           ,
                            TgtID      : TgtID                                         ,
                            SrcID      : SrcID                                         ,
                            TxnID      : SigDBIDPack.DBID                              ,
                            HomeNID    : 0                                             ,
                            Opcode     : `NonCopyBackWrData                            ,
-                           RespErr    : SigDBIDPack.RespErr | SigDataPack.RespErr       ,
+                           RespErr    : SigDBIDPack.RespErr | SigDataPack.RespErr     ,
                            Resp       : 0                                             , // Resp should be 0 when NonCopyBackWrData Rsp
                            DataSource : 0                                             , 
                            DBID       : 0                                             ,
@@ -498,6 +483,6 @@ module CHIConverter#(
                            DataCheck  : 0                                             ,
                            Poison     : 0                                               } ;
     // ****************** End Data Sender ******************
-   assign TXRSPFLITV = 0 ; //usless
-   assign TXRSPFLIT  = 0 ;
+   assign RspOutbChan.TXRSPFLITV = 0 ; //usless
+   assign RspOutbChan.TXRSPFLIT  = 0 ;
  endmodule

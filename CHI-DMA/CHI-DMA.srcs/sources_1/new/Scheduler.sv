@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+import CHIFIFOsPkg ::*; 
 //////////////////////////////////////////////////////////////////////////////////
 /*Scheduler is the module which determines the way that the transactions is going to
 be executed. Firstly Scheduler takes the address pointer from FIFO that has been 
@@ -55,12 +56,7 @@ module Scheduler#(
     output logic                              ValidFIFO         , //sig for FIFO 's Arbiter
     output wire       [BRAM_ADDR_WIDTH  -1:0] DescAddrPointer   , 
     output logic                              IssueValid        , //sig for chi-converter
-    output wire       [MEMAddrWidth     -1:0] ReadAddr          ,
-    output wire       [MEMAddrWidth     -1:0] ReadLength        ,
-    output wire       [MEMAddrWidth     -1:0] WriteAddr         ,
-    output wire       [MEMAddrWidth     -1:0] WriteLength       ,
-    output wire       [BRAM_ADDR_WIDTH  -1:0] FinishedDescAddr  ,
-    output wire                               FinishedDescValid 
+    output CHI_Command                        Command          
     );
     
     //FMS states : Idle       -> Read BRAM when not empty, 
@@ -88,14 +84,11 @@ module Scheduler#(
     // Write back to FIFO the pointer of register
     assign DescAddrPointer = AddrRegister ; 
     // command for CHI-converter(transaction's information)
-    assign ReadAddr    = DescDataIn.SrcAddr + DescDataIn.SentBytes ;
-    assign WriteAddr   = DescDataIn.DstAddr + DescDataIn.SentBytes ;
-    assign ReadLength  = SigWordLength                             ;
-    assign WriteLength = SigWordLength                             ;
-    // Address pointer of Descriptor
-    assign FinishedDescAddr = FIFO_Addr ;
-    // This signal is 1 if it is the last transaction of Descriptor
-    assign FinishedDescValid = DescDataIn.BytesToSend == DescDataOut.SentBytes ;
+    assign Command.SrcAddr       = DescDataIn.SrcAddr + DescDataIn.SentBytes       ;
+    assign Command.DstAddr       = DescDataIn.DstAddr + DescDataIn.SentBytes       ;
+    assign Command.Length        = SigWordLength                                   ;
+    assign Command.DescAddr      = FIFO_Addr                                       ;
+    assign Command.LastDescTrans = DescDataIn.BytesToSend == DescDataOut.SentBytes ;
    
    //FSM's state
    always_ff @ (posedge Clk) begin

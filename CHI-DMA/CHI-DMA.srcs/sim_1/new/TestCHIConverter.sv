@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 import DataPkg::*;
 import CHIFlitsPkg::*; 
-
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -44,7 +43,7 @@ module TestCHIConverter#(
   parameter BRAM_ADDR_WIDTH    = 10  ,
   parameter BRAM_NUM_COL       = 8   , // As the Data_packet fields
   parameter BRAM_COL_WIDTH     = 32  ,
-  parameter MEM_ADDR_WIDTH     = 44  ,//<------ should be the same with BRAM_COL_WIDTH
+  parameter MEM_ADDR_WIDTH     = 44  ,
   parameter CHI_DATA_WIDTH     = 64  , //Bytes
   parameter Chunk              = 5   ,
   parameter NUM_OF_REPETITIONS = 500 ,
@@ -52,73 +51,43 @@ module TestCHIConverter#(
 //----------------------------------------------------------------------
 );
 
-reg                                   Clk               ;
-reg                                   RST               ;
-Data_packet                           DataBRAM          ; // From BRAM
-reg                                   ReadyBRAM         ; // From Arbiter_BRAM
-CHI_Command                           Command           ;
-reg                                   IssueValid        ; 
-reg                                   TXREQFLITPEND     ; // Request outbound Channel
-reg                                   TXREQFLITV        ;
-ReqFlit                               TXREQFLIT         ;
-reg                                   TXREQLCRDV        ;
-wire                                  TXRSPFLITPEND     ; // Response outbound Channel
-wire                                  TXRSPFLITV        ;
-RspFlit                               TXRSPFLIT         ;
-reg                                   TXRSPLCRDV        ;
-wire                                  TXDATFLITPEND     ; // Data outbound Channel
-wire                                  TXDATFLITV        ;
-DataFlit                              TXDATFLIT         ;
-reg                                   TXDATLCRDV        ;
-reg                                   RXRSPFLITPEND     ; // Response inbound Channel
-reg                                   RXRSPFLITV        ;
-RspFlit                               RXRSPFLIT         ;
-wire                                  RXRSPLCRDV        ;
-reg                                   RXDATFLITPEND     ; // Data inbound Channel
-reg                                   RXDATFLITV        ;
-DataFlit                              RXDATFLIT         ;
-wire                                  RXDATLCRDV        ;
-reg                                   CmdFIFOFULL       ; // For Scheduler
-reg                                   ValidBRAM         ; // For Arbiter_BRAM
-reg         [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM
-Data_packet                           DescStatus        ;
-reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
+reg                                      Clk               ;
+reg                                      RST               ;
+Data_packet                              DataBRAM          ; // From BRAM
+reg                                      ReadyBRAM         ; // From Arbiter_BRAM
+CHI_Command                              Command           ;
+reg                                      IssueValid        ; 
+ReqChannel                               ReqChan    ()     ; // Request ChannelS
+RspOutbChannel                           RspOutbChan()     ; // Response outbound Chanel
+DatOutbChannel                           DatOutbChan()     ; // Data outbound Chanel
+RspInbChannel                            RspInbChan ()     ; // Response inbound Chanel
+DatInbChannel                            DatInbChan ()     ; // Data inbound Chanel
+reg                                      CmdFIFOFULL       ; // For Scheduler
+reg                                      ValidBRAM         ; // For Arbiter_BRAM
+reg            [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM
+Data_packet                              DescStatus        ;
+reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
   
     // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
     localparam period = 20;  
 
     CHIConverter UUT    (
-     .Clk               (Clk               ) ,
-     .RST               (RST               ) ,
-     .DataBRAM          (DataBRAM          ) ,
-     .ReadyBRAM         (ReadyBRAM         ) ,
-     .Command           (Command           ) ,
-     .IssueValid        (IssueValid        ) ,
-     .TXREQFLITPEND     (TXREQFLITPEND     ) ,
-     .TXREQFLITV        (TXREQFLITV        ) ,
-     .TXREQFLIT         (TXREQFLIT         ) ,  
-     .TXREQLCRDV        (TXREQLCRDV        ) ,
-     .TXRSPFLITPEND     (TXRSPFLITPEND     ) ,
-     .TXRSPFLITV        (TXRSPFLITV        ) ,
-     .TXRSPFLIT         (TXRSPFLIT         ) ,
-     .TXRSPLCRDV        (TXRSPLCRDV        ) ,
-     .TXDATFLITPEND     (TXDATFLITPEND     ) ,
-     .TXDATFLITV        (TXDATFLITV        ) ,
-     .TXDATFLIT         (TXDATFLIT         ) ,
-     .TXDATLCRDV        (TXDATLCRDV        ) ,
-     .RXRSPFLITPEND     (RXRSPFLITPEND     ) ,
-     .RXRSPFLITV        (RXRSPFLITV        ) ,
-     .RXRSPFLIT         (RXRSPFLIT         ) ,
-     .RXRSPLCRDV        (RXRSPLCRDV        ) ,
-     .RXDATFLITPEND     (RXDATFLITPEND     ) ,
-     .RXDATFLITV        (RXDATFLITV        ) ,
-     .RXDATFLIT         (RXDATFLIT         ) ,
-     .RXDATLCRDV        (RXDATLCRDV        ) ,
-     .CmdFIFOFULL       (CmdFIFOFULL       ) ,
-     .ValidBRAM         (ValidBRAM         ) ,
-     .AddrBRAM          (AddrBRAM          ) ,
-     .DescStatus        (DescStatus        ) ,
-     .WEBRAM            (WEBRAM            )    
+     .Clk               (Clk                   ) ,
+     .RST               (RST                   ) ,
+     .DataBRAM          (DataBRAM              ) ,
+     .ReadyBRAM         (ReadyBRAM             ) ,
+     .Command           (Command               ) ,
+     .IssueValid        (IssueValid            ) ,
+     .ReqChan           (ReqChan    .OUTBOUND  ) ,
+     .RspOutbChan       (RspOutbChan.OUTBOUND  ) ,
+     .DatOutbChan       (DatOutbChan.OUTBOUND  ) ,
+     .RspInbChan        (RspInbChan .INBOUND   ) ,
+     .DatInbChan        (DatInbChan .INBOUND   ) ,
+     .CmdFIFOFULL       (CmdFIFOFULL           ) ,
+     .ValidBRAM         (ValidBRAM             ) ,
+     .AddrBRAM          (AddrBRAM              ) ,
+     .DescStatus        (DescStatus            ) ,
+     .WEBRAM            (WEBRAM                )    
     );
     
     //Crds signals
@@ -146,14 +115,14 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
        FIFO_Length    //FIFO_LENGTH      
        )     
        myRFIFOReq  (     
-       .RST      ( RST                                          ) ,      
-       .Clk      ( Clk                                          ) ,      
-       .Inp      ( TXREQFLIT                                    ) , 
-       .Enqueue  ( TXREQFLITV & TXREQFLIT.Opcode == `ReadOnce   ) , 
-       .Dequeue  ( SigDeqReqR                                   ) , 
-       .Outp     ( SigTXREQFLITR                                ) , 
-       .FULL     (                                              ) , 
-       .Empty    ( SigReqEmptyR                                 ) 
+       .RST      ( RST                                                        ) ,      
+       .Clk      ( Clk                                                        ) ,      
+       .Inp      ( ReqChan.TXREQFLIT                                          ) , 
+       .Enqueue  ( ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `ReadOnce ) , 
+       .Dequeue  ( SigDeqReqR                                                 ) , 
+       .Outp     ( SigTXREQFLITR                                              ) , 
+       .FULL     (                                                            ) , 
+       .Empty    ( SigReqEmptyR                                               ) 
        );
        
     // Write Req FIFO (keeps all the uncomplete read Writeuests)
@@ -162,14 +131,14 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
        FIFO_Length    //FIFO_LENGTH      
        )     
        myWFIFOReq  (     
-       .RST      ( RST                                              ) ,      
-       .Clk      ( Clk                                              ) ,      
-       .Inp      ( TXREQFLIT                                        ) , 
-       .Enqueue  ( TXREQFLITV & TXREQFLIT.Opcode == `WriteUniquePtl ) , 
-       .Dequeue  ( SigDeqReqW                                       ) , 
-       .Outp     ( SigTXREQFLITW                                    ) , 
-       .FULL     (                                                  ) , 
-       .Empty    ( SigReqEmptyW                                     ) 
+       .RST      ( RST                                                              ) ,      
+       .Clk      ( Clk                                                              ) ,      
+       .Inp      ( ReqChan.TXREQFLIT                                                ) , 
+       .Enqueue  ( ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl ) , 
+       .Dequeue  ( SigDeqReqW                                                       ) , 
+       .Outp     ( SigTXREQFLITW                                                    ) , 
+       .FULL     (                                                                  ) , 
+       .Empty    ( SigReqEmptyW                                                     ) 
        );
        
     
@@ -209,13 +178,13 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         CountRspCrdsInb  = 0 ;
       end
       else begin
-        if(RXDATLCRDV & !RXDATFLITV)
+        if(DatInbChan.RXDATLCRDV & !DatInbChan.RXDATFLITV)
           CountDataCrdsInb <= CountDataCrdsInb + 1;
-        else if(!RXDATLCRDV & RXDATFLITV)
+        else if(!DatInbChan.RXDATLCRDV & DatInbChan.RXDATFLITV)
           CountDataCrdsInb <= CountDataCrdsInb - 1;
-        if(RXRSPLCRDV & !RXRSPFLITV) 
+        if(RspInbChan.RXRSPLCRDV & !RspInbChan.RXRSPFLITV) 
           CountRspCrdsInb <= CountRspCrdsInb + 1 ; 
-        else if(!RXRSPLCRDV & RXRSPFLITV) 
+        else if(!RspInbChan.RXRSPLCRDV & RspInbChan.RXRSPFLITV) 
           CountRspCrdsInb <= CountRspCrdsInb - 1; 
       end
     end
@@ -225,9 +194,9 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
       if(RST)
         GivenReqCrds <= 0;
       else begin
-        if(!TXREQLCRDV & TXREQFLITV & GivenReqCrds != 0)
+        if(!ReqChan.TXREQLCRDV & ReqChan.TXREQFLITV & GivenReqCrds != 0)
           GivenReqCrds <= GivenReqCrds - 1 ;
-        else if(TXREQLCRDV & (!TXREQFLITV | GivenReqCrds == 0))
+        else if(ReqChan.TXREQLCRDV & (!ReqChan.TXREQFLITV | GivenReqCrds == 0))
           GivenReqCrds<= GivenReqCrds + 1 ;
       end
     end
@@ -236,40 +205,40 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     //give Outbound Crds
     always begin
       if(RST)begin
-        TXREQLCRDV = 0;
+        ReqChan.TXREQLCRDV = 0;
         #period;
       end
       else begin
-        TXREQLCRDV = 0;
+        ReqChan.TXREQLCRDV = 0;
         #(2*period*$urandom_range(2));
         if(GivenReqCrds < FIFO_Length & GivenReqCrds < `MaxCrds)
-          TXREQLCRDV = 1;
+          ReqChan.TXREQLCRDV = 1;
         #(2*period);
       end
     end
     always begin
       if(RST) begin
-        TXRSPLCRDV = 0;
+        RspOutbChan.TXRSPLCRDV = 0;
         #period;
       end
       else begin
-        TXRSPLCRDV = 0;
+        RspOutbChan.TXRSPLCRDV = 0;
         #(2*period*$urandom_range(5));
         if(CountRspCrdsOutb < `MaxCrds)
-          TXRSPLCRDV = 1;
+          RspOutbChan.TXRSPLCRDV = 1;
         #(2*period);
       end
     end
     always begin
       if(RST) begin
-        TXDATLCRDV = 0;
+        DatOutbChan.TXDATLCRDV = 0;
         #period;
       end
       else begin
-        TXDATLCRDV = 0;
+        DatOutbChan.TXDATLCRDV = 0;
         #(2*period*$urandom_range(5));
         if(CountDataCrdsOutb < `MaxCrds)
-          TXDATLCRDV = 1;
+          DatOutbChan.TXDATLCRDV = 1;
         #(2*period);
       end
     end
@@ -282,17 +251,17 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         CountReqCrdsOutb  = 0 ;
       end
       else begin
-        if(TXDATLCRDV & !TXDATFLITV)
+        if(DatOutbChan.TXDATLCRDV & !DatOutbChan.TXDATFLITV)
           CountDataCrdsOutb <= CountDataCrdsOutb + 1;
-        else if(!TXDATLCRDV & TXDATFLITV)
+        else if(!DatOutbChan.TXDATLCRDV & DatOutbChan.TXDATFLITV)
           CountDataCrdsOutb <= CountDataCrdsOutb - 1;
-        if(TXRSPLCRDV & !TXRSPFLITV) 
+        if(RspOutbChan.TXRSPLCRDV & !RspOutbChan.TXRSPFLITV) 
           CountRspCrdsOutb <= CountRspCrdsOutb + 1; 
-        else if(!TXRSPLCRDV & TXRSPFLITV) 
+        else if(!RspOutbChan.TXRSPLCRDV & RspOutbChan.TXRSPFLITV) 
           CountRspCrdsOutb <= CountRspCrdsOutb - 1; 
-        if(TXREQLCRDV & !TXREQFLITV) 
+        if(ReqChan.TXREQLCRDV & !ReqChan.TXREQFLITV) 
           CountReqCrdsOutb <= CountReqCrdsOutb + 1; 
-        else if(!TXREQLCRDV & TXREQFLITV) 
+        else if(!ReqChan.TXREQLCRDV & ReqChan.TXREQFLITV) 
           CountReqCrdsOutb <= CountReqCrdsOutb - 1 ; 
       end
     end
@@ -302,14 +271,14 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
       if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrdsInb != 0)begin
         //Response delay
         if(SrcAddrReg + 64 != SigTXREQFLITR.Addr)begin // 0 delay if addresses are continuous
-          RXDATFLITPEND     = 0      ;
-          RXDATFLITV        = 0      ;
-          RXDATFLIT         = 0      ;
+          DatInbChan.RXDATFLITPEND     = 0      ;
+          DatInbChan.RXDATFLITV        = 0      ;
+          DatInbChan.RXDATFLIT         = 0      ;
           SigDeqReqR        = 0      ;
           #(2*period*$urandom_range(40) + 4*period);  // random delay if addresses arent continuous
         end
-          RXDATFLITV = 1;
-          RXDATFLIT = '{default                : 0                                            ,                       
+          DatInbChan.RXDATFLITV = 1;
+          DatInbChan.RXDATFLIT = '{default                : 0                                            ,                       
                                     QoS        : 0                                            ,
                                     TgtID      : 1                                            ,
                                     SrcID      : 2                                            ,
@@ -333,9 +302,9 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
           #(period*2);
       end
       else begin
-        RXDATFLITPEND     = 0      ;
-        RXDATFLITV        = 0      ;
-        RXDATFLIT         = 0      ;
+        DatInbChan.RXDATFLITPEND     = 0      ;
+        DatInbChan.RXDATFLITV        = 0      ;
+        DatInbChan.RXDATFLIT         = 0      ;
         SigDeqReqR        = 0      ;
         if(RST)
           SrcAddrReg      = 0      ;    
@@ -346,13 +315,13 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     //DBID Respose 
     always begin
       if(!SigReqEmptyW & SigTXREQFLITW.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0)begin
-        RXRSPFLITPEND     = 0      ;
-        RXRSPFLITV        = 0      ;
-        RXRSPFLIT         = 0      ;
+        RspInbChan.RXRSPFLITPEND     = 0      ;
+        RspInbChan.RXRSPFLITV        = 0      ;
+        RspInbChan.RXRSPFLIT         = 0      ;
         SigDeqReqW        = 0      ;
         #(2*period*$urandom_range(10)) //response delay
-        RXRSPFLITV = 1;
-        RXRSPFLIT = '{default              : 0                                        ,                       
+        RspInbChan.RXRSPFLITV = 1;
+        RspInbChan.RXRSPFLIT = '{default              : 0                                        ,                       
                                   QoS      : 0                                        ,
                                   TgtID    : 1                                        ,
                                   SrcID    : 2                                        ,
@@ -370,9 +339,9 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         #(period*2);
       end
       else begin
-        RXRSPFLITPEND     = 0      ;
-        RXRSPFLITV        = 0      ;
-        RXRSPFLIT         = 0      ;      
+        RspInbChan.RXRSPFLITPEND     = 0      ;
+        RspInbChan.RXRSPFLITV        = 0      ;
+        RspInbChan.RXRSPFLIT         = 0      ;      
         SigDeqReqW        = 0      ;
         #(period*2) ;
       end
@@ -397,13 +366,13 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
            Command.SrcAddr             = 'd64   * $urandom_range(10000)         ;
            Command.DstAddr             = 'd1000 * $urandom_range(10000)* 'd64   ;
            if(CmdFIFOFULL)begin        // Issue Command when CommandFIFO is not FULL                                 
-             IssueValid        = 0                                      ;
-           end                                                          
-           else begin                                                   
-             IssueValid        = 1                                      ;
-             i++                                                        ;
-           end                                                          
-           Command.DescAddr    = i                                      ;
+             IssueValid                = 0                                      ;
+           end                                                                  
+           else begin                                                           
+             IssueValid                = 1                                      ;
+             i++                                                                ;
+           end                                                                  
+           Command.DescAddr            = i                                      ;
            if($urandom_range(0,5) == 1)begin //20% chance to be the last transaction of Desc
              Command.LastDescTrans = 1                                          ; // If last trans LastDescTrans=1 
              Command.Length            = $urandom_range(1,CHI_DATA_WIDTH*Chunk) ; // and length < CHI_CHI_DATA_WIDTH * Chunk
@@ -478,26 +447,26 @@ reg         [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
             TestVectorCommand[CommandPointer] <= Command ;
             CommandPointer <= CommandPointer + 1 ;
           end
-          if(TXREQFLITV & (TXREQFLIT.Opcode == `ReadOnce) & CountReqCrdsOutb != 0 )begin // update a Read TestVector when a new Read Req happens
-            TestVectorReadReq[ReadReqPointer] <= TXREQFLIT ;
+          if(ReqChan.TXREQFLITV & (ReqChan.TXREQFLIT.Opcode == `ReadOnce) & CountReqCrdsOutb != 0 )begin // update a Read TestVector when a new Read Req happens
+            TestVectorReadReq[ReadReqPointer] <= ReqChan.TXREQFLIT ;
             ReadReqPointer <= ReadReqPointer + 1 ;
-            uniqueReadTxnID(ReadReqPointer,TXREQFLIT);
+            uniqueReadTxnID(ReadReqPointer,ReqChan.TXREQFLIT);
           end
-          if(TXREQFLITV & (TXREQFLIT.Opcode == `WriteUniquePtl) & CountReqCrdsOutb != 0 )begin // update a Write TestVector when a new Write Req happens
-            TestVectorWriteReq[WriteReqPointer] <= TXREQFLIT ;
+          if(ReqChan.TXREQFLITV & (ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl) & CountReqCrdsOutb != 0 )begin // update a Write TestVector when a new Write Req happens
+            TestVectorWriteReq[WriteReqPointer] <= ReqChan.TXREQFLIT ;
             WriteReqPointer <= WriteReqPointer + 1 ;
-            uniqueWriteTxnID(WriteReqPointer,TXREQFLIT);
+            uniqueWriteTxnID(WriteReqPointer,ReqChan.TXREQFLIT);
           end
-          if(RXRSPFLITV & CountRspCrdsInb != 0 )begin // update Rsp TestVector when a new Rsp comes 
-            TestVectorRspIn[RspInPointer] <= RXRSPFLIT ;
+          if(RspInbChan.RXRSPFLITV & CountRspCrdsInb != 0 )begin // update Rsp TestVector when a new Rsp comes 
+            TestVectorRspIn[RspInPointer] <= RspInbChan.RXRSPFLIT ;
             RspInPointer <= RspInPointer + 1 ;
           end
-          if(RXDATFLITV & CountDataCrdsInb != 0 )begin    // update Data In TestVector when a new RspData comes 
-            TestVectorDataIn[DataInPointer] <= RXDATFLIT ;
+          if(DatInbChan.RXDATFLITV & CountDataCrdsInb != 0 )begin    // update Data In TestVector when a new RspData comes 
+            TestVectorDataIn[DataInPointer] <= DatInbChan.RXDATFLIT ;
             DataInPointer  <= DataInPointer + 1 ;
           end
-          if(TXDATFLITV & CountDataCrdsOutb != 0 )begin // update Data Out TestVector when a new Data out Rsp Happens
-            TestVectorDataOut[DataOutPointer] <= TXDATFLIT ;
+          if(DatOutbChan.TXDATFLITV & CountDataCrdsOutb != 0 )begin // update Data Out TestVector when a new Data out Rsp Happens
+            TestVectorDataOut[DataOutPointer] <= DatOutbChan.TXDATFLIT ;
             DataOutPointer <= DataOutPointer + 1 ;
           end
           if(UUT.SigDeqCommand)begin //Count finished Command Requests
