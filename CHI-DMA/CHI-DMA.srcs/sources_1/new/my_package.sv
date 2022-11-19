@@ -61,6 +61,9 @@ package CHIFIFOsPkg;
 
 // CHI FLits
 package CHIFlitsPkg;
+   parameter REQ_FLIT_WIDTH = 117 ;
+   parameter RSP_FLIT_WIDTH = 51  ;
+   parameter DAT_FLIT_WIDTH = 706 ;
    typedef struct packed {
      bit [3 : 0] QoS           ; 
      bit [6 : 0] TgtID         ;  // Width can be 7 to 11. Width determined by NodeID_Width

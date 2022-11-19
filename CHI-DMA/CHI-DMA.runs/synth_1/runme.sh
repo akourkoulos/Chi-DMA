@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log BRAMAndSched.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source BRAMAndSched.tcl
+EAStep vivado -log CHI_DMA.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHI_DMA.tcl

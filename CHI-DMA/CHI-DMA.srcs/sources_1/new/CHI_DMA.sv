@@ -23,58 +23,73 @@ import CHIFIFOsPkg ::*;
 
 
 module CHI_DMA#(
+//--------------------------------------------------------------------------
   parameter BRAM_NUM_COL      = 8                           ,
   parameter BRAM_COL_WIDTH    = 32                          ,
   parameter BRAM_ADDR_WIDTH   = 10                          ,
   parameter DATA_WIDTH        = BRAM_NUM_COL*BRAM_COL_WIDTH ,
   parameter CHI_Word_Width    = 64                          ,
-  parameter Chunk             = 5                           ,
-  parameter MEMAddrWidth      = 32                          
+  parameter Chunk             = 5                           
+//--------------------------------------------------------------------------
 )(
-    input                             Clk                  ,//--- proc inp ---
-    input                             RST                  ,
-    input                             enaA                 ,
-    input  [BRAM_NUM_COL    - 1 : 0]  weA                  ,
-    input  [BRAM_ADDR_WIDTH - 1 : 0]  addrA                ,
-    input  Data_packet                dinA                 ,
-    input                             ValidArbIn           , //----------------
-    input                             InpReadyBRAM         , // From Arbiter BRAM
-    input                             InpCmdFIFOFULL       , // From CHI-convert   
-    output                            ReadyArbProc         , 
-    output Data_packet                BRAMdoutA            ,                   
-    output                            OutIssueValid        ,                   
-    output CHI_Command                Command              ,
-    output                            OutValidBRAM           
+    input                                                  Clk                  ,//--- proc inp ---
+    input                                                  RST                  ,
+    input                       [BRAM_NUM_COL    - 1 : 0]  weA                  ,
+    input                       [BRAM_ADDR_WIDTH - 1 : 0]  addrA                ,
+    input          Data_packet                             dinA                 ,
+    input                                                  ValidArbIn           , //----------------
+    output                                                 ReadyArbProc         , // From Arb_FIFO to Proc
+    output         Data_packet                             BRAMdoutA            , // From BRAM to Proc  
+    ReqChannel                                             ReqChan              , //-----CHI Channels----
+    RspOutbChannel                                         RspOutbChan          ,
+    DatOutbChannel                                         DatOutbChan          ,
+    RspInbChannel                                          RspInbChan           , 
+    DatInbChannel                                          DatInbChan             //---------------------
     );
     
-    wire        [BRAM_NUM_COL    - 1 : 0] BRAMweB          ;
-    wire        [BRAM_ADDR_WIDTH - 1 : 0] BRAMaddrB        ;
-    Data_packet                           BRAMdinB         ;
-    Data_packet                           BRAMdoutB        ;
-    // FIFO_Arbiter signals
-    wire                                  ValidArbSched    ;
-    wire                                  ReadyArbSched    ;
-    wire        [BRAM_ADDR_WIDTH - 1 : 0] WriteBackPointer ;
-    wire        [BRAM_ADDR_WIDTH - 1 : 0] ArbPointer       ;
+    //BRAM signals
+    Data_packet                           BRAMdoutB         ;
+    wire        [BRAM_NUM_COL    - 1 : 0] BRAMweB           ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] BRAMaddrB         ;
+    Data_packet                           BRAMdinB          ;     
     // FIFO signa
-    wire                                  FIFOEmpty        ;
-    wire        [BRAM_ADDR_WIDTH - 1 : 0] PointerFIFO      ;
-    wire                                  DequeueFIFO      ;
+    wire                                  FIFOEmpty         ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] PointerFIFO       ;
+    wire                                  DequeueFIFO       ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] ArbPointer        ;
+    //Scheduler signals
+    CHI_Command                           Command           ;
+    wire                                  IssueValid        ;
+    wire                                  SchedValidBRAM    ;
+    wire                                  SchedReadyBRAM    ;
+    wire        [BRAM_NUM_COL    - 1 : 0] BRAMweSched       ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] BRAMaddrSched     ;
+    Data_packet                           BRAMdinSched      ;
+    wire                                  ValidArbFIFOSched ;
+    wire                                  ReadyArbFIFOSched ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] WriteBackPointer  ;
+    // CHI_Conv signals
+    wire                                  CmdFIFOFULL       ;
+    wire                                  CHIConValidBRAM   ;
+    wire                                  ReadyCHIConv      ;
+    wire        [BRAM_NUM_COL    - 1 : 0] BRAMweCHIC        ;
+    wire        [BRAM_ADDR_WIDTH - 1 : 0] BRAMaddrCHIC      ;
+    Data_packet                           BRAMdinCHIC       ;
     
     //BRAM
     bytewrite_tdp_ram_rf#(
-      BRAM_NUM_COL     ,  
-      BRAM_COL_WIDTH   ,  
-      BRAM_ADDR_WIDTH  , 
-      DATA_WIDTH          
+      .BRAM_NUM_COL    (BRAM_NUM_COL    ),  
+      .BRAM_COL_WIDTH  (BRAM_COL_WIDTH  ),  
+      .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH ), 
+      .DATA_WIDTH      (DATA_WIDTH      )   
     )myBRAM(
       .clkA (Clk       ) ,
-      .enaA (enaA      ) ,
+      .enaA (1'b1      ) ,
       .weA  (weA       ) ,
       .addrA(addrA     ) ,
       .dinA (dinA      ) ,
       .clkB (Clk       ) ,
-      .enaB (1         ) ,
+      .enaB (1'b1      ) ,
       .weB  (BRAMweB   ) ,
       .addrB(BRAMaddrB ) ,
       .dinB (BRAMdinB  ) ,
@@ -82,58 +97,96 @@ module CHI_DMA#(
       .doutB(BRAMdoutB ) 
      );
 
-    //Arbiter
+    //Arbiter for FIFO
     Arbiter#( 
-       BRAM_ADDR_WIDTH  
+       .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH )  
     )ArbiterFIFO( 
-      .Valid           ({ValidArbSched , ValidArbIn} ) ,
-      .DescAddrInProc  (addrA                        ) ,
-      .DescAddrInSched (WriteBackPointer             ) ,
-      .Ready           ({ReadyArbSched,ReadyArbProc} ) ,
-      .DescAddrOut     (ArbPointer                   ) 
+      .Valid           ({ValidArbFIFOSched , ValidArbIn} ) ,
+      .DescAddrInProc  (addrA                            ) ,
+      .DescAddrInSched (WriteBackPointer                 ) ,
+      .Ready           ({ReadyArbFIFOSched,ReadyArbProc} ) ,
+      .DescAddrOut     (ArbPointer                       ) 
     );
     
     //FIFO
     FIFO#(
-      BRAM_ADDR_WIDTH   , //FIFO_WIDTH
-      2**BRAM_ADDR_WIDTH  //FIFO_LENGTH
+      .FIFO_WIDTH  (BRAM_ADDR_WIDTH    ), //FIFO_WIDTH
+      .FIFO_LENGTH (2**BRAM_ADDR_WIDTH )  //FIFO_LENGTH
     )AddrPointerFIFO(
-      .RST     (RST                                                          ) ,
-      .Clk     (Clk                                                          ) ,
-      .Inp     (ArbPointer                                                   ) ,
-      .Enqueue (ValidArbSched & ReadyArbSched | (ValidArbIn & ReadyArbProc)  ) ,
-      .Dequeue (DequeueFIFO                                                  ) ,
-      .Outp    (PointerFIFO                                                  ) ,
-      .FULL    (                                                             ) ,
-      .Empty   (FIFOEmpty                                                    ) 
+      .RST     (RST                                                                  ) ,
+      .Clk     (Clk                                                                  ) ,
+      .Inp     (ArbPointer                                                           ) ,
+      .Enqueue (ValidArbFIFOSched & ReadyArbFIFOSched | (ValidArbIn & ReadyArbProc)  ) ,
+      .Dequeue (DequeueFIFO                                                          ) ,
+      .Outp    (PointerFIFO                                                          ) ,
+      .FULL    (                                                                     ) ,
+      .Empty   (FIFOEmpty                                                            ) 
     );
     
     //Scheduler    
     Scheduler#(
-      BRAM_ADDR_WIDTH ,
-      BRAM_NUM_COL    ,
-      BRAM_COL_WIDTH  ,
-      CHI_Word_Width  ,
-      Chunk           ,
-      MEMAddrWidth    
+      .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH ) ,
+      .BRAM_NUM_COL    (BRAM_NUM_COL    ) ,
+      .BRAM_COL_WIDTH  (BRAM_COL_WIDTH  ) ,
+      .CHI_Word_Width  (CHI_Word_Width  ) ,
+      .Chunk           (Chunk           ) 
     ) mySched (
-       .RST               ( RST                  ) ,
-       .Clk               ( Clk                  ) ,
-       .DescDataIn        ( BRAMdoutB            ) ,
-       .ReadyBRAM         ( InpReadyBRAM         ) ,
-       .ReadyFIFO         ( ReadyArbSched        ) ,
-       .FIFO_Addr         ( PointerFIFO          ) ,
-       .Empty             ( FIFOEmpty            ) ,
-       .CmdFIFOFULL       ( InpCmdFIFOFULL       ) ,
-       .DescDataOut       ( BRAMdinB             ) ,
-       .WE                ( BRAMweB              ) ,
-       .BRAMAddrOut       ( BRAMaddrB            ) ,
-       .ValidBRAM         ( OutValidBRAM         ) ,
-       .Dequeue           ( DequeueFIFO          ) ,
-       .ValidFIFO         ( ValidArbSched        ) ,
-       .DescAddrPointer   ( WriteBackPointer     ) ,
-       .IssueValid        ( OutIssueValid        ) ,
-       .Command           ( Command              ) 
+      .RST               ( RST                  ) ,
+      .Clk               ( Clk                  ) ,
+      .DescDataIn        ( BRAMdoutB            ) ,
+      .ReadyBRAM         ( SchedReadyBRAM       ) ,
+      .ReadyFIFO         ( ReadyArbFIFOSched    ) ,
+      .FIFO_Addr         ( PointerFIFO          ) ,
+      .Empty             ( FIFOEmpty            ) ,
+      .CmdFIFOFULL       ( CmdFIFOFULL          ) ,
+      .DescDataOut       ( BRAMdinSched         ) ,
+      .WE                ( BRAMweSched          ) ,
+      .BRAMAddrOut       ( BRAMaddrSched        ) ,
+      .ValidBRAM         ( SchedValidBRAM       ) ,
+      .Dequeue           ( DequeueFIFO          ) ,
+      .ValidFIFO         ( ValidArbFIFOSched    ) ,
+      .DescAddrPointer   ( WriteBackPointer     ) ,
+      .IssueValid        ( IssueValid           ) ,
+      .Command           ( Command              ) 
     );
+    
+    ArbiterBRAM#( 
+      .BRAM_NUM_COL   ( BRAM_NUM_COL    ) ,
+      .BRAM_ADDR_WIDTH( BRAM_ADDR_WIDTH ) 
+    )ArbBRAM(
+      .ValidA  ( CHIConValidBRAM ),
+      .weA     ( BRAMweCHIC      ),
+      .addrA   ( BRAMaddrCHIC    ),
+      .dinA    ( BRAMdinCHIC     ),
+      .ReadyA  ( ReadyCHIConv    ),
+      .ValidB  ( SchedValidBRAM  ),
+      .weB     ( BRAMweSched     ),
+      .addrB   ( BRAMaddrSched   ),
+      .dinB    ( BRAMdinSched    ),
+      .ReadyB  ( SchedReadyBRAM  ),
+      .weOut   ( BRAMweB         ),
+      .addrOut ( BRAMaddrB       ),
+      .dOut    ( BRAMdinB        )
+    ); 
+    
+    CHIConverter CHI_Conv    (
+     .Clk                    ( Clk                   ) ,
+     .RST                    ( RST                   ) ,
+     .DataBRAM               ( BRAMdoutB             ) ,
+     .ReadyBRAM              ( ReadyCHIConv          ) ,
+     .Command                ( Command               ) ,
+     .IssueValid             ( IssueValid            ) ,
+     .ReqChan                ( ReqChan    .OUTBOUND  ) ,
+     .RspOutbChan            ( RspOutbChan.OUTBOUND  ) ,
+     .DatOutbChan            ( DatOutbChan.OUTBOUND  ) ,
+     .RspInbChan             ( RspInbChan .INBOUND   ) ,
+     .DatInbChan             ( DatInbChan .INBOUND   ) ,
+     .CmdFIFOFULL            ( CmdFIFOFULL           ) ,
+     .ValidBRAM              ( CHIConValidBRAM       ) ,
+     .AddrBRAM               ( BRAMaddrCHIC          ) ,
+     .DescStatus             ( BRAMdinCHIC           ) ,
+     .WEBRAM                 ( BRAMweCHIC            )    
+    );
+    
 endmodule
 

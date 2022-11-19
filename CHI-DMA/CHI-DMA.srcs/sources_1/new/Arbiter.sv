@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 /*Arbiter of FIFO. Takes 2 request by the Valid signals and returns one Ready
-Response that indicates that the module has the permission to access the FIFO*/
+Response that indicates that the module has the permission to access the FIFO.
+Arbiter gives always priority to processor */
 //////////////////////////////////////////////////////////////////////////////////
 
 

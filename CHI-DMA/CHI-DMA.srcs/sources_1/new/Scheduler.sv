@@ -37,8 +37,7 @@ module Scheduler#(
   parameter BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
   parameter BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
   parameter CHI_Word_Width    = 64 , // CHI bus width
-  parameter Chunk             = 5  , // number of CHI-Words
-  parameter MEMAddrWidth      = 32   
+  parameter Chunk             = 5   // number of CHI-Words 
 )(
     input  logic                              RST               ,
     input  logic                              Clk               ,

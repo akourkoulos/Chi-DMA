@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestFULLSystem_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="CHIFIFOsPkg" />
+            <top_module name="CHIFlitsPkg" />
+            <top_module name="CompleterPkg" />
+            <top_module name="DataPkg" />
+            <top_module name="TestFULLSystem" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1068863fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="233"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/TestFULLSystem/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/weA" type="array">
+      <obj_property name="ElementShortName">weA[7:0]</obj_property>
+      <obj_property name="ObjectShortName">weA[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/addrA" type="array">
+      <obj_property name="ElementShortName">addrA[9:0]</obj_property>
+      <obj_property name="ObjectShortName">addrA[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/dinA" type="array">
+      <obj_property name="ElementShortName">dinA</obj_property>
+      <obj_property name="ObjectShortName">dinA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/ValidArbIn" type="logic">
+      <obj_property name="ElementShortName">ValidArbIn</obj_property>
+      <obj_property name="ObjectShortName">ValidArbIn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/ReadyArbProc" type="logic">
+      <obj_property name="ElementShortName">ReadyArbProc</obj_property>
+      <obj_property name="ObjectShortName">ReadyArbProc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestFULLSystem/BRAMdoutA" type="array">
+      <obj_property name="ElementShortName">BRAMdoutA</obj_property>
+      <obj_property name="ObjectShortName">BRAMdoutA</obj_property>
+   </wvobject>
+   <wvobject fp_name="group156" type="group">
+      <obj_property name="label">ReqChannel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestFULLSystem/ReqChan/TXREQFLITPEND" type="logic">
+         <obj_property name="ElementShortName">TXREQFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLITPEND</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/ReqChan/TXREQFLITV" type="logic">
+         <obj_property name="ElementShortName">TXREQFLITV</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLITV</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/ReqChan/TXREQFLIT" type="array">
+         <obj_property name="ElementShortName">TXREQFLIT</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLIT</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/ReqChan/TXREQLCRDV" type="logic">
+         <obj_property name="ElementShortName">TXREQLCRDV</obj_property>
+         <obj_property name="ObjectShortName">TXREQLCRDV</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group157" type="group">
+      <obj_property name="label">RspOutbChannel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestFULLSystem/RspOutbChan/TXRSPFLITV" type="logic">
+         <obj_property name="ElementShortName">TXRSPFLITV</obj_property>
+         <obj_property name="ObjectShortName">TXRSPFLITV</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/RspOutbChan/TXRSPFLIT" type="array">
+         <obj_property name="ElementShortName">TXRSPFLIT</obj_property>
+         <obj_property name="ObjectShortName">TXRSPFLIT</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/RspOutbChan/TXRSPLCRDV" type="logic">
+         <obj_property name="ElementShortName">TXRSPLCRDV</obj_property>
+         <obj_property name="ObjectShortName">TXRSPLCRDV</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group162" type="group">
+      <obj_property name="label">DataOutbChannel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestFULLSystem/DatOutbChan/TXDATFLITV" type="logic">
+         <obj_property name="ElementShortName">TXDATFLITV</obj_property>
+         <obj_property name="ObjectShortName">TXDATFLITV</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DatOutbChan/TXDATFLIT" type="array">
+         <obj_property name="ElementShortName">TXDATFLIT</obj_property>
+         <obj_property name="ObjectShortName">TXDATFLIT</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DatOutbChan/TXDATLCRDV" type="logic">
+         <obj_property name="ElementShortName">TXDATLCRDV</obj_property>
+         <obj_property name="ObjectShortName">TXDATLCRDV</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group167" type="group">
+      <obj_property name="label">RspInbChannel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestFULLSystem/RspInbChan/RXRSPFLITV" type="logic">
+         <obj_property name="ElementShortName">RXRSPFLITV</obj_property>
+         <obj_property name="ObjectShortName">RXRSPFLITV</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/RspInbChan/RXRSPFLIT" type="array">
+         <obj_property name="ElementShortName">RXRSPFLIT</obj_property>
+         <obj_property name="ObjectShortName">RXRSPFLIT</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/RspInbChan/RXRSPLCRDV" type="logic">
+         <obj_property name="ElementShortName">RXRSPLCRDV</obj_property>
+         <obj_property name="ObjectShortName">RXRSPLCRDV</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group172" type="group">
+      <obj_property name="label">DataInbChannel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/TestFULLSystem/DatInbChan/RXDATFLITV" type="logic">
+         <obj_property name="ElementShortName">RXDATFLITV</obj_property>
+         <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DatInbChan/RXDATFLIT" type="array">
+         <obj_property name="ElementShortName">RXDATFLIT</obj_property>
+         <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DatInbChan/RXDATLCRDV" type="logic">
+         <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
+         <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

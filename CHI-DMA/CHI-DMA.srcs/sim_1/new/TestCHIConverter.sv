@@ -96,7 +96,7 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     int                               CountReqCrdsOutb  = 0  ; 
     int                               CountDataCrdsOutb = 0  ;
     int                               CountRspCrdsOutb  = 0  ;
-    reg     [31 : 0]                  GivenReqCrds       ;// use in order not to give more crds than fifo length
+    reg     [31 : 0]                  GivenReqCrds           ;// use in order not to give more crds than fifo length
     //FIFO signals
     reg                               SigDeqReqR         ;
     reg                               SigReqEmptyR       ;
@@ -106,13 +106,12 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     ReqFlit                           SigTXREQFLITW      ;
     //Last Trans signals
     reg     [MEM_ADDR_WIDTH  - 1 : 0] SrcAddrReg         ;
-    reg                               SrcAddrRegWE       ;
     int                               DBID_Count    = 0  ; 
     
     // Read Req FIFO (keeps all the uncomplete read Requests)
    FIFO #(     
-       117         ,  //FIFO_WIDTH       
-       FIFO_Length    //FIFO_LENGTH      
+       .FIFO_WIDTH  ( REQ_FLIT_WIDTH ) ,       
+       .FIFO_LENGTH ( FIFO_Length    )      
        )     
        myRFIFOReq  (     
        .RST      ( RST                                                        ) ,      
@@ -127,8 +126,8 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
        
     // Write Req FIFO (keeps all the uncomplete read Writeuests)
    FIFO #(     
-       117         ,  //FIFO_WIDTH       
-       FIFO_Length    //FIFO_LENGTH      
+       .FIFO_WIDTH  ( REQ_FLIT_WIDTH ) ,       
+       .FIFO_LENGTH ( FIFO_Length    )      
        )     
        myWFIFOReq  (     
        .RST      ( RST                                                              ) ,      
@@ -274,11 +273,11 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
           DatInbChan.RXDATFLITPEND     = 0      ;
           DatInbChan.RXDATFLITV        = 0      ;
           DatInbChan.RXDATFLIT         = 0      ;
-          SigDeqReqR        = 0      ;
+          SigDeqReqR                   = 0      ;
           #(2*period*$urandom_range(40) + 4*period);  // random delay if addresses arent continuous
         end
           DatInbChan.RXDATFLITV = 1;
-          DatInbChan.RXDATFLIT = '{default                : 0                                            ,                       
+          DatInbChan.RXDATFLIT = '{default     : 0                                            ,                       
                                     QoS        : 0                                            ,
                                     TgtID      : 1                                            ,
                                     SrcID      : 2                                            ,
@@ -318,10 +317,10 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         RspInbChan.RXRSPFLITPEND     = 0      ;
         RspInbChan.RXRSPFLITV        = 0      ;
         RspInbChan.RXRSPFLIT         = 0      ;
-        SigDeqReqW        = 0      ;
+        SigDeqReqW                   = 0      ;
         #(2*period*$urandom_range(10)) //response delay
         RspInbChan.RXRSPFLITV = 1;
-        RspInbChan.RXRSPFLIT = '{default              : 0                                        ,                       
+        RspInbChan.RXRSPFLIT = '{default   : 0                                        ,                       
                                   QoS      : 0                                        ,
                                   TgtID    : 1                                        ,
                                   SrcID    : 2                                        ,
@@ -342,7 +341,7 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
         RspInbChan.RXRSPFLITPEND     = 0      ;
         RspInbChan.RXRSPFLITV        = 0      ;
         RspInbChan.RXRSPFLIT         = 0      ;      
-        SigDeqReqW        = 0      ;
+        SigDeqReqW                   = 0      ;
         #(period*2) ;
       end
     end

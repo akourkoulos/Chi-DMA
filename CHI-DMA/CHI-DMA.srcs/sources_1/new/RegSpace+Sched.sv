@@ -37,7 +37,7 @@ module BRAMAndSched#(
     Data_packet                           BRAMdinB         ;
     Data_packet                           BRAMdoutB        ;
     // FIFO_Arbiter signals
-    wire                                  ValidArbSched    ;
+    wire                                  ValidArbFIFOSched;
     wire                                  ReadyArbSched    ;
     wire        [BRAM_ADDR_WIDTH - 1 : 0] WriteBackPointer ;
     wire        [BRAM_ADDR_WIDTH - 1 : 0] ArbPointer       ;
@@ -71,11 +71,11 @@ module BRAMAndSched#(
     Arbiter#( 
        BRAM_ADDR_WIDTH  
     )ArbiterFIFO( 
-      .Valid           ({ValidArbSched , ValidArbIn} ) ,
-      .DescAddrInProc  (addrA                        ) ,
-      .DescAddrInSched (WriteBackPointer             ) ,
-      .Ready           ({ReadyArbSched,ReadyArbProc} ) ,
-      .DescAddrOut     (ArbPointer                   ) 
+      .Valid           ({ValidArbFIFOSched , ValidArbIn} ) ,
+      .DescAddrInProc  (addrA                            ) ,
+      .DescAddrInSched (WriteBackPointer                 ) ,
+      .Ready           ({ReadyArbSched,ReadyArbProc}     ) ,
+      .DescAddrOut     (ArbPointer                       ) 
     );
     
     //FIFO
@@ -83,14 +83,14 @@ module BRAMAndSched#(
       BRAM_ADDR_WIDTH   , //FIFO_WIDTH
       2**BRAM_ADDR_WIDTH  //FIFO_LENGTH
     )AddrPointerFIFO(
-      .RST     (RST                                                          ) ,
-      .Clk     (Clk                                                          ) ,
-      .Inp     (ArbPointer                                                   ) ,
-      .Enqueue (ValidArbSched & ReadyArbSched | (ValidArbIn & ReadyArbProc)  ) ,
-      .Dequeue (DequeueFIFO                                                  ) ,
-      .Outp    (PointerFIFO                                                  ) ,
-      .FULL    (                                                             ) ,
-      .Empty   (FIFOEmpty                                                    ) 
+      .RST     (RST                                                              ) ,
+      .Clk     (Clk                                                              ) ,
+      .Inp     (ArbPointer                                                       ) ,
+      .Enqueue (ValidArbFIFOSched & ReadyArbSched | (ValidArbIn & ReadyArbProc)  ) ,
+      .Dequeue (DequeueFIFO                                                      ) ,
+      .Outp    (PointerFIFO                                                      ) ,
+      .FULL    (                                                                 ) ,
+      .Empty   (FIFOEmpty                                                        ) 
     );
     
     //Scheduler    
@@ -115,7 +115,7 @@ module BRAMAndSched#(
        .BRAMAddrOut       ( BRAMaddrB            ) ,
        .ValidBRAM         ( OutValidBRAM         ) ,
        .Dequeue           ( DequeueFIFO          ) ,
-       .ValidFIFO         ( ValidArbSched        ) ,
+       .ValidFIFO         ( ValidArbFIFOSched    ) ,
        .DescAddrPointer   ( WriteBackPointer     ) ,
        .IssueValid        ( OutIssueValid        ) ,
        .Command           ( Command              ) 
