@@ -139,7 +139,7 @@ module CHI_Responser#(
     end
     
     //give Converter's Outbound Crds
-    always begin
+    always@(negedge Clk) begin
       if(RST)begin
         ReqChan.TXREQLCRDV = 0;
         #period;
@@ -152,7 +152,7 @@ module CHI_Responser#(
         #(2*period);
       end
     end
-     always begin
+     always@(negedge Clk) begin
       if(RST) begin
         RspOutbChan.TXRSPLCRDV = 0;
         #period;
@@ -165,7 +165,7 @@ module CHI_Responser#(
         #(2*period);
       end
     end
-    always begin
+    always@(negedge Clk) begin
       if(RST) begin
         DatOutbChan.TXDATLCRDV = 0;
         #period;
@@ -203,7 +203,7 @@ module CHI_Responser#(
     end
     
     // Data Response
-    always begin     
+    always@(negedge Clk) begin     
       if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrdsInb != 0)begin
         //Response delay
         if(SrcAddrReg + CHI_DATA_WIDTH != SigTXREQFLITR.Addr)begin // 0 delay if addresses are continuous
@@ -249,7 +249,7 @@ module CHI_Responser#(
     end
     
     //DBID Respose 
-    always begin
+    always@(negedge Clk) begin
       if(!SigReqEmptyW & SigTXREQFLITW.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0)begin
         RspInbChan.RXRSPFLITPEND     = 0      ;
         RspInbChan.RXRSPFLITV        = 0      ;

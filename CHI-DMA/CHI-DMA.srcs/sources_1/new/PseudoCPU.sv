@@ -30,11 +30,12 @@ module PseudoCPU#(
   parameter BRAM_COL_WIDTH    = 32                          ,
   parameter BRAM_ADDR_WIDTH   = 10                          ,
   parameter CHI_DATA_WIDTH    = 64                          ,
-  parameter MAX_BytesToSend   = 5000
+  parameter MAX_BytesToSend   = 5000                        ,
+  parameter NUM_OF_TRANS      = 250
 )(
-    input  wire                                             RST                  ,
-    input  wire                                             Clk                  ,   
-    input  wire                                             ReadyArbProc         , // From Arb_FIFO to Proc
+    input                                                   RST                  ,
+    input                                                   Clk                  ,   
+    input                                                   ReadyArbProc         , // From Arb_FIFO to Proc
     input           Data_packet                             BRAMdoutA            , // From BRAM to Proc  
     output reg                   [BRAM_NUM_COL    - 1 : 0]  weA                  , //------For BRAM------
     output reg                   [BRAM_ADDR_WIDTH - 1 : 0]  addrA                ,
@@ -45,8 +46,9 @@ module PseudoCPU#(
     localparam period = 20;  
     
     
-    int numOfTrans; // number of transaction must be done 
-    reg NewTrans  ;
+    int numOfTrans      ; // number of transaction that should be inserted in DMA
+    int numOfSchedTrans ; // number of transactions that have been inserted in DMA
+    reg NewTrans        ; // indicates that a there is a new transaction to be inserted in DMA
     
     reg [BRAM_ADDR_WIDTH - 1 : 0] BRAMpointer      ; // next Desc pointer in BRAM that will be read
     reg                           IncrBRAMpointer  ; // WE for increasing BRAMpointer
@@ -56,14 +58,20 @@ module PseudoCPU#(
     
     
     // There is a new transaction evry random delay
-    always begin
-      if(RST)
-        NewTrans = 0 ;
+    always@(negedge Clk) begin
+      if(RST)begin
+        NewTrans        = 0 ;
+        numOfSchedTrans = 0 ;
+        #(period)           ; 
+      end
       else begin
-        NewTrans = 1 ;
-        #(period * 2 ) ; 
-        NewTrans = 0 ;
-        #(period * 2 * $urandom_range(10)); 
+        if(numOfSchedTrans != NUM_OF_TRANS)begin
+          NewTrans        = 1                   ;
+          numOfSchedTrans = numOfSchedTrans + 1 ;
+          #(period*2)                           ; 
+          NewTrans        = 0                   ;
+          #(period * 2 * $urandom_range(10))    ; 
+        end
       end     
     end
     
