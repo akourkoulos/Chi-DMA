@@ -22,6 +22,9 @@ import CHIFIFOsPkg::*;
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`define MaxCrds           15
+`define CrdRegWidth       4  // log2(MaxCrds)
+
 // Req opcode
 `define ReadOnce          6'h03 
 `define WriteUniquePtl    6'h18
@@ -33,8 +36,6 @@ import CHIFIFOsPkg::*;
 `define NCBWrDataCompAck  4'hc
 `define CompData          4'h4
 
-`define MaxCrds           15
-
 `define StatusError       2
 
 module TestFULLSystem#(
@@ -44,7 +45,7 @@ module TestFULLSystem#(
   parameter BRAM_ADDR_WIDTH  = 10    , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
   parameter CHI_DATA_WIDTH   = 64    ,
   parameter MAX_BytesToSend  = 5000  ,
-  parameter NUM_OF_TRANS     = 50    ,
+  parameter NUM_OF_TRANS     = 350    ,
   parameter Test_FIFO_Length = 120 
 //--------------------------------------------------------------------------
 );
@@ -200,6 +201,77 @@ module TestFULLSystem#(
    wire                          RspInbEmpty                             ;
    RspFlit                       SigRXRSPFLIT                            ;
    
+   //---------------------Crd Manager--------------------------
+    reg     [`CrdRegWidth      - 1 : 0] CountReqCrdsOutb  = 0  ; 
+    reg     [`CrdRegWidth      - 1 : 0] CountDataCrdsOutb = 0  ;
+    reg     [`CrdRegWidth      - 1 : 0] CountRspCrdsOutb  = 0  ;
+    reg     [`CrdRegWidth      - 1 : 0] CountDataCrdsInb  = 0  ; 
+    reg     [`CrdRegWidth      - 1 : 0] CountRspCrdsInb   = 0  ;
+   //Count Converter's inbound Crds
+    always_ff@(posedge Clk) begin
+      if(RST)begin
+        CountDataCrdsInb = 0 ;
+        CountRspCrdsInb  = 0 ;
+      end
+      else begin
+        if(DMA.DatInbChan.RXDATLCRDV & !DMA.DatInbChan.RXDATFLITV)
+          CountDataCrdsInb <= CountDataCrdsInb + 1;
+        else if(!DMA.DatInbChan.RXDATLCRDV & DMA.DatInbChan.RXDATFLITV)
+          CountDataCrdsInb <= CountDataCrdsInb - 1;
+        if(DMA.RspInbChan.RXRSPLCRDV & !DMA.RspInbChan.RXRSPFLITV) 
+          CountRspCrdsInb <= CountRspCrdsInb + 1 ; 
+        else if(!DMA.RspInbChan.RXRSPLCRDV & DMA.RspInbChan.RXRSPFLITV) 
+          CountRspCrdsInb <= CountRspCrdsInb - 1; 
+      end
+    end
+    
+    //Count Converter's Outbound Crds
+    always_ff@(posedge Clk) begin
+      if(RST)begin
+        CountDataCrdsOutb = 0 ;
+        CountRspCrdsOutb  = 0 ;
+        CountReqCrdsOutb  = 0 ;
+      end
+      else begin
+        if(DMA.DatOutbChan.TXDATLCRDV & !DMA.DatOutbChan.TXDATFLITV)
+          CountDataCrdsOutb <= CountDataCrdsOutb + 1;
+        else if(!DMA.DatOutbChan.TXDATLCRDV & DMA.DatOutbChan.TXDATFLITV)
+          CountDataCrdsOutb <= CountDataCrdsOutb - 1;
+        if(DMA.RspOutbChan.TXRSPLCRDV & !DMA.RspOutbChan.TXRSPFLITV) 
+          CountRspCrdsOutb <= CountRspCrdsOutb + 1; 
+        else if(!DMA.RspOutbChan.TXRSPLCRDV & DMA.RspOutbChan.TXRSPFLITV) 
+          CountRspCrdsOutb <= CountRspCrdsOutb - 1; 
+        if(DMA.ReqChan.TXREQLCRDV & !DMA.ReqChan.TXREQFLITV) 
+          CountReqCrdsOutb <= CountReqCrdsOutb + 1; 
+        else if(!DMA.ReqChan.TXREQLCRDV & DMA.ReqChan.TXREQFLITV) 
+          CountReqCrdsOutb <= CountReqCrdsOutb - 1 ; 
+      end
+    end
+    
+    always_ff@(posedge Clk)begin
+      if(DMA.ReqChan.TXREQFLITV & CountReqCrdsOutb == 0)begin
+        $display("--Error :: There are no Crds to send a Request");
+        $stop;
+      end
+      else if(DMA.DatOutbChan.TXDATFLITV & CountDataCrdsOutb == 0)begin
+        $display("--Error :: There are no Crds to send Data");
+        $stop;
+      end
+      else if(DMA.RspOutbChan.TXRSPFLITV & CountRspCrdsOutb == 0)begin
+        $display("--Error :: There are no Crds to send a Rsp");
+        $stop;
+      end
+      else if(DMA.DatInbChan.RXDATFLITV & CountDataCrdsInb == 0)begin
+        $display("--Error :: There are no Crds to receive Data");
+        $stop;
+      end
+      else if(DMA.RspInbChan.RXRSPFLITV & CountRspCrdsInb == 0)begin
+        $display("--Error :: There are no Crds to receive Rsp");
+        $stop;
+      end
+    end
+    //---------------------END Crd Manager--------------------------
+    
    //Test Cmnd FIFO Signals
    reg         DequeueCmnd   ;
    CHI_Command SigCommand    ;
@@ -221,76 +293,77 @@ module TestFULLSystem#(
        
    // Read Req FIFO 
    ReqFlitFIFO #(     
-       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                     )     
-   )myRFIFOReq      (     
-       .RST         ( RST                                                                                    ) ,      
-       .Clk         ( Clk                                                                                    ) ,      
-       .Inp         ( CHI_Responser.ReqChan.TXREQFLIT                                                        ) , 
-       .Enqueue     ( CHI_Responser.ReqChan.TXREQFLITV & CHI_Responser.ReqChan.TXREQFLIT.Opcode == `ReadOnce ) , 
-       .Dequeue     ( Dequeue                                                                                ) , 
-       .Outp        ( SigTXREQFLITR                                                                          ) , 
-       .FULL        ( ReqFULLR                                                                               ) , 
-       .Empty       ( ReqEmptyR                                                                              ) 
+       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                         )     
+   )myRFIFOReq      (    
+       .RST         ( RST                                                                                        ) ,      
+       .Clk         ( Clk                                                                                        ) ,      
+       .Inp         ( DMA.ReqChan.TXREQFLIT                                                                      ) , 
+       .Enqueue     ( DMA.ReqChan.TXREQFLITV & DMA.ReqChan.TXREQFLIT.Opcode == `ReadOnce & CountReqCrdsOutb != 0 ) , 
+       .Dequeue     ( Dequeue                                                                                    ) , 
+       .Outp        ( SigTXREQFLITR                                                                              ) , 
+       .FULL        ( ReqFULLR                                                                                   ) , 
+       .Empty       ( ReqEmptyR                                                                                  ) 
        );
        
    // Write Req FIFO 
    ReqFlitFIFO #(     
-       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                           )
+       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                               )
    )myWFIFOReq      (     
-       .RST         ( RST                                                                                          ) ,
-       .Clk         ( Clk                                                                                          ) ,
-       .Inp         ( CHI_Responser.ReqChan.TXREQFLIT                                                              ) ,
-       .Enqueue     ( CHI_Responser.ReqChan.TXREQFLITV & CHI_Responser.ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl ) ,  
-       .Dequeue     ( Dequeue                                                                                      ) ,
-       .Outp        ( SigTXREQFLITW                                                                                ) ,
-       .FULL        ( ReqFULLW                                                                                     ) ,
-       .Empty       ( ReqEmptyW                                                                                    ) 
+       .RST         ( RST                                                                                              ) ,
+       .Clk         ( Clk                                                                                              ) ,
+       .Inp         ( DMA.ReqChan.TXREQFLIT                                                                            ) ,
+       .Enqueue     ( DMA.ReqChan.TXREQFLITV & DMA.ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl & CountReqCrdsOutb != 0 ) ,  
+       .Dequeue     ( Dequeue                                                                                          ) ,
+       .Outp        ( SigTXREQFLITW                                                                                    ) ,
+       .FULL        ( ReqFULLW                                                                                         ) ,
+       .Empty       ( ReqEmptyW                                                                                        ) 
        );
     
    // Outbound Data Rsp FIFO 
    FIFO #(                                                                                                                    
-       .FIFO_WIDTH  ( DAT_FLIT_WIDTH                                                                                          ),
-       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                                      )
-   )myOutbDataFIFO  (                                                                                                         
-       .RST         ( RST                                                                                                     ),
-       .Clk         ( Clk                                                                                                     ),
-       .Inp         ( CHI_Responser.DatOutbChan.TXDATFLIT                                                                     ),
-       .Enqueue     ( CHI_Responser.DatOutbChan.TXDATFLITV & CHI_Responser.DatOutbChan.TXDATFLIT.Opcode == `NonCopyBackWrData ),   
-       .Dequeue     ( Dequeue                                                                                                 ),
-       .Outp        ( SigTXDATFLIT                                                                                            ),
-       .FULL        ( DataOutbFULL                                                                                            ),
-       .Empty       ( DataOutbEmpty                                                                                           )
+       .FIFO_WIDTH  ( DAT_FLIT_WIDTH                                                                                              ),
+       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                                          )
+   )myOutbDataFIFO  (                                                                                                             
+       .RST         ( RST                                                                                                         ),
+       .Clk         ( Clk                                                                                                         ),
+       .Inp         ( DMA.DatOutbChan.TXDATFLIT                                                                                   ),
+       .Enqueue     ( DMA.DatOutbChan.TXDATFLITV & DMA.DatOutbChan.TXDATFLIT.Opcode == `NonCopyBackWrData & CountDataCrdsOutb != 0),   
+       .Dequeue     ( Dequeue                                                                                                     ),
+       .Outp        ( SigTXDATFLIT                                                                                                ),
+       .FULL        ( DataOutbFULL                                                                                                ),
+       .Empty       ( DataOutbEmpty                                                                                               )
        );
 
    // Inbound Data Rsp FIFO 
    FIFO #(                                                                                                                    
-       .FIFO_WIDTH  ( DAT_FLIT_WIDTH                                                                               ),
-       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                           )
-   )myInbDataFIFO   (                                                                                              
-       .RST         ( RST                                                                                          ),
-       .Clk         ( Clk                                                                                          ),
-       .Inp         ( CHI_Responser.DatInbChan.RXDATFLIT                                                           ),
-       .Enqueue     ( CHI_Responser.DatInbChan.RXDATFLITV & CHI_Responser.DatInbChan.RXDATFLIT.Opcode == `CompData ),   
-       .Dequeue     ( Dequeue                                                                                      ),
-       .Outp        ( SigRXDATFLIT                                                                                 ),
-       .FULL        ( DataInbFULL                                                                                  ),
-       .Empty       ( DataInbEmpty                                                                                 )
+       .FIFO_WIDTH  ( DAT_FLIT_WIDTH                                                                                   ),
+       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                               )
+   )myInbDataFIFO   (                                                                                                  
+       .RST         ( RST                                                                                              ),
+       .Clk         ( Clk                                                                                              ),
+       .Inp         ( DMA.DatInbChan.RXDATFLIT                                                                         ),
+       .Enqueue     ( DMA.DatInbChan.RXDATFLITV & DMA.DatInbChan.RXDATFLIT.Opcode == `CompData & CountDataCrdsInb != 0 ),   
+       .Dequeue     ( Dequeue                                                                                          ),
+       .Outp        ( SigRXDATFLIT                                                                                     ),
+       .FULL        ( DataInbFULL                                                                                      ),
+       .Empty       ( DataInbEmpty                                                                                     )
        );       
        
    // Inbound DBID Rsp FIFO 
    FIFO #(                                                                                                                    
-       .FIFO_WIDTH  ( RSP_FLIT_WIDTH                                                                                                                                             ),
-       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                                                                                         )
-   )myInbDBIDFIFO   (                                                                                                                                                            
-       .RST         ( RST                                                                                                                                                        ),
-       .Clk         ( Clk                                                                                                                                                        ),
-       .Inp         ( CHI_Responser.RspInbChan.RXRSPFLIT                                                                                                                         ),
-       .Enqueue     ( CHI_Responser.RspInbChan.RXRSPFLITV & (CHI_Responser.RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | CHI_Responser.RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp)),   
-       .Dequeue     ( Dequeue                                                                                                                                                    ),
-       .Outp        ( SigRXRSPFLIT                                                                                                                                               ),
-       .FULL        ( RspInbFULL                                                                                                                                                 ),
-       .Empty       ( RspInbEmpty                                                                                                                                                )
+       .FIFO_WIDTH  ( RSP_FLIT_WIDTH                                                                                                                                        ),
+       .FIFO_LENGTH ( 2*Test_FIFO_Length                                                                                                                                    )
+   )myInbDBIDFIFO   (                                                                                                                                                       
+       .RST         ( RST                                                                                                                                                   ),
+       .Clk         ( Clk                                                                                                                                                   ),
+       .Inp         ( DMA.RspInbChan.RXRSPFLIT                                                                                                                              ),
+       .Enqueue     ( DMA.RspInbChan.RXRSPFLITV & (DMA.RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | DMA.RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp) & CountRspCrdsInb != 0  ),   
+       .Dequeue     ( Dequeue                                                                                                                                               ),
+       .Outp        ( SigRXRSPFLIT                                                                                                                                          ),
+       .FULL        ( RspInbFULL                                                                                                                                            ),
+       .Empty       ( RspInbEmpty                                                                                                                                           )
        );                                                                                                                                                                        
+   
    
    // FIFOs should never be FULL because they are bigger than CHI_Responser 's FIFO and it wont give enough crds to make its FIFOs FULL    
    always_ff@(posedge Clk)begin
