@@ -2,8 +2,8 @@
 import DataPkg    ::*;
 import CHIFlitsPkg::*; 
 import CHIFIFOsPkg::*;
-////////////////////import DataPkg::*;//////////////////////////////////////////////////////////////
-// Company:         import CHIFlitsPkg::*; 
+//////////////////////////////////////////////////////////////////////////////////
+// Company:         
 // Engineer: 
 // 
 // Create Date: 19.11.2022 14:19:16
@@ -44,7 +44,7 @@ module TestFULLSystem#(
   parameter BRAM_ADDR_WIDTH  = 10    , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
   parameter CHI_DATA_WIDTH   = 64    ,
   parameter MAX_BytesToSend  = 5000  ,
-  parameter NUM_OF_TRANS     = 250   ,
+  parameter NUM_OF_TRANS     = 50    ,
   parameter Test_FIFO_Length = 120 
 //--------------------------------------------------------------------------
 );
@@ -130,11 +130,16 @@ module TestFULLSystem#(
   
    //@@@@@@@@@@@@@@@@@@@@@@@@@ Check of Scheduling  @@@@@@@@@@@@@@@@@@@@@@@@@
    // Vector that keeps information for ckecking the operation of module
-   reg [BRAM_COL_WIDTH - 1 : 0]TestVectorBRAM[5 - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : SrcAddr , 1 : DstAddr, 2 : BTS, 3 : SB, 4 : LastDescValid
+   reg [BRAM_COL_WIDTH  - 1 : 0] TestVectorBRAM [5            - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : SrcAddr , 1 : DstAddr, 2 : BTS, 3 : SB, 4 : LastDescValid
+   // Fully correctly scheduled Descriptors
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectSched   [NUM_OF_TRANS - 1 : 0]                             ;
+   int                           CSpointer      = 0                                                ;
    
    always_ff@(posedge Clk) begin
      if(RST)begin
        TestVectorBRAM     <= '{default:0};
+       CorrectSched       <= '{default:0};
+       CSpointer          <= 0           ;
      end
      else begin
        if(weA != 0 & ReadyArbProc & ValidArbIn)begin  // when store someting in Descriptor update TestVector's SrcAddr ,DstAddr ,BTS fields
@@ -152,7 +157,8 @@ module TestFULLSystem#(
            TestVectorBRAM[4][DMA.mySched.Command.DescAddr] <= DMA.mySched.Command.LastDescTrans ;
            // if LastDescTrans and SB == BTS display correct scheduling
            if(DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length == TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
-             $display(" CORRECT Scheduling for Desc : %d",DMA.mySched.Command.DescAddr);
+             CorrectSched[CSpointer] = DMA.mySched.Command.DescAddr;
+             CSpointer <= CSpointer + 1 ;
            end
            // if LastDescTrans and SB != BTS  or SB > BTS display Error 
            else if((DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length != TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))| (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length > TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
@@ -301,90 +307,96 @@ module TestFULLSystem#(
    
    
    always_ff@(posedge Clk)begin
-     if(Dequeue)begin
-        if((SigTXREQFLITR.Opcode == `ReadOnce & (SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCount)))
-        &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
-        // if corect opcode and Addr of a Write Req and corect opcode TxnID of a DBID Rsp and corect Data Out Rsp opcode ,TxnID and BE then print corect
-        &((SigTXREQFLITW.Opcode == `WriteUniquePtl & (SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCount)))
-        &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
-        &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
-          if(SigTXDATFLIT.BE != ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)))begin
-           // wrong Data Out BE
-            $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",SigTXDATFLIT.BE , ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)),SigTXDATFLIT.TxnID);
+     if(RST)begin
+       CorrectTransfer <= '{default:0};
+       CTpointer        <= 0          ;            
+     end
+     else begin
+       if(Dequeue)begin
+          if((SigTXREQFLITR.Opcode == `ReadOnce & (SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCount)))
+          &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
+          // if correct opcode and Addr of a Write Req and correct opcode TxnID of a DBID Rsp and correct Data Out Rsp opcode ,TxnID and BE then print correct
+          &((SigTXREQFLITW.Opcode == `WriteUniquePtl & (SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCount)))
+          &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
+          &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
+            if(SigTXDATFLIT.BE != ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)))begin
+             // wrong Data Out BE
+              $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",SigTXDATFLIT.BE , ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)),SigTXDATFLIT.TxnID);
+              $stop;
+            end
+            else begin
+              // Correct
+              if(DequeueCmnd & SigCommand.LastDescTrans)begin
+                CorrectTransfer[CTpointer] <= SigCommand.DescAddr;
+                CTpointer                  <= CTpointer + 1      ;
+              end
+            end
+          // if Wrong Read Opcode print Error
+          else if(SigTXREQFLITR.Opcode != `ReadOnce)begin
+            $display("\n--ERROR :: ReadReq Opcode is not %d , TxnID : %d",SigTXREQFLITR.TxnID , `ReadOnce);
             $stop;
           end
-          else begin
-            // Corect
-            if(DequeueCmnd & SigCommand.LastDescTrans)begin
-              CorrectTransfer[CTpointer] <= SigCommand.DescAddr;
-              CTpointer <= CTpointer + 1 ;
-            end
+          // if Wrong Read Addr print Error
+          else if(SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCount))begin
+            $display("\n--ERROR :: Requested ReadAddr is : %d , but it should be : %d , TxnID : %d",SigTXREQFLITR.Addr ,(SigCommand.SrcAddr + lengthCount),SigTXREQFLITR.TxnID);
+            $stop;
           end
-        // if Wrong Read Opcode print Error
-        else if(SigTXREQFLITR.Opcode != `ReadOnce)begin
-          $display("\n--ERROR :: ReadReq Opcode is not %d , TxnID : %d",SigTXREQFLITR.TxnID , `ReadOnce);
-          $stop;
-        end
-        // if Wrong Read Addr print Error
-        else if(SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCount))begin
-          $display("\n--ERROR :: Requested ReadAddr is : %d , but it should be : %d , TxnID : %d",SigTXREQFLITR.Addr ,(SigCommand.SrcAddr + lengthCount),SigTXREQFLITR.TxnID);
-          $stop;
-        end
-        // if Wrong Data Rsp Opcode print Error
-        else if(SigRXDATFLIT.Opcode != `CompData)begin
-          $display("\n--ERROR :: DataRsp Opcode is not CompData , TxnID : %d",SigRXDATFLIT.TxnID);
-          $stop;
-        end
-        // if Wrong Data Rsp TxnID print Error
-        else if(SigTXREQFLITR.TxnID != (SigRXDATFLIT.TxnID)) begin
-          $display("\n--ERROR :: DataRsp TxnID :%d is not the same with ReadReq TxnID :%d",SigTXREQFLITR.TxnID ,SigRXDATFLIT.TxnID);
-          $stop;
-        end
-        // Wrong Write Opcode
-        else if(SigTXREQFLITW.Opcode != `WriteUniquePtl)begin
-          $display("\n--ERROR :: WriteReq Opcode is not WriteUniquePtl");
-          $stop;
-        end
-        // Wrong Write Addr
-        else if(SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCount))begin
-          $display("\n--ERROR :: Requested WriteAddr is : %d , but it should be : %d",SigTXREQFLITW.Addr ,SigCommand.DstAddr + lengthCount);
-          $stop;
-        end
-        // Wrong DBID Rsp Opcode
-        else if(SigRXRSPFLIT.Opcode != `DBIDResp & SigRXRSPFLIT.Opcode != `CompDBIDResp )begin
-          $display("\n--ERROR :: DataRsp Opcode is not DBIDResp or CompDBIDResp");
-          $stop;
-        end
-        // Wrong TxnID Rsp Opcode
-        else if(SigRXRSPFLIT.TxnID != (SigTXREQFLITW.TxnID)) begin
-          $display("\n--ERROR :: DBIDRsp TxnID :%d is not the same with WriteReq TxnID :%d",SigRXRSPFLIT.TxnID ,SigTXREQFLITW.TxnID);
-          $stop;
-        end
-        // Wrong Data Out Opcode
-        else if(SigTXDATFLIT.Opcode != `NonCopyBackWrData) begin
-          $display("\n--ERROR :: Data In Opcode is not NonCopyBackWrData");
-          $stop;
-        end
-        // Wrong Data Out TxnID
-        else begin
-          $display("\n--ERROR :: DBIDRsp DBID :%d is not the same with Data Out DBID :%d",SigRXRSPFLIT.DBID , SigTXDATFLIT.TxnID);
-          $stop;
-        end
-        
-        // update command Requested Bytes
-        if(lengthCount + CHI_DATA_WIDTH < SigCommand.Length)begin
-          lengthCount <= lengthCount + CHI_DATA_WIDTH ;
-        end
-        else begin
-          lengthCount <= 0 ;
-        end
+          // if Wrong Data Rsp Opcode print Error
+          else if(SigRXDATFLIT.Opcode != `CompData)begin
+            $display("\n--ERROR :: DataRsp Opcode is not CompData , TxnID : %d",SigRXDATFLIT.TxnID);
+            $stop;
+          end
+          // if Wrong Data Rsp TxnID print Error
+          else if(SigTXREQFLITR.TxnID != (SigRXDATFLIT.TxnID)) begin
+            $display("\n--ERROR :: DataRsp TxnID :%d is not the same with ReadReq TxnID :%d",SigTXREQFLITR.TxnID ,SigRXDATFLIT.TxnID);
+            $stop;
+          end
+          // Wrong Write Opcode
+          else if(SigTXREQFLITW.Opcode != `WriteUniquePtl)begin
+            $display("\n--ERROR :: WriteReq Opcode is not WriteUniquePtl");
+            $stop;
+          end
+          // Wrong Write Addr
+          else if(SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCount))begin
+            $display("\n--ERROR :: Requested WriteAddr is : %d , but it should be : %d",SigTXREQFLITW.Addr ,SigCommand.DstAddr + lengthCount);
+            $stop;
+          end
+          // Wrong DBID Rsp Opcode
+          else if(SigRXRSPFLIT.Opcode != `DBIDResp & SigRXRSPFLIT.Opcode != `CompDBIDResp )begin
+            $display("\n--ERROR :: DataRsp Opcode is not DBIDResp or CompDBIDResp");
+            $stop;
+          end
+          // Wrong TxnID Rsp Opcode
+          else if(SigRXRSPFLIT.TxnID != (SigTXREQFLITW.TxnID)) begin
+            $display("\n--ERROR :: DBIDRsp TxnID :%d is not the same with WriteReq TxnID :%d",SigRXRSPFLIT.TxnID ,SigTXREQFLITW.TxnID);
+            $stop;
+          end
+          // Wrong Data Out Opcode
+          else if(SigTXDATFLIT.Opcode != `NonCopyBackWrData) begin
+            $display("\n--ERROR :: Data In Opcode is not NonCopyBackWrData");
+            $stop;
+          end
+          // Wrong Data Out TxnID
+          else begin
+            $display("\n--ERROR :: DBIDRsp DBID :%d is not the same with Data Out DBID :%d",SigRXRSPFLIT.DBID , SigTXDATFLIT.TxnID);
+            $stop;
+          end
+          
+          // update command Requested Bytes
+          if(lengthCount + CHI_DATA_WIDTH < SigCommand.Length)begin
+            lengthCount <= lengthCount + CHI_DATA_WIDTH ;
+          end
+          else begin
+            lengthCount <= 0 ;
+          end
+       end
      end
    end
-   
    //Check for double used TxnID
    always_ff@(posedge Clk)begin
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
-       for( int i = 0 ; i < 2*Test_FIFO_Length ; i++) begin
+       automatic int i = 0 ;
+       while(i < 2*Test_FIFO_Length & (myRFIFOReq.MyQueue[i] != 0 | myWFIFOReq.MyQueue[i] != 0))begin
          // if there is a Request with the same TxnID in ReadReqFIFO and the corresponding DataRsp hasnt arrived the print error
          if(CHI_Responser.ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i].TxnID & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
            $display("\n--ERROR :: TXNID : %d is already used for ReadReq ", CHI_Responser.ReqChan.TXREQFLIT.TxnID);
@@ -395,19 +407,61 @@ module TestFULLSystem#(
            $display("\n--ERROR :: TXNID : %d is already used for WriteReq", CHI_Responser.ReqChan.TXREQFLIT.TxnID);
            $stop;
          end
+         i++;
        end
      end
    end
    
+   //########################## End of CHI functionality Checking ##########################
    
    
-   always_ff@(posedge Clk)begin
-     if(CTpointer == NUM_OF_TRANS)begin
-       CTpointer <= 0 ;
+   //********************************* DISPLAY THE CORRECT TRANS *********************************
+   // When All Transactions has Finished Print the correct ones   
+   reg [BRAM_ADDR_WIDTH - 1 : 0] helpVect              ;
+   int                           lastCheckPointer  = 0 ;
+   always@(negedge Clk)begin 
+     // if Empty AddrFIFO and Empty CommandFIFO(All Desc have been scheduled)
+     // check if every Desc is fully scheduled
+     if(DMA.AddrPointerFIFO.Empty & DMA.CHI_Conv.SigCommandEmpty & CSpointer != lastCheckPointer)begin
+       lastCheckPointer = CSpointer ;
+       for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
+        //if for some reason a Descriptor is written but BTS != SB or lastDescAddr == 0 (not Fully sheduled)
+         if((TestVectorBRAM[3][i] != TestVectorBRAM[2][i] | TestVectorBRAM[4][i] == 0) & TestVectorBRAM[2][i] != 0 )begin
+           $display("Desc : %d is not fully scheduled", i);
+           $stop;
+         end
+       end
+       if(CSpointer == NUM_OF_TRANS )begin
+         $display("All Descriptors are Fully scheduled ");
+       end
+     end
+     
+     // If All CHI_Transactions have been finished and all BRAM Status have been updated
+     if(CTpointer == NUM_OF_TRANS & DMA.CHI_Conv.myCompleter.Empty )begin
+       // -------Check if state of BRAM is correct-------
+       for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
+         static bit errFlag = 0;
+         // if BTS != SB or Status != Error or Idle problem... print error     
+         if(DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2] != 0 &(DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2] != DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3] | (DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4] != `StatusIdle & DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4] != `StatusError)))begin
+           $display("BRAM BTS :%d != SB : %d or Wrong Status : %d", DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*3 - 1 : BRAM_COL_WIDTH*2],DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*4 - 1 : BRAM_COL_WIDTH*3], DMA.myBRAM.ram_block[i][BRAM_COL_WIDTH*5 - 1 : BRAM_COL_WIDTH*4]);
+           errFlag = 1 ;
+           $stop;
+         end 
+         else if (i == 2**BRAM_ADDR_WIDTH - 1 & !errFlag)
+           $display("Correct BRAM :: BTS=SB and correct Status");
+       end
+       // -------------------------------------------------
+       CTpointer  <= 0 ;
+       CorrectTransfer.sort   ();//sysVerilog methods for sorting
+       CorrectSched   .sort   ();
+       CorrectTransfer.reverse();
+       CorrectSched   .reverse();
+  
        for(int i = 0 ; i < NUM_OF_TRANS ; i++)begin
+         $write  ("%d Correct Sheduled Desc : %d",i , CorrectSched[i]);
          $display("!!Correct Transfer for Desc : %d",CorrectTransfer[i]);
        end
      end
    end
-   //########################## End of CHI functionality Checking ##########################
+//***********************************************************************************************
 endmodule

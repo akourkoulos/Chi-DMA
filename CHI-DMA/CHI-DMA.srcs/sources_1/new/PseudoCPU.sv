@@ -31,7 +31,7 @@ module PseudoCPU#(
   parameter BRAM_ADDR_WIDTH   = 10                          ,
   parameter CHI_DATA_WIDTH    = 64                          ,
   parameter MAX_BytesToSend   = 5000                        ,
-  parameter NUM_OF_TRANS      = 250
+  parameter NUM_OF_TRANS      = 50
 )(
     input                                                   RST                  ,
     input                                                   Clk                  ,   
@@ -51,6 +51,7 @@ module PseudoCPU#(
     reg NewTrans        ; // indicates that a there is a new transaction to be inserted in DMA
     
     reg [BRAM_ADDR_WIDTH - 1 : 0] BRAMpointer      ; // next Desc pointer in BRAM that will be read
+    reg [BRAM_ADDR_WIDTH - 1 : 0] NextBRAMpointer  ; 
     reg                           IncrBRAMpointer  ; // WE for increasing BRAMpointer
     
     enum int unsigned { ReadState      = 0 , 
@@ -92,12 +93,13 @@ module PseudoCPU#(
     // BRAM pointer for Read Next Descriptor
     always_ff@(posedge Clk)begin
       if(RST)
-        BRAMpointer <= 0 ;
+        BRAMpointer <= $urandom_range(0,2**BRAM_ADDR_WIDTH - 1) ;
       else
         if(IncrBRAMpointer)
-          BRAMpointer <= BRAMpointer + 1 ;
+          BRAMpointer <=  NextBRAMpointer ;
     end
-      
+    
+    
     //FSM's state
     always_ff @ (posedge Clk) begin
       if(RST)
@@ -161,20 +163,23 @@ module PseudoCPU#(
                 dinA.SentBytes   <= 0                                                                                    ;
                 dinA.Status      <= `StatusActive                                                                        ;
                 IncrBRAMpointer  <= 1                                                                                    ;
+                NextBRAMpointer  <= $urandom_range(0,2**BRAM_ADDR_WIDTH - 1)                                             ;
               end
               else begin
                 weA              <= 0               ;  
                 dinA             <= 0               ;
                 IncrBRAMpointer  <= 0               ;
+                NextBRAMpointer  <= 0               ;
               end
             end 
             // if this is no empty Descriptor Read the Next one
             else begin  
-              weA                <= 0               ;  
-              addrA              <= BRAMpointer + 1 ;
-              dinA               <= '{default:0}    ;
-              ValidArbIn         <= 0               ;
-              IncrBRAMpointer    <= 1               ;
+              weA                <= 0                                                       ;  
+              addrA              <= BRAMpointer + $urandom_range(0,2**BRAM_ADDR_WIDTH - 1)  ;
+              dinA               <= '{default:0}                                            ;
+              ValidArbIn         <= 0                                                       ;
+              IncrBRAMpointer    <= 1                                                       ;
+              NextBRAMpointer    <= addrA                                                   ;
             end
           end
         default begin
@@ -182,7 +187,9 @@ module PseudoCPU#(
               addrA              <= 0              ;
               dinA               <= 0              ;
               ValidArbIn         <= 0              ;
-            end
+              IncrBRAMpointer    <= 0              ;
+              NextBRAMpointer    <= 0              ;
+        end
       endcase   
     end
 endmodule
