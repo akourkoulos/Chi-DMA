@@ -29,8 +29,9 @@ package CompleterPkg;
 
 // Packets for Chi-Converter FIFOs
 package CHIFIFOsPkg;
-   parameter BRAM_ADDR_WIDTH   = 10 ;
-   parameter BRAM_COL_WIDTH    = 32 ;
+   parameter BRAM_ADDR_WIDTH   = 10                                     ;
+   parameter BRAM_COL_WIDTH    = 32                                     ;
+   parameter COMMAND_WIDTH     = 3*BRAM_COL_WIDTH + BRAM_ADDR_WIDTH + 1 ;
    typedef struct packed {
      bit                            LastDescTrans ; // Indicates that this is the last transaction of Descriptor and when it finish status must be updated 
      bit [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr      ;

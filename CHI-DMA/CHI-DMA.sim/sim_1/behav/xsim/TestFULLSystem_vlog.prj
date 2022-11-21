@@ -10,6 +10,7 @@ sv xil_defaultlib  --include "../../../../CHI-DMA.srcs/sources_1/new" \
 "../../../../CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv" \
 "../../../../CHI-DMA.srcs/sources_1/new/PseudoCPU.sv" \
 "../../../../CHI-DMA.srcs/sources_1/new/RegSpace.sv" \
+"../../../../CHI-DMA.srcs/sources_1/new/ReqFlitFIFO.sv" \
 "../../../../CHI-DMA.srcs/sources_1/new/Scheduler.sv" \
 "../../../../CHI-DMA.srcs/sim_1/new/TestFULLSystem.sv" \
 
