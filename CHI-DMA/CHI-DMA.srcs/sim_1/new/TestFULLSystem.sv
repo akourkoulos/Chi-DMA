@@ -127,6 +127,8 @@ module TestFULLSystem#(
     #(period*3);
     RST = 0 ;
   end
+  
+   //@@@@@@@@@@@@@@@@@@@@@@@@@ Check of Scheduling  @@@@@@@@@@@@@@@@@@@@@@@@@
    // Vector that keeps information for ckecking the operation of module
    reg [BRAM_COL_WIDTH - 1 : 0]TestVectorBRAM[5 - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : SrcAddr , 1 : DstAddr, 2 : BTS, 3 : SB, 4 : LastDescValid
    
@@ -155,6 +157,7 @@ module TestFULLSystem#(
            // if LastDescTrans and SB != BTS  or SB > BTS display Error 
            else if((DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length != TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))| (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length > TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
              $display("--Error :: Wrong Scheduling for Desc : %d (Not LastDescTrans or SB > BTS)",DMA.mySched.Command.DescAddr);
+             $stop;
            end
          end
          else begin // if Expected ReadAddr is different from the real output ReadAddr display an Error
@@ -168,26 +171,28 @@ module TestFULLSystem#(
    
    
    //########################## Check CHI functionality ##########################
-   wire     Dequeue       ;
-   wire     ReqEmptyR     ;
-   wire     ReqFULLR      ;
-   ReqFlit  SigTXREQFLITR ;
-   
-   wire     ReqFULLW      ;
-   wire     ReqEmptyW     ;
-   ReqFlit  SigTXREQFLITW ;
-   
-   wire     DataOutbFULL   ;
-   wire     DataOutbEmpty ;
-   DataFlit SigTXDATFLIT  ;
-   
-   wire     DataInbFULL   ;
-   wire     DataInbEmpty  ;
-   DataFlit SigRXDATFLIT  ;
-   
-   wire     RspInbFULL    ;
-   wire     RspInbEmpty   ;
-   RspFlit  SigRXRSPFLIT  ;
+   int                           CTpointer        = 0                    ;
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [NUM_OF_TRANS - 1 : 0] ;
+   wire                          Dequeue                                 ;
+   wire                          ReqEmptyR                               ;
+   wire                          ReqFULLR                                ;
+   ReqFlit                       SigTXREQFLITR                           ;
+                                                                         ;
+   wire                          ReqFULLW                                ;
+   wire                          ReqEmptyW                               ;
+   ReqFlit                       SigTXREQFLITW                           ;
+                                                                         ;
+   wire                          DataOutbFULL                            ;
+   wire                          DataOutbEmpty                           ;
+   DataFlit                      SigTXDATFLIT                            ;
+                                                                         ;
+   wire                          DataInbFULL                             ;
+   wire                          DataInbEmpty                            ;
+   DataFlit                      SigRXDATFLIT                            ;
+                                                                         ;
+   wire                          RspInbFULL                              ;
+   wire                          RspInbEmpty                             ;
+   RspFlit                       SigRXRSPFLIT                            ;
    
    //Test Cmnd FIFO Signals
    reg         DequeueCmnd   ;
@@ -298,8 +303,23 @@ module TestFULLSystem#(
    always_ff@(posedge Clk)begin
      if(Dequeue)begin
         if((SigTXREQFLITR.Opcode == `ReadOnce & (SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCount)))
-        &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID))))
-          $write("%d : Correct Read Trans",lengthCount/64+1);
+        &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
+        // if corect opcode and Addr of a Write Req and corect opcode TxnID of a DBID Rsp and corect Data Out Rsp opcode ,TxnID and BE then print corect
+        &((SigTXREQFLITW.Opcode == `WriteUniquePtl & (SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCount)))
+        &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
+        &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
+          if(SigTXDATFLIT.BE != ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)))begin
+           // wrong Data Out BE
+            $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",SigTXDATFLIT.BE , ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)),SigTXDATFLIT.TxnID);
+            $stop;
+          end
+          else begin
+            // Corect
+            if(DequeueCmnd & SigCommand.LastDescTrans)begin
+              CorrectTransfer[CTpointer] <= SigCommand.DescAddr;
+              CTpointer <= CTpointer + 1 ;
+            end
+          end
         // if Wrong Read Opcode print Error
         else if(SigTXREQFLITR.Opcode != `ReadOnce)begin
           $display("\n--ERROR :: ReadReq Opcode is not %d , TxnID : %d",SigTXREQFLITR.TxnID , `ReadOnce);
@@ -316,23 +336,10 @@ module TestFULLSystem#(
           $stop;
         end
         // if Wrong Data Rsp TxnID print Error
-        else begin
+        else if(SigTXREQFLITR.TxnID != (SigRXDATFLIT.TxnID)) begin
           $display("\n--ERROR :: DataRsp TxnID :%d is not the same with ReadReq TxnID :%d",SigTXREQFLITR.TxnID ,SigRXDATFLIT.TxnID);
           $stop;
         end
-        
-        // if corect opcode and Addr of a Write Req and corect opcode TxnID of a DBID Rsp and corect Data Out Rsp opcode ,TxnID and BE then print corect
-        if((SigTXREQFLITW.Opcode == `WriteUniquePtl & (SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCount)))
-        &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
-        &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID)))
-          if(SigTXDATFLIT.BE != ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)))begin
-           // wrong Data Out BE
-            $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",SigTXDATFLIT.BE , ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)),SigTXDATFLIT.TxnID);
-            $stop;
-          end
-          else 
-            // Corect
-            $display("%d Correct Write Trans",lengthCount/64+1);
         // Wrong Write Opcode
         else if(SigTXREQFLITW.Opcode != `WriteUniquePtl)begin
           $display("\n--ERROR :: WriteReq Opcode is not WriteUniquePtl");
@@ -364,6 +371,7 @@ module TestFULLSystem#(
           $stop;
         end
         
+        // update command Requested Bytes
         if(lengthCount + CHI_DATA_WIDTH < SigCommand.Length)begin
           lengthCount <= lengthCount + CHI_DATA_WIDTH ;
         end
@@ -373,9 +381,6 @@ module TestFULLSystem#(
      end
    end
    
-   always_ff@(posedge DequeueCmnd)begin
-     $display("hi");
-   end
    //Check for double used TxnID
    always_ff@(posedge Clk)begin
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
@@ -390,6 +395,17 @@ module TestFULLSystem#(
            $display("\n--ERROR :: TXNID : %d is already used for WriteReq", CHI_Responser.ReqChan.TXREQFLIT.TxnID);
            $stop;
          end
+       end
+     end
+   end
+   
+   
+   
+   always_ff@(posedge Clk)begin
+     if(CTpointer == NUM_OF_TRANS)begin
+       CTpointer <= 0 ;
+       for(int i = 0 ; i < NUM_OF_TRANS ; i++)begin
+         $display("!!Correct Transfer for Desc : %d",CorrectTransfer[i]);
        end
      end
    end
