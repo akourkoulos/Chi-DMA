@@ -2,49 +2,43 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Fri Nov 18 14:25:30 2022
-# Process ID: 9320
+# Start of session at: Tue Nov 22 14:16:12 2022
+# Process ID: 11104
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
 # Command line: vivado.exe -log CHI_DMA.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHI_DMA.tcl
 # Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.vds
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
 source CHI_DMA.tcl -notrace
-create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 412.793 ; gain = 109.641
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 413.871 ; gain = 112.492
 Command: synth_design -top CHI_DMA -part xc7vx485tffg1157-1
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
-INFO: [Common 17-86] Your Synthesis license expires in 29 day(s)
+INFO: [Common 17-86] Your Synthesis license expires in 25 day(s)
 INFO: [Common 17-1686] The version limit for your license is '2022.11' and will not allow you to run Xilinx software released after that date (year & month). A version limit expiration means that while you will be able to continue to use the current version of tools or IP with this license, you will not be able to use any updates or new releases.
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 9860 
+INFO: Helper process launched with PID 10120 
 ---------------------------------------------------------------------------------
-Starting Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 686.059 ; gain = 248.449
+Starting Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 685.652 ; gain = 246.969
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'CHI_DMA' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
-INFO: [Synth 8-6157] synthesizing module 'ReqChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:130]
-INFO: [Synth 8-6155] done synthesizing module 'ReqChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:130]
-INFO: [Synth 8-6157] synthesizing module 'RspOutbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:150]
-INFO: [Synth 8-6155] done synthesizing module 'RspOutbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:150]
-INFO: [Synth 8-6157] synthesizing module 'DatOutbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:170]
-INFO: [Synth 8-6155] done synthesizing module 'DatOutbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:170]
-INFO: [Synth 8-6157] synthesizing module 'RspInbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:190]
-INFO: [Synth 8-6155] done synthesizing module 'RspInbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:190]
-INFO: [Synth 8-6157] synthesizing module 'DatInbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:210]
-INFO: [Synth 8-6155] done synthesizing module 'DatInbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:210]
+INFO: [Synth 8-6157] synthesizing module 'ReqChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:134]
+INFO: [Synth 8-6155] done synthesizing module 'ReqChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:134]
+INFO: [Synth 8-6157] synthesizing module 'RspOutbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:154]
+INFO: [Synth 8-6155] done synthesizing module 'RspOutbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:154]
+INFO: [Synth 8-6157] synthesizing module 'DatOutbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:174]
+INFO: [Synth 8-6155] done synthesizing module 'DatOutbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:174]
+INFO: [Synth 8-6157] synthesizing module 'RspInbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:194]
+INFO: [Synth 8-6155] done synthesizing module 'RspInbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:194]
+INFO: [Synth 8-6157] synthesizing module 'DatInbChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:214]
+INFO: [Synth 8-6155] done synthesizing module 'DatInbChannel' (0#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:214]
 	Parameter BRAM_NUM_COL bound to: 8 - type: integer 
 	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
 	Parameter BRAM_ADDR_WIDTH bound to: 10 - type: integer 
 	Parameter DATA_WIDTH bound to: 256 - type: integer 
 	Parameter CHI_Word_Width bound to: 64 - type: integer 
 	Parameter Chunk bound to: 5 - type: integer 
-	Parameter MEMAddrWidth bound to: 32 - type: integer 
-WARNING: [Synth 8-330] inout connections inferred for interface port 'ReqChannel' with no modport [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:42]
-WARNING: [Synth 8-330] inout connections inferred for interface port 'RspOutbChannel' with no modport [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:43]
-WARNING: [Synth 8-330] inout connections inferred for interface port 'DatOutbChannel' with no modport [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:44]
-WARNING: [Synth 8-330] inout connections inferred for interface port 'RspInbChannel' with no modport [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:45]
-WARNING: [Synth 8-330] inout connections inferred for interface port 'DatInbChannel' with no modport [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:46]
 INFO: [Synth 8-6157] synthesizing module 'bytewrite_tdp_ram_rf' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/RegSpace.sv:14]
 	Parameter BRAM_NUM_COL bound to: 8 - type: integer 
 	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
@@ -64,7 +58,6 @@ INFO: [Synth 8-6157] synthesizing module 'Scheduler' [C:/Users/Aggelos/Desktop/g
 	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
 	Parameter CHI_Word_Width bound to: 64 - type: integer 
 	Parameter Chunk bound to: 5 - type: integer 
-	Parameter MEMAddrWidth bound to: 32 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'Scheduler' (4#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Scheduler.sv:35]
 INFO: [Synth 8-6157] synthesizing module 'ArbiterBRAM' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/ArbiterBRAM.sv:9]
 	Parameter BRAM_NUM_COL bound to: 8 - type: integer 
@@ -116,6 +109,9 @@ INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized4' (5#1) [C:/U
 INFO: [Synth 8-6155] done synthesizing module 'Completer' (6#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Completer.sv:27]
 WARNING: [Synth 8-6014] Unused sequential element RspCrdOutbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:400]
 INFO: [Synth 8-6155] done synthesizing module 'CHIConverter' (7#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:45]
+WARNING: [Synth 8-3848] Net ReqChan\.TXREQFLITPEND in module/entity CHI_DMA does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:43]
+WARNING: [Synth 8-3848] Net RspOutbChan\.TXRSPFLITPEND in module/entity CHI_DMA does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:44]
+WARNING: [Synth 8-3848] Net DatOutbChan\.TXDATFLITPEND in module/entity CHI_DMA does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:45]
 INFO: [Synth 8-6155] done synthesizing module 'CHI_DMA' (8#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
 WARNING: [Synth 8-3331] design Completer has unconnected port DescData[Reserved3][31]
 WARNING: [Synth 8-3331] design Completer has unconnected port DescData[Reserved3][30]
@@ -219,18 +215,18 @@ WARNING: [Synth 8-3331] design Completer has unconnected port DescData[SentBytes
 WARNING: [Synth 8-3331] design Completer has unconnected port DescData[SentBytes][28]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Synthesize : Time (s): cpu = 00:00:18 ; elapsed = 00:00:19 . Memory (MB): peak = 931.430 ; gain = 493.820
+Finished Synthesize : Time (s): cpu = 00:00:19 ; elapsed = 00:00:19 . Memory (MB): peak = 930.914 ; gain = 492.230
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 949.297 ; gain = 511.688
+Finished Constraint Validation : Time (s): cpu = 00:00:21 ; elapsed = 00:00:21 . Memory (MB): peak = 948.777 ; gain = 510.094
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7vx485tffg1157-1
----------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 949.297 ; gain = 511.688
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:21 ; elapsed = 00:00:21 . Memory (MB): peak = 948.777 ; gain = 510.094
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Scheduler'
@@ -264,7 +260,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'Completer'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:02:29 ; elapsed = 00:02:26 . Memory (MB): peak = 1380.473 ; gain = 942.863
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:02:59 ; elapsed = 00:02:57 . Memory (MB): peak = 1413.285 ; gain = 974.602
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -499,6 +495,8 @@ WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][2] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][1] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][0] driven by constant 0
+WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Opcode][5] driven by constant 0
+WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Opcode][2] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Size][0] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[NS] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LikelyShared] driven by constant 0
@@ -519,6 +517,7 @@ WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][0] driv
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Excl] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ExpCompAck] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TraceTag] driven by constant 0
+WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLITV driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][3] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][2] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][1] driven by constant 0
@@ -565,14 +564,11 @@ WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[DBID][3] 
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[DBID][2] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[DBID][1] driven by constant 0
 WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[DBID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[PCrdType][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[PCrdType][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[PCrdType][1] driven by constant 0
 INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 INFO: [Synth 8-3971] The signal "myBRAM/ram_block_reg" was recognized as a true dual port RAM template.
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:04:43 ; elapsed = 00:05:53 . Memory (MB): peak = 1404.016 ; gain = 966.406
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:14 ; elapsed = 00:06:20 . Memory (MB): peak = 1436.480 ; gain = 997.797
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -634,7 +630,7 @@ INFO: [Synth 8-3886] merging instance 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][
 INFO: [Synth 8-3886] merging instance 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][78]' (FDRE) to 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][79]'
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (CommandFIFO/\MyQueue_reg[31][79] )
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:05:11 ; elapsed = 00:06:21 . Memory (MB): peak = 1406.750 ; gain = 969.141
+Finished Timing Optimization : Time (s): cpu = 00:05:40 ; elapsed = 00:06:46 . Memory (MB): peak = 1438.234 ; gain = 999.551
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -684,7 +680,7 @@ INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_5 (imp
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:05:23 ; elapsed = 00:06:33 . Memory (MB): peak = 1406.750 ; gain = 969.141
+Finished Technology Mapping : Time (s): cpu = 00:05:51 ; elapsed = 00:06:57 . Memory (MB): peak = 1438.234 ; gain = 999.551
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -732,13 +728,13 @@ INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_7 (impleme
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:06:44 ; elapsed = 00:07:56 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished IO Insertion : Time (s): cpu = 00:07:14 ; elapsed = 00:08:21 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:06:45 ; elapsed = 00:07:57 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Renaming Generated Instances : Time (s): cpu = 00:07:14 ; elapsed = 00:08:21 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -757,25 +753,25 @@ Report Check Netlist:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:06:54 ; elapsed = 00:08:06 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:07:23 ; elapsed = 00:08:31 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:06:54 ; elapsed = 00:08:06 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Renaming Generated Ports : Time (s): cpu = 00:07:24 ; elapsed = 00:08:31 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:10:45 ; elapsed = 00:12:03 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Handling Custom Attributes : Time (s): cpu = 00:11:27 ; elapsed = 00:12:35 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:10:45 ; elapsed = 00:12:03 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Renaming Generated Nets : Time (s): cpu = 00:11:28 ; elapsed = 00:12:36 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -791,32 +787,32 @@ Report Cell Usage:
 +------+---------+------+
 |      |Cell     |Count |
 +------+---------+------+
-|1     |BUF      |     1|
-|2     |BUFG     |     1|
-|3     |CARRY4   |   171|
-|4     |LUT1     |   238|
-|5     |LUT2     |   673|
-|6     |LUT3     |  8794|
-|7     |LUT4     |   661|
-|8     |LUT5     |  6133|
-|9     |LUT6     | 19303|
-|10    |RAMB36E1 |     8|
-|11    |FDRE     | 31090|
-|12    |FDSE     |     3|
-|13    |IBUF     |   809|
-|14    |OBUF     |  1136|
+|1     |BUFG     |     1|
+|2     |CARRY4   |   171|
+|3     |LUT1     |   240|
+|4     |LUT2     |   672|
+|5     |LUT3     |  8794|
+|6     |LUT4     |   608|
+|7     |LUT5     |  6189|
+|8     |LUT6     | 19303|
+|9     |RAMB36E1 |     8|
+|10    |FDRE     | 31090|
+|11    |FDSE     |     3|
+|12    |IBUF     |   809|
+|13    |OBUF     |  1136|
+|14    |OBUFT    |     3|
 +------+---------+------+
 
 Report Instance Areas: 
 +------+-------------------+---------------------+------+
 |      |Instance           |Module               |Cells |
 +------+-------------------+---------------------+------+
-|1     |top                |                     | 69021|
+|1     |top                |                     | 69027|
 |2     |  AddrPointerFIFO  |FIFO                 | 23860|
-|3     |  CHI_Conv         |CHIConverter         | 42853|
+|3     |  CHI_Conv         |CHIConverter         | 42857|
 |4     |    CommandFIFO    |FIFO__parameterized0 |  6595|
 |5     |    FIFODBID       |FIFO__parameterized3 |   852|
-|6     |    FIFOData       |FIFO__parameterized2 | 33277|
+|6     |    FIFOData       |FIFO__parameterized2 | 33281|
 |7     |    SizeFIFO       |FIFO__parameterized1 |   845|
 |8     |    myCompleter    |Completer            |  1074|
 |9     |      FIFODescAddr |FIFO__parameterized4 |  1073|
@@ -824,30 +820,29 @@ Report Instance Areas:
 |11    |  mySched          |Scheduler            |   246|
 +------+-------------------+---------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:10:45 ; elapsed = 00:12:03 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Finished Writing Synthesis Report : Time (s): cpu = 00:11:28 ; elapsed = 00:12:36 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 1158 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:10:45 ; elapsed = 00:12:05 . Memory (MB): peak = 1440.629 ; gain = 1003.020
-Synthesis Optimization Complete : Time (s): cpu = 00:10:45 ; elapsed = 00:12:05 . Memory (MB): peak = 1440.629 ; gain = 1003.020
+Synthesis finished with 0 errors, 0 critical warnings and 1156 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:11:28 ; elapsed = 00:12:38 . Memory (MB): peak = 1472.102 ; gain = 1033.418
+Synthesis Optimization Complete : Time (s): cpu = 00:11:28 ; elapsed = 00:12:38 . Memory (MB): peak = 1472.102 ; gain = 1033.418
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1440.629 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 180 Unisim elements for replacement
-INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+Netlist sorting complete. Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1472.102 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 179 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.038 . Memory (MB): peak = 1488.293 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.055 . Memory (MB): peak = 1472.102 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 1 instances were transformed.
-  BUF => LUT1: 1 instance 
+No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-119 Infos, 211 Warnings, 0 Critical Warnings and 0 Errors encountered.
+119 Infos, 209 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:11:22 ; elapsed = 00:12:43 . Memory (MB): peak = 1488.293 ; gain = 1075.500
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.032 . Memory (MB): peak = 1488.293 ; gain = 0.000
+synth_design: Time (s): cpu = 00:12:15 ; elapsed = 00:13:25 . Memory (MB): peak = 1472.102 ; gain = 1058.230
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.038 . Memory (MB): peak = 1472.102 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:22 ; elapsed = 00:00:19 . Memory (MB): peak = 1488.293 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:25 ; elapsed = 00:00:20 . Memory (MB): peak = 1472.102 ; gain = 0.000
 INFO: [runtcl-4] Executing : report_utilization -file CHI_DMA_utilization_synth.rpt -pb CHI_DMA_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Fri Nov 18 14:38:47 2022...
+INFO: [Common 17-206] Exiting Vivado at Tue Nov 22 14:30:13 2022...

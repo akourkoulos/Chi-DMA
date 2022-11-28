@@ -378,7 +378,7 @@ module TestFULLSystem#(
    assign Dequeue     = !RspInbEmpty & !DataInbEmpty & !DataOutbEmpty & !ReqEmptyW & !ReqEmptyR ;
    assign DequeueCmnd = ((lengthCount + CHI_DATA_WIDTH >= SigCommand.Length) & Dequeue) ? 1 : 0 ;
    
-   
+   // When all FIFOs is Non-Empty check if CHI-Transaction has been executed correctly 
    always_ff@(posedge Clk)begin
      if(RST)begin
        CorrectTransfer <= '{default:0};
@@ -465,7 +465,7 @@ module TestFULLSystem#(
        end
      end
    end
-   //Check for double used TxnID
+   //Check for double used TxnID every time a new Request happens 
    always_ff@(posedge Clk)begin
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
        automatic int i = 0 ;
@@ -524,7 +524,7 @@ module TestFULLSystem#(
            $display("Correct BRAM :: BTS=SB and correct Status");
        end
        // -------------------------------------------------
-       CTpointer  <= 0 ;
+       CTpointer           <= 0 ;
        CorrectTransfer.sort   ();//sysVerilog methods for sorting
        CorrectSched   .sort   ();
        CorrectTransfer.reverse();

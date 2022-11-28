@@ -40,11 +40,11 @@ module CHI_DMA#(
     input                                                  ValidArbIn           , //----------------
     output                                                 ReadyArbProc         , // From Arb_FIFO to Proc
     output         Data_packet                             BRAMdoutA            , // From BRAM to Proc  
-    ReqChannel                                             ReqChan              , //-----CHI Channels----
-    RspOutbChannel                                         RspOutbChan          ,
-    DatOutbChannel                                         DatOutbChan          ,
-    RspInbChannel                                          RspInbChan           , 
-    DatInbChannel                                          DatInbChan             //---------------------
+    ReqChannel    .OUTBOUND                                ReqChan              , //-----CHI Channels----
+    RspOutbChannel.OUTBOUND                                RspOutbChan          ,
+    DatOutbChannel.OUTBOUND                                DatOutbChan          ,
+    RspInbChannel .INBOUND                                 RspInbChan           , 
+    DatInbChannel .INBOUND                                 DatInbChan             //---------------------
     );
     
     //BRAM signals
@@ -176,11 +176,11 @@ module CHI_DMA#(
      .ReadyBRAM              ( ReadyCHIConv          ) ,
      .Command                ( Command               ) ,
      .IssueValid             ( IssueValid            ) ,
-     .ReqChan                ( ReqChan    .OUTBOUND  ) ,
-     .RspOutbChan            ( RspOutbChan.OUTBOUND  ) ,
-     .DatOutbChan            ( DatOutbChan.OUTBOUND  ) ,
-     .RspInbChan             ( RspInbChan .INBOUND   ) ,
-     .DatInbChan             ( DatInbChan .INBOUND   ) ,
+     .ReqChan                ( ReqChan               ) ,
+     .RspOutbChan            ( RspOutbChan           ) ,
+     .DatOutbChan            ( DatOutbChan           ) ,
+     .RspInbChan             ( RspInbChan            ) ,
+     .DatInbChan             ( DatInbChan            ) ,
      .CmdFIFOFULL            ( CmdFIFOFULL           ) ,
      .ValidBRAM              ( CHIConValidBRAM       ) ,
      .AddrBRAM               ( BRAMaddrCHIC          ) ,

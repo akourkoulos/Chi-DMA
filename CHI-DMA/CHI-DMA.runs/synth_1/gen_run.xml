@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1668774323">
+<GenRun Id="synth_1" LaunchPart="xc7vx485tffg1157-1" LaunchTime="1669119363">
   <File Type="PA-TCL" Name="CHI_DMA.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="CHI_DMA_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="CHI_DMA_reports.tcl"/>
   <File Type="RDS-RDS" Name="CHI_DMA.vds"/>
   <File Type="RDS-UTIL" Name="CHI_DMA_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="CHI_DMA_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="CHI_DMA.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="CHI_DMA_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="CHI_DMA_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/Arbiter.sv">
@@ -71,7 +74,7 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/RegSpace+Sched.sv">
+    <File Path="$PSRCDIR/sources_1/new/BarrelShifter.sv">
       <FileInfo>
         <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
@@ -79,7 +82,15 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/BarrelShifter.sv">
+    <File Path="$PSRCDIR/sources_1/new/CHI_Responser.sv">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/Descriptor.sv">
       <FileInfo>
         <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
@@ -95,7 +106,23 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/Descriptor.sv">
+    <File Path="$PSRCDIR/sources_1/new/PseudoCPU.sv">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/RegSpace+Sched.sv">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/ReqFlitFIFO.sv">
       <FileInfo>
         <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
