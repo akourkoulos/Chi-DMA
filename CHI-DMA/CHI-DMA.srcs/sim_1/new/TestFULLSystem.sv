@@ -155,11 +155,11 @@ module TestFULLSystem#(
          // if ReadAddr in command is SrcAddr+SB and WriteAddr = DstAddr + SB
          if((TestVectorBRAM[0][DMA.mySched.Command.DescAddr] + TestVectorBRAM[3][DMA.mySched.Command.DescAddr] == DMA.mySched.Command.SrcAddr) & (TestVectorBRAM[1][DMA.mySched.Command.DescAddr] + TestVectorBRAM[3][DMA.mySched.Command.DescAddr] == DMA.mySched.Command.DstAddr))begin
            TestVectorBRAM[3][DMA.mySched.Command.DescAddr] <= TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length ;
-           TestVectorBRAM[4][DMA.mySched.Command.DescAddr] <= DMA.mySched.Command.LastDescTrans ;
+           TestVectorBRAM[4][DMA.mySched.Command.DescAddr] <= DMA.mySched.Command.LastDescTrans                                            ;
            // if LastDescTrans and SB == BTS display correct scheduling
            if(DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length == TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
              CorrectSched[CSpointer] = DMA.mySched.Command.DescAddr;
-             CSpointer <= CSpointer + 1 ;
+             CSpointer              <= CSpointer + 1               ;
            end
            // if LastDescTrans and SB != BTS  or SB > BTS display Error 
            else if((DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length != TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))| (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length > TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
@@ -179,24 +179,26 @@ module TestFULLSystem#(
    
    //########################## Check CHI functionality ##########################
    int                           CTpointer        = 0                    ;
+   // Vector with Addresses of all corrctly fully transfered Descriptors
    reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [NUM_OF_TRANS - 1 : 0] ;
+   // Read Req FIFO signals
    wire                          Dequeue                                 ;
    wire                          ReqEmptyR                               ;
    wire                          ReqFULLR                                ;
    ReqFlit                       SigTXREQFLITR                           ;
-                                                                         ;
+   // Write Req FIFO signals
    wire                          ReqFULLW                                ;
    wire                          ReqEmptyW                               ;
    ReqFlit                       SigTXREQFLITW                           ;
-                                                                         ;
+   // Data Oub  FIFO signals
    wire                          DataOutbFULL                            ;
    wire                          DataOutbEmpty                           ;
    DataFlit                      SigTXDATFLIT                            ;
-                                                                         ;
+   // Data Inb FIFO signals
    wire                          DataInbFULL                             ;
    wire                          DataInbEmpty                            ;
    DataFlit                      SigRXDATFLIT                            ;
-                                                                         ;
+   // Rsp Inb FIFO signals
    wire                          RspInbFULL                              ;
    wire                          RspInbEmpty                             ;
    RspFlit                       SigRXRSPFLIT                            ;
@@ -487,7 +489,7 @@ module TestFULLSystem#(
    
    //########################## End of CHI functionality Checking ##########################
    
-   
+   // End of process
    //********************************* DISPLAY THE CORRECT TRANS *********************************
    // When All Transactions has Finished Print the correct ones   
    reg [BRAM_ADDR_WIDTH - 1 : 0] helpVect              ;

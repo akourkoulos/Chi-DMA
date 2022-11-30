@@ -50,48 +50,70 @@ module TestCHIConverter#(
   parameter FIFO_Length        = 120
 //----------------------------------------------------------------------
 );
+ reg                                              Clk               ;                                                                                        
+ reg                                              RST               ;                                                                                        
+ Data_packet                                      DataBRAM          ; // From BRAM                                                                           
+ reg                                              IssueValid        ;                                                                                        
+ reg                                              ReadyBRAM         ; // From Arbiter_BRAM                                                                   
+ CHI_Command                                      Command           ; // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)                         
+ reg                                              LastDescTrans     ; // From BS                                                                             
+ reg                   [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr          ;                                                                                        
+ reg                   [CHI_DATA_WIDTH  - 1 : 0]  BE                ;                                                                                        
+ reg                   [CHI_DATA_WIDTH*8- 1 : 0]  ShiftedData       ;                                                                                        
+ reg                   [`RspErrWidth    - 1 : 0]  DataErr           ;                                                                                        
+ reg                                              EmptyBS           ;                                                                                        
+ reg                                              FULLBS            ;                                                                                        
+ ReqChannel                                       ReqChan      ()   ; // Request ChannelS                                                                    
+ RspOutbChannel                                   RspOutbChan  ()   ; // Response outbound Chanel                                                            
+ DatOutbChannel                                   DatOutbChan  ()   ; // Data outbound Chanel                                                                
+ RspInbChannel                                    RspInbChan   ()   ; // Response inbound Chanel                                                             
+ DatInbChannel                                    DatInbChan   ()   ; // Data inbound Chanel                                                                 
+ wire                                             CmdFIFOFULL       ; // For Scheduler                                                                       
+ wire                                             ValidBRAM         ; // For Arbiter_BRAM                                                                    
+ wire                   [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM                                                                            
+ Data_packet                                      DescStatus        ;                                                                                        
+ wire                   [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;                                                                                        
+ wire                                             EnqueueBS         ; // For BS                                                                              
+ CHI_Command                                      CommandBS         ;                                                                                        
+ wire                                             DequeueBS         ;                                                                                        
+                                                                                                                                                             
 
-reg                                      Clk               ;
-reg                                      RST               ;
-Data_packet                              DataBRAM          ; // From BRAM
-reg                                      ReadyBRAM         ; // From Arbiter_BRAM
-CHI_Command                              Command           ;
-reg                                      IssueValid        ; 
-ReqChannel                               ReqChan    ()     ; // Request ChannelS
-RspOutbChannel                           RspOutbChan()     ; // Response outbound Chanel
-DatOutbChannel                           DatOutbChan()     ; // Data outbound Chanel
-RspInbChannel                            RspInbChan ()     ; // Response inbound Chanel
-DatInbChannel                            DatInbChan ()     ; // Data inbound Chanel
-reg                                      CmdFIFOFULL       ; // For Scheduler
-reg                                      ValidBRAM         ; // For Arbiter_BRAM
-reg            [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM
-Data_packet                              DescStatus        ;
-reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
+
+
   
     // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
     localparam period = 20;  
 
     CHIConverter UUT    (
-     .Clk               (Clk                   ) ,
-     .RST               (RST                   ) ,
-     .DataBRAM          (DataBRAM              ) ,
-     .ReadyBRAM         (ReadyBRAM             ) ,
-     .Command           (Command               ) ,
-     .IssueValid        (IssueValid            ) ,
-     .ReqChan           (ReqChan    .OUTBOUND  ) ,
-     .RspOutbChan       (RspOutbChan.OUTBOUND  ) ,
-     .DatOutbChan       (DatOutbChan.OUTBOUND  ) ,
-     .RspInbChan        (RspInbChan .INBOUND   ) ,
-     .DatInbChan        (DatInbChan .INBOUND   ) ,
-     .CmdFIFOFULL       (CmdFIFOFULL           ) ,
-     .ValidBRAM         (ValidBRAM             ) ,
-     .AddrBRAM          (AddrBRAM              ) ,
-     .DescStatus        (DescStatus            ) ,
-     .WEBRAM            (WEBRAM                )    
+     .Clk                ( Clk                     ) ,
+     .RST                ( RST                     ) ,
+     .DataBRAM           ( DataBRAM                ) ,
+     .IssueValid         ( IssueValid              ) ,
+     .ReadyBRAM          ( ReadyBRAM               ) ,
+     .Command            ( Command                 ) ,                                       
+     .LastDescTrans      ( LastDescTrans           ) ,                                       
+     .DescAddr           ( DescAddr                ) ,                                       
+     .BE                 ( BE                      ) ,                                       
+     .ShiftedData        ( ShiftedData             ) ,                                       
+     .DataErr            ( DataErr                 ) ,
+     .EmptyBS            ( EmptyBS                 ) ,
+     .FULLBS             ( FULLBS                  ) ,
+     .ReqChan            ( ReqChan      .OUTBOUND  ) ,
+     .RspOutbChan        ( RspOutbChan  .OUTBOUND  ) ,
+     .DatOutbChan        ( DatOutbChan  .OUTBOUND  ) ,   
+     .RspInbChan         ( RspInbChan   .INBOUND   ) ,
+     .DatInbChan         ( DatInbChan   .INBOUND   ) ,
+     .CmdFIFOFULL        ( CmdFIFOFULL             ) ,
+     .ValidBRAM          ( ValidBRAM               ) ,
+     .AddrBRAM           ( AddrBRAM                ) ,
+     .DescStatus         ( DescStatus              ) ,
+     .WEBRAM             ( WEBRAM                  ) ,
+     .EnqueueBS          ( EnqueueBS               ) ,
+     .CommandBS          ( CommandBS               ) ,
+     .DequeueBS          ( DequeueBS               )
     );
     
     //Crds signals
-    int                               CountDataCrdsInb  = 0  ; 
     int                               CountRspCrdsInb   = 0  ;
     int                               CountReqCrdsOutb  = 0  ; 
     int                               CountDataCrdsOutb = 0  ;
@@ -173,14 +195,9 @@ reg            [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;
     //Count inbound Crds
     always_ff@(posedge Clk) begin
       if(RST)begin
-        CountDataCrdsInb = 0 ;
         CountRspCrdsInb  = 0 ;
       end
       else begin
-        if(DatInbChan.RXDATLCRDV & !DatInbChan.RXDATFLITV)
-          CountDataCrdsInb <= CountDataCrdsInb + 1;
-        else if(!DatInbChan.RXDATLCRDV & DatInbChan.RXDATFLITV)
-          CountDataCrdsInb <= CountDataCrdsInb - 1;
         if(RspInbChan.RXRSPLCRDV & !RspInbChan.RXRSPFLITV) 
           CountRspCrdsInb <= CountRspCrdsInb + 1 ; 
         else if(!RspInbChan.RXRSPLCRDV & RspInbChan.RXRSPFLITV) 

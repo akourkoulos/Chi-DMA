@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log CHI_DMA.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHI_DMA.tcl
+EAStep vivado -log CHIConverter.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHIConverter.tcl
