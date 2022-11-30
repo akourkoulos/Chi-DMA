@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestScheduler_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="CHIFIFOsPkg" />
+            <top_module name="DataPkg" />
+            <top_module name="TestScheduler" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1572611fs"></ZoomEndTime>
+      <Cursor1Time time="80000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="206"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="21" />
+   <wvobject fp_name="/TestScheduler/UUT/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/DescDataIn" type="array">
+      <obj_property name="ElementShortName">DescDataIn</obj_property>
+      <obj_property name="ObjectShortName">DescDataIn</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/ReadyFIFO" type="logic">
+      <obj_property name="ElementShortName">ReadyFIFO</obj_property>
+      <obj_property name="ObjectShortName">ReadyFIFO</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/FIFO_Addr" type="array">
+      <obj_property name="ElementShortName">FIFO_Addr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">FIFO_Addr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Empty" type="logic">
+      <obj_property name="ElementShortName">Empty</obj_property>
+      <obj_property name="ObjectShortName">Empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/CmdFIFOFULL" type="logic">
+      <obj_property name="ElementShortName">CmdFIFOFULL</obj_property>
+      <obj_property name="ObjectShortName">CmdFIFOFULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescDataOut" type="array">
+      <obj_property name="ElementShortName">DescDataOut</obj_property>
+      <obj_property name="ObjectShortName">DescDataOut</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/WE" type="array">
+      <obj_property name="ElementShortName">WE[7:0]</obj_property>
+      <obj_property name="ObjectShortName">WE[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Dequeue" type="logic">
+      <obj_property name="ElementShortName">Dequeue</obj_property>
+      <obj_property name="ObjectShortName">Dequeue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/Command" type="array">
+      <obj_property name="ElementShortName">Command</obj_property>
+      <obj_property name="ObjectShortName">Command</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/WEControl" type="logic">
+      <obj_property name="ElementShortName">WEControl</obj_property>
+      <obj_property name="ObjectShortName">WEControl</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/RegWESig" type="logic">
+      <obj_property name="ElementShortName">RegWESig</obj_property>
+      <obj_property name="ObjectShortName">RegWESig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/ReadyBRAM" type="logic">
+      <obj_property name="ElementShortName">ReadyBRAM</obj_property>
+      <obj_property name="ObjectShortName">ReadyBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/ValidBRAM" type="logic">
+      <obj_property name="ElementShortName">ValidBRAM</obj_property>
+      <obj_property name="ObjectShortName">ValidBRAM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/ValidFIFO" type="logic">
+      <obj_property name="ElementShortName">ValidFIFO</obj_property>
+      <obj_property name="ObjectShortName">ValidFIFO</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/BRAMAddrOut" type="array">
+      <obj_property name="ElementShortName">BRAMAddrOut[9:0]</obj_property>
+      <obj_property name="ObjectShortName">BRAMAddrOut[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/DescAddrPointer" type="array">
+      <obj_property name="ElementShortName">DescAddrPointer[9:0]</obj_property>
+      <obj_property name="ObjectShortName">DescAddrPointer[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestScheduler/UUT/AddrRegister" type="array">
+      <obj_property name="ElementShortName">AddrRegister[9:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrRegister[9:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,0 +1,27 @@
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: F:/VivadoInstallation/vivadoInst/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto c7a29f15992b426cb919dc086fd6b26c --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L secureip --snapshot TestCHIConverter_func_synth xil_defaultlib.TestCHIConverter xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+ERROR: [VRFC 10-3180] cannot find port 'DescStatus' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:122]
+ERROR: [VRFC 10-3180] cannot find port 'RXDATFLIT' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:117]
+ERROR: [VRFC 10-3180] cannot find port 'RXRSPFLIT' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:113]
+ERROR: [VRFC 10-3180] cannot find port 'TXDATFLIT' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:109]
+ERROR: [VRFC 10-3180] cannot find port 'TXREQFLIT' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:101]
+ERROR: [VRFC 10-3180] cannot find port 'DataBRAM' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sim_1/new/TestCHIConverter.sv:91]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[7]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5101]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[31]_1' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5100]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[31]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5099]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[27]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5098]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[23]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5097]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[19]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5096]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[15]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5095]
+ERROR: [VRFC 10-3180] cannot find port 'state_reg[11]_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5094]
+ERROR: [VRFC 10-3180] cannot find port 'out' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5093]
+ERROR: [VRFC 10-3180] cannot find port 'WriteReqBytes_reg[6]' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5092]
+ERROR: [VRFC 10-3180] cannot find port 'TXREQFLIT[Opcode]_OBUF' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5091]
+ERROR: [VRFC 10-3180] cannot find port 'TXREQFLIT[Addr]_OBUF' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5090]
+ERROR: [VRFC 10-3180] cannot find port 'TXREQFLIT[Addr][40]_INST_0_i_1_0' on this module [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.sim/sim_1/synth/func/xsim/TestCHIConverter_func_synth.v:5089]
+INFO: [#UNDEF] Sorry, too many errors..
+ERROR: [XSIM 43-3322] Static elaboration of top level Verilog design unit(s) in library work failed.

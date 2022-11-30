@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="TestRegSpace_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="DataPkg" />
+            <top_module name="TestRegSpace" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="15645fs"></ZoomStartTime>
+      <ZoomEndTime time="245284fs"></ZoomEndTime>
+      <Cursor1Time time="205893fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="238"></NameColumnWidth>
+      <ValueColumnWidth column_width="202"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="17" />
+   <wvobject fp_name="/TestRegSpace/clkA" type="logic">
+      <obj_property name="ElementShortName">clkA</obj_property>
+      <obj_property name="ObjectShortName">clkA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/enaA" type="logic">
+      <obj_property name="ElementShortName">enaA</obj_property>
+      <obj_property name="ObjectShortName">enaA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/weA" type="array">
+      <obj_property name="ElementShortName">weA[7:0]</obj_property>
+      <obj_property name="ObjectShortName">weA[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/addrA" type="array">
+      <obj_property name="ElementShortName">addrA[9:0]</obj_property>
+      <obj_property name="ObjectShortName">addrA[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/dinA" type="array">
+      <obj_property name="ElementShortName">dinA</obj_property>
+      <obj_property name="ObjectShortName">dinA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/clkB" type="logic">
+      <obj_property name="ElementShortName">clkB</obj_property>
+      <obj_property name="ObjectShortName">clkB</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/enaB" type="logic">
+      <obj_property name="ElementShortName">enaB</obj_property>
+      <obj_property name="ObjectShortName">enaB</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/weB" type="array">
+      <obj_property name="ElementShortName">weB[7:0]</obj_property>
+      <obj_property name="ObjectShortName">weB[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/addrB" type="array">
+      <obj_property name="ElementShortName">addrB[9:0]</obj_property>
+      <obj_property name="ObjectShortName">addrB[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/dinB" type="array">
+      <obj_property name="ElementShortName">dinB</obj_property>
+      <obj_property name="ObjectShortName">dinB</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/doutA" type="array">
+      <obj_property name="ElementShortName">doutA</obj_property>
+      <obj_property name="ObjectShortName">doutA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/doutB" type="array">
+      <obj_property name="ElementShortName">doutB</obj_property>
+      <obj_property name="ObjectShortName">doutB</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/NUM_COL" type="array">
+      <obj_property name="ElementShortName">NUM_COL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NUM_COL[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/COL_WIDTH" type="array">
+      <obj_property name="ElementShortName">COL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">COL_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/DATA_WIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestRegSpace/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,0 +1,45 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Wed Jul 20 10:58:26 2022
+# Process ID: 1588
+# Current directory: C:/Users/Aggelos/Desktop/vivado/CHI-DMA
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4332 C:\Users\Aggelos\Desktop\vivado\CHI-DMA\CHI-DMA.xpr
+# Log file: C:/Users/Aggelos/Desktop/vivado/CHI-DMA/vivado.log
+# Journal file: C:/Users/Aggelos/Desktop/vivado/CHI-DMA\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/Aggelos/Desktop/vivado/CHI-DMA/CHI-DMA.xpr
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top TestScheduler [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+launch_simulation
+open_wave_config C:/Users/Aggelos/Desktop/vivado/CHI-DMA/TestRegSpace_behav.wcfg
+open_wave_config C:/Users/Aggelos/Desktop/vivado/CHI-DMA/TestScheduler_behav.wcfg
+open_wave_config C:/Users/Aggelos/Desktop/vivado/CHI-DMA/TestRegSpaceAndSched_behav.wcfg
+source TestScheduler.tcl
+update_compile_order -fileset sim_1
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+close_sim
