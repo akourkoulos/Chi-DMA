@@ -34,7 +34,12 @@ module PseudoCPU#(
   parameter DELAY_WIDTH       = 7                           , // width of counter used for delay
   parameter PHASE_WIDTH       = 3                           , // width of register that keeps the phase
   parameter LastPhase         = 6                           , // Number of Last Phase
-  parameter NUM_OF_TRANS      = 50                            // Number of inserted transfers in last State
+  parameter P1_NUM_OF_TRANS   = 1                           , // Number of inserted transfers for each phase
+  parameter P2_NUM_OF_TRANS   = 1                           ,  
+  parameter P3_NUM_OF_TRANS   = 30                          ,  
+  parameter P4_NUM_OF_TRANS   = 5                           ,  
+  parameter P5_NUM_OF_TRANS   = 25                          ,  
+  parameter P6_NUM_OF_TRANS   = 150                            
 )(
     input                                                   RST                  ,
     input                                                   Clk                  ,    
@@ -74,16 +79,19 @@ module PseudoCPU#(
       end
       else begin
         if(NewPhase)begin
-          phase         <= PhaseIn ;
-          insertedTrans <= 0       ;
+          phase         <= PhaseIn           ;
+          insertedTrans <= 0                 ;
         end
+        else if(weA != 0)
+          insertedTrans <= insertedTrans + 1 ;
+        
       end
     end
     
     // Desc Address for Write Next Descriptor
     always_ff@(posedge Clk)begin
       if(RST)
-        DescAddr <= 0 ;
+        DescAddr <= 1 ;
       else
         if(IncrDescAddr)
           DescAddr <=  DescAddr + 1 ;
@@ -104,7 +112,7 @@ module PseudoCPU#(
     // insert in DMA a small transaction
       if(phase == 1)begin
         IncrRandBRAMpointer  <= 1 ;
-        if(insertedTrans < 1) begin
+        if(insertedTrans < P1_NUM_OF_TRANS) begin
           weA              <= {BRAM_NUM_COL{1'b1}}    ;
           addrA            <= DescAddr                ;
           dinA.SrcAddr     <= CHI_DATA_WIDTH          ;
@@ -126,7 +134,7 @@ module PseudoCPU#(
       //insert in DMA a large transaction
       else if(phase == 2)begin
         IncrRandBRAMpointer  <= 1 ;
-        if(insertedTrans < 1) begin
+        if(insertedTrans < P2_NUM_OF_TRANS) begin
           weA              <= {BRAM_NUM_COL{1'b1}}    ;
           addrA            <= DescAddr                ;
           dinA.SrcAddr     <= CHI_DATA_WIDTH * 2      ;
@@ -148,7 +156,7 @@ module PseudoCPU#(
       // insert in DMA many small transactions
       else if(phase == 3)begin
         IncrRandBRAMpointer  <= 1 ;
-        if(insertedTrans < 10) begin
+        if(insertedTrans < P3_NUM_OF_TRANS) begin
           weA              <= {BRAM_NUM_COL{1'b1}}                                  ;
           addrA            <= DescAddr                                              ;
           dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  ;
@@ -170,7 +178,7 @@ module PseudoCPU#(
       // insert in DMA a few large transactions
       else if(phase == 4)begin
         IncrRandBRAMpointer  <= 1 ;
-        if(insertedTrans < 5) begin
+        if(insertedTrans < P4_NUM_OF_TRANS) begin
           weA              <= {BRAM_NUM_COL{1'b1}}                                    ;
           addrA            <= DescAddr                                                ;
           dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
@@ -192,8 +200,8 @@ module PseudoCPU#(
         // insert in DMA a both small and large transactions with delay
       else if(phase == 5)begin
         IncrRandBRAMpointer  <= 1 ;
-        if(insertedTrans < 15) begin
-          if(DelayCnt == 0 | DelayCnt == 7 | DelayCnt == 12)begin // insert large Trans
+        if(insertedTrans < P5_NUM_OF_TRANS) begin
+          if(DelayCnt == 0 | DelayCnt == 7 | DelayCnt == 12 | DelayCnt == 20 | DelayCnt == 24)begin // insert large Trans
             weA              <= {BRAM_NUM_COL{1'b1}}                                    ;
             addrA            <= DescAddr                                                ;
             dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
@@ -213,6 +221,12 @@ module PseudoCPU#(
             dinA.Status      <= `StatusActive                                         ;
             IncrDescAddr     <= 1                                                     ;
           end
+          else begin 
+            weA          <= 0 ;
+            addrA        <= 0 ;
+            dinA         <= 0 ;
+            IncrDescAddr <= 0 ;
+          end     
         end
         else begin 
           weA          <= 0 ;
@@ -257,12 +271,12 @@ module PseudoCPU#(
                 dinA.SentBytes       <= 0                                                                                    ;
                 dinA.Status          <= `StatusActive                                                                        ;
                 IncrRandBRAMpointer  <= 1                                                                                    ;
-                NextRandBRAMpointer  <= $urandom_range(0,2**BRAM_ADDR_WIDTH - 1)                                             ;
+                NextRandBRAMpointer  <= $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)                                             ;
               end 
               // if this is no empty Descriptor Read the Next one
               else begin  
                 weA                    <= 0                                                           ;  
-                addrA                  <= RandBRAMpointer + $urandom_range(0,2**BRAM_ADDR_WIDTH - 1)  ;
+                addrA                  <= RandBRAMpointer + $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)  ;
                 dinA                   <= '{default:0}                                                ;
                 IncrRandBRAMpointer    <= 1                                                           ;
                 NextRandBRAMpointer    <= addrA                                                       ;
@@ -278,6 +292,14 @@ module PseudoCPU#(
         endcase   
       end
  //-----------------------END Last Phase -------------------------
+      else begin
+        weA                    <= 0              ;  
+        addrA                  <= 0              ;
+        dinA                   <= 0              ;
+        IncrRandBRAMpointer    <= 0              ;
+        NextRandBRAMpointer    <= 0              ;
+        IncrDescAddr           <= 0              ;  
+      end
     end
     
     
@@ -290,7 +312,7 @@ module PseudoCPU#(
         #(period)           ; 
       end
       else begin
-        if(numOfSchedTrans != NUM_OF_TRANS & phase == LastPhase )begin
+        if(numOfSchedTrans != P6_NUM_OF_TRANS & phase == LastPhase )begin
           NewTrans        = 1                   ;
           numOfSchedTrans = numOfSchedTrans + 1 ;
           #(period*2)                           ; 
@@ -317,7 +339,7 @@ module PseudoCPU#(
     // BRAM pointer for Read Next Descriptor
     always_ff@(posedge Clk)begin
       if(RST)
-        RandBRAMpointer <= $urandom_range(0,2**BRAM_ADDR_WIDTH - 1) ;
+        RandBRAMpointer <= $urandom_range(1,2**BRAM_ADDR_WIDTH - 1) ;
       else
         if(IncrRandBRAMpointer)
           RandBRAMpointer <=  NextRandBRAMpointer ;
