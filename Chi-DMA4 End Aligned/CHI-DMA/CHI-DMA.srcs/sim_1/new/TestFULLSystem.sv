@@ -44,13 +44,14 @@ module TestFULLSystem#(
   parameter BRAM_COL_WIDTH   = 32    , // As the Data_packet field width
   parameter BRAM_ADDR_WIDTH  = 10    , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
   parameter CHI_DATA_WIDTH   = 64    ,
-  parameter MAX_BytesToSend  = 5000  ,
+  parameter MAX_BytesToSend   = 5000 ,
   parameter P1_NUM_OF_TRANS   = 1    , // Number of inserted transfers for each phase
   parameter P2_NUM_OF_TRANS   = 1    ,  
   parameter P3_NUM_OF_TRANS   = 250  ,  
   parameter P4_NUM_OF_TRANS   = 15   ,  
   parameter P5_NUM_OF_TRANS   = 45   ,  
-  parameter P6_NUM_OF_TRANS   = 450  ,                            
+  parameter P6_NUM_OF_TRANS   = 450  ,   
+  parameter LastPhase         = 6   ,// Number of Last Phase
   parameter PHASE_WIDTH       = 3    , // width of register that keeps the phase
   parameter Test_FIFO_Length  = 120 
 //--------------------------------------------------------------------------
@@ -63,13 +64,13 @@ module TestFULLSystem#(
   wire         [BRAM_ADDR_WIDTH - 1 : 0]  addrA          ;
   Data_packet                             dinA           ;
   Data_packet                             BRAMdoutA      ; 
-  reg           [PHASE_WIDTH    - 1 : 0]  PhaseIn       ;
-  reg                                     NewPhase      ;
-  ReqChannel                              ReqChan     () ;
-  RspOutbChannel                          RspOutbChan () ;
-  DatOutbChannel                          DatOutbChan () ;
-  RspInbChannel                           RspInbChan  () ;
-  DatInbChannel                           DatInbChan  () ; 
+  reg           [PHASE_WIDTH    - 1 : 0]  PhaseIn        ;
+  reg                                     NewPhase       ;
+  ReqChannel                              ReqChan    ()  ;
+  RspOutbChannel                          RspOutbChan()  ;
+  DatOutbChannel                          DatOutbChan()  ;
+  RspInbChannel                           RspInbChan ()  ;
+  DatInbChannel                           DatInbChan ()  ; 
 
  
   
@@ -95,6 +96,7 @@ module TestFULLSystem#(
    .P4_NUM_OF_TRANS    (P4_NUM_OF_TRANS  ),
    .P5_NUM_OF_TRANS    (P5_NUM_OF_TRANS  ),
    .P6_NUM_OF_TRANS    (P6_NUM_OF_TRANS  ),
+   .LastPhase          (LastPhase        ),
    .MAX_BytesToSend    (MAX_BytesToSend  )
    )myCPU(
      .RST          (RST          ) ,
@@ -107,18 +109,81 @@ module TestFULLSystem#(
      .dinA         (dinA         ) 
     );
  
+   // Simple CHI Responser Channels
+   ReqChannel      ReqChanSimpCHIRSP     () ;
+   RspOutbChannel  RspOutbChanSimpCHIRSP () ;
+   DatOutbChannel  DatOutbChanSimpCHIRSP () ;
+   RspInbChannel   RspInbChanSimpCHIRSP  () ;
+   DatInbChannel   DatInbChanSimpCHIRSP  () ;
+   // Rand CHI Responser Channels
+   ReqChannel      ReqChanCHIRSP         () ;
+   RspOutbChannel  RspOutbChanCHIRSP     () ;
+   DatOutbChannel  DatOutbChanCHIRSP     () ;
+   RspInbChannel   RspInbChanCHIRSP      () ;
+   DatInbChannel   DatInbChanCHIRSP      () ;
+  
+   // Simple CHI Responser
    Simple_CHI_Responser#(
      .FIFO_Length(Test_FIFO_Length)
-   ) CHI_RSP  (
-     .Clk                 (Clk                     ) ,
-     .RST                 (RST                     ) ,
-     .ReqChan             (ReqChan      .INBOUND   ) ,
-     .RspOutbChan         (RspOutbChan  .INBOUND   ) ,
-     .DatOutbChan         (DatOutbChan  .INBOUND   ) ,
-     .RspInbChan          (RspInbChan   .OUTBOUND  ) ,
-     .DatInbChan          (DatInbChan   .OUTBOUND  )  
+   ) Simp_CHI_RSP         (
+     .Clk                 (Clk                               ) ,
+     .RST                 (RST                               ) ,
+     .ReqChan             (ReqChanSimpCHIRSP      .INBOUND   ) ,
+     .RspOutbChan         (RspOutbChanSimpCHIRSP  .INBOUND   ) ,
+     .DatOutbChan         (DatOutbChanSimpCHIRSP  .INBOUND   ) ,
+     .RspInbChan          (RspInbChanSimpCHIRSP   .OUTBOUND  ) ,
+     .DatInbChan          (DatInbChanSimpCHIRSP   .OUTBOUND  )  
     );
-       
+   // Rand CHI Responser
+   CHI_Responser#(
+     .FIFO_Length(Test_FIFO_Length)
+   ) CHI_RSP              (
+     .Clk                 (Clk                             ) ,
+     .RST                 (RST                             ) ,
+     .ReqChan             (ReqChanCHIRSP        .INBOUND   ) ,
+     .RspOutbChan         (RspOutbChanCHIRSP    .INBOUND   ) ,
+     .DatOutbChan         (DatOutbChanCHIRSP    .INBOUND   ) ,
+     .RspInbChan          (RspInbChanCHIRSP     .OUTBOUND  ) ,
+     .DatInbChan          (DatInbChanCHIRSP     .OUTBOUND  )  
+    );       
+    
+    
+    assign ReqChanSimpCHIRSP     .TXREQFLITPEND     =  (PhaseIn == LastPhase) ? 0                               : ReqChan                .TXREQFLITPEND ;
+    assign ReqChanSimpCHIRSP     .TXREQFLITV        =  (PhaseIn == LastPhase) ? 0                               : ReqChan                .TXREQFLITV    ;
+    assign ReqChanSimpCHIRSP     .TXREQFLIT         =  (PhaseIn == LastPhase) ? 0                               : ReqChan                .TXREQFLIT     ;
+    assign ReqChanCHIRSP         .TXREQFLITPEND     =  (PhaseIn == LastPhase) ? ReqChan          .TXREQFLITPEND : 0                                     ;
+    assign ReqChanCHIRSP         .TXREQFLITV        =  (PhaseIn == LastPhase) ? ReqChan          .TXREQFLITV    : 0                                     ;
+    assign ReqChanCHIRSP         .TXREQFLIT         =  (PhaseIn == LastPhase) ? ReqChan          .TXREQFLIT     : 0                                     ;
+    assign ReqChan               .TXREQLCRDV        =  (PhaseIn == LastPhase) ? ReqChanCHIRSP    .TXREQLCRDV    : ReqChanSimpCHIRSP      .TXREQLCRDV    ;
+
+    assign RspOutbChanSimpCHIRSP .TXRSPFLITPEND     =  (PhaseIn == LastPhase) ? 0                               : RspOutbChan            .TXRSPFLITPEND ;
+    assign RspOutbChanSimpCHIRSP .TXRSPFLITV        =  (PhaseIn == LastPhase) ? 0                               : RspOutbChan            .TXRSPFLITV    ;
+    assign RspOutbChanSimpCHIRSP .TXRSPFLIT         =  (PhaseIn == LastPhase) ? 0                               : RspOutbChan            .TXRSPFLIT     ;
+    assign RspOutbChanCHIRSP     .TXRSPFLITPEND     =  (PhaseIn == LastPhase) ? RspOutbChan      .TXRSPFLITPEND : 0                                     ;
+    assign RspOutbChanCHIRSP     .TXRSPFLITV        =  (PhaseIn == LastPhase) ? RspOutbChan      .TXRSPFLITV    : 0                                     ;
+    assign RspOutbChanCHIRSP     .TXRSPFLIT         =  (PhaseIn == LastPhase) ? RspOutbChan      .TXRSPFLIT     : 0                                     ;
+    assign RspOutbChan.TXRSPLCRDV                   =  (PhaseIn == LastPhase) ? RspOutbChanCHIRSP.TXRSPLCRDV    : RspOutbChanSimpCHIRSP  .TXRSPLCRDV    ;
+
+    assign DatOutbChanSimpCHIRSP .TXDATFLITPEND     =  (PhaseIn == LastPhase) ? 0                               : DatOutbChan            .TXDATFLITPEND ;
+    assign DatOutbChanSimpCHIRSP .TXDATFLITV        =  (PhaseIn == LastPhase) ? 0                               : DatOutbChan            .TXDATFLITV    ;
+    assign DatOutbChanSimpCHIRSP .TXDATFLIT         =  (PhaseIn == LastPhase) ? 0                               : DatOutbChan            .TXDATFLIT     ;
+    assign DatOutbChanCHIRSP     .TXDATFLITPEND     =  (PhaseIn == LastPhase) ? DatOutbChan      .TXDATFLITPEND : 0                                     ;
+    assign DatOutbChanCHIRSP     .TXDATFLITV        =  (PhaseIn == LastPhase) ? DatOutbChan      .TXDATFLITV    : 0                                     ;
+    assign DatOutbChanCHIRSP     .TXDATFLIT         =  (PhaseIn == LastPhase) ? DatOutbChan      .TXDATFLIT     : 0                                     ;
+    assign DatOutbChan           .TXDATLCRDV        =  (PhaseIn == LastPhase) ? DatOutbChanCHIRSP.TXDATLCRDV    : DatOutbChanSimpCHIRSP  .TXDATLCRDV    ;
+    
+    assign RspInbChan            .RXRSPFLITPEND     =  (PhaseIn == LastPhase) ? RspInbChanCHIRSP .RXRSPFLITPEND : RspInbChanSimpCHIRSP   .RXRSPFLITPEND ;
+    assign RspInbChan            .RXRSPFLITV        =  (PhaseIn == LastPhase) ? RspInbChanCHIRSP .RXRSPFLITV    : RspInbChanSimpCHIRSP   .RXRSPFLITV    ;
+    assign RspInbChan            .RXRSPFLIT         =  (PhaseIn == LastPhase) ? RspInbChanCHIRSP .RXRSPFLIT     : RspInbChanSimpCHIRSP   .RXRSPFLIT     ;
+    assign RspInbChanCHIRSP      .RXRSPLCRDV        =  (PhaseIn == LastPhase) ? RspInbChan       .RXRSPLCRDV    : 0                                     ;
+    assign RspInbChanSimpCHIRSP  .RXRSPLCRDV        =  (PhaseIn == LastPhase) ? 0                               : RspInbChan             .RXRSPLCRDV    ;
+                                                                                                                                    
+    assign DatInbChan            .RXDATFLITPEND     =  (PhaseIn == LastPhase) ? DatInbChanCHIRSP .RXDATFLITPEND : DatInbChanSimpCHIRSP   .RXDATFLITPEND ;
+    assign DatInbChan            .RXDATFLITV        =  (PhaseIn == LastPhase) ? DatInbChanCHIRSP .RXDATFLITV    : DatInbChanSimpCHIRSP   .RXDATFLITV    ;
+    assign DatInbChan            .RXDATFLIT         =  (PhaseIn == LastPhase) ? DatInbChanCHIRSP .RXDATFLIT     : DatInbChanSimpCHIRSP   .RXDATFLIT     ;
+    assign DatInbChanCHIRSP      .RXDATLCRDV        =  (PhaseIn == LastPhase) ? DatInbChan       .RXDATLCRDV    : 0                                     ;
+    assign DatInbChanSimpCHIRSP  .RXDATLCRDV        =  (PhaseIn == LastPhase) ? 0                               : DatInbChan             .RXDATLCRDV    ;
+    
    // Fully correctly transfered Descriptors
    reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [P6_NUM_OF_TRANS - 1 : 0] ;
    int                           CTpointer        = 0                       ;
