@@ -69,8 +69,8 @@ module PseudoCPU#(
     int                           insertedTrans   ; // number of transaction that have been inserted in DMA 
     reg [BRAM_ADDR_WIDTH - 1 : 0] DescAddr        ; // Next Address of Descriptor to write
     reg                           IncrDescAddr    ; // WE for increasing DescAddr
-    reg [DELAY_WIDTH     - 1 : 0] DelayCnt        ; // A simple counter that is used to add delay in phase 5
-   
+    reg                           VLarge          ; // Valid Signal to insert a Large Transfer in 5th phase
+    reg                           VSmall          ; // Valid Signal to insert a small Transfer in 5th phase
     // Manage Phase
     always_ff@(posedge Clk)begin
       if(RST)begin
@@ -97,13 +97,24 @@ module PseudoCPU#(
           DescAddr <=  DescAddr + 1 ;
     end
     
-    // Manage counter that is used for delay in phase 5
     always_ff@(posedge Clk)begin
-      if(RST)
-        DelayCnt <= 0 ;
+      if(RST)begin
+        VLarge <= 0 ;
+        VSmall <= 0 ;
+      end
       else begin
-        if(phase == 5)
-          DelayCnt <= DelayCnt + 1 ;
+        if($urandom_range(0,7) == 3)begin
+          VLarge <= 1 ;
+          VSmall <= 0 ;
+        end
+        else if($urandom_range(0,4) == 1)begin
+          VLarge <= 0 ;
+          VSmall <= 1 ;
+        end
+        else begin
+          VLarge <= 0 ;
+          VSmall <= 0 ;
+        end
       end
     end
     
@@ -111,128 +122,128 @@ module PseudoCPU#(
  //----------------------- 1st Phase ----------------------------
     // insert in DMA a small transaction
       if(phase == 1)begin
-        IncrRandBRAMpointer  <= 1 ;
+        IncrRandBRAMpointer  = 1 ;
         if(insertedTrans < P1_NUM_OF_TRANS) begin
-          weA              <= {BRAM_NUM_COL{1'b1}}    ;
-          addrA            <= DescAddr                ;
-          dinA.SrcAddr     <= CHI_DATA_WIDTH          ;
-          dinA.DstAddr     <= CHI_DATA_WIDTH * 100000 ;
-          dinA.BytesToSend <= CHI_DATA_WIDTH - 1      ;
-          dinA.SentBytes   <= 0                       ;
-          dinA.Status      <= `StatusActive           ;
-          IncrDescAddr     <= 1                       ;
+          weA              = {BRAM_NUM_COL{1'b1}}    ;
+          addrA            = DescAddr                ;
+          dinA.SrcAddr     = CHI_DATA_WIDTH          ;
+          dinA.DstAddr     = CHI_DATA_WIDTH * 100000 ;
+          dinA.BytesToSend = CHI_DATA_WIDTH - 1      ;
+          dinA.SentBytes   = 0                       ;
+          dinA.Status      = `StatusActive           ;
+          IncrDescAddr     = 1                       ;
         end
         else begin 
-          weA          <= 0 ;
-          addrA        <= 0 ;
-          dinA         <= 0 ;
-          IncrDescAddr <= 0 ;
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
         end
       end
  //-----------------------END 1st Phase -------------------------
  //----------------------- 2nd Phase ----------------------------
       //insert in DMA a large transaction
       else if(phase == 2)begin
-        IncrRandBRAMpointer  <= 1 ;
+        IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P2_NUM_OF_TRANS) begin
-          weA              <= {BRAM_NUM_COL{1'b1}}    ;
-          addrA            <= DescAddr                ;
-          dinA.SrcAddr     <= CHI_DATA_WIDTH * 2      ;
-          dinA.DstAddr     <= CHI_DATA_WIDTH * 200000 ;
-          dinA.BytesToSend <= CHI_DATA_WIDTH * 50 + 2 ;
-          dinA.SentBytes   <= 0                       ;
-          dinA.Status      <= `StatusActive           ;
-          IncrDescAddr     <= 1                       ;
+          weA               = {BRAM_NUM_COL{1'b1}}     ;
+          addrA             = DescAddr                 ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH * 2       ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 200000  ;
+          dinA.BytesToSend  = CHI_DATA_WIDTH * 100 + 2 ;
+          dinA.SentBytes    = 0                        ;
+          dinA.Status       = `StatusActive            ;
+          IncrDescAddr      = 1                        ;
         end
         else begin 
-          weA          <= 0 ;
-          addrA        <= 0 ;
-          dinA         <= 0 ;
-          IncrDescAddr <= 0 ;
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
         end
       end
  //-----------------------END 2nd Phase -------------------------
  //----------------------- 3rd Phase ----------------------------
       // insert in DMA many small transactions
       else if(phase == 3)begin
-        IncrRandBRAMpointer  <= 1 ;
+        IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P3_NUM_OF_TRANS) begin
-          weA              <= {BRAM_NUM_COL{1'b1}}                                  ;
-          addrA            <= DescAddr                                              ;
-          dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  ;
-          dinA.DstAddr     <= CHI_DATA_WIDTH * 100000 + 10 * insertedTrans          ;
-          dinA.BytesToSend <= CHI_DATA_WIDTH - insertedTrans                        ;
-          dinA.SentBytes   <= 0                                                     ;
-          dinA.Status      <= `StatusActive                                         ;
-          IncrDescAddr     <= 1                                                     ;
+          weA               = {BRAM_NUM_COL{1'b1}}                                                             ;
+          addrA             = DescAddr                                                                         ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans                             ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans                                     ;
+          dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) : 60  ;
+          dinA.SentBytes    = 0                                                                                ;
+          dinA.Status       = `StatusActive                                                                    ;
+          IncrDescAddr      = 1                                                                                ;
         end
         else begin 
-          weA          <= 0 ;
-          addrA        <= 0 ;
-          dinA         <= 0 ;
-          IncrDescAddr <= 0 ;
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
         end      
       end
  //-----------------------END 3rd Phase -------------------------
  //----------------------- 4th Phase ----------------------------
       // insert in DMA a few large transactions
       else if(phase == 4)begin
-        IncrRandBRAMpointer  <= 1 ;
+        IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P4_NUM_OF_TRANS) begin
-          weA              <= {BRAM_NUM_COL{1'b1}}                                    ;
-          addrA            <= DescAddr                                                ;
-          dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
-          dinA.DstAddr     <= CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
-          dinA.BytesToSend <= CHI_DATA_WIDTH * 25 + 2 * insertedTrans                 ;
-          dinA.SentBytes   <= 0                                                       ;
-          dinA.Status      <= `StatusActive                                           ;
-          IncrDescAddr     <= 1                                                       ;
+          weA               = {BRAM_NUM_COL{1'b1}}                                    ;
+          addrA             = DescAddr                                                ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
+          dinA.BytesToSend  = CHI_DATA_WIDTH * 50 + 2 * insertedTrans                 ;
+          dinA.SentBytes    = 0                                                       ;
+          dinA.Status       = `StatusActive                                           ;
+          IncrDescAddr      = 1                                                       ;
         end
         else begin 
-          weA          <= 0 ;
-          addrA        <= 0 ;
-          dinA         <= 0 ;
-          IncrDescAddr <= 0 ;
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
         end   
       end 
  //-----------------------END 4th Phase -------------------------
  //----------------------- 5th Phase ----------------------------
         // insert in DMA a both small and large transactions with delay
       else if(phase == 5)begin
-        IncrRandBRAMpointer  <= 1 ;
+        IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P5_NUM_OF_TRANS) begin
-          if(DelayCnt == 0 | DelayCnt == 7 | DelayCnt == 12 | DelayCnt == 20 | DelayCnt == 24)begin // insert large Trans
-            weA              <= {BRAM_NUM_COL{1'b1}}                                    ;
-            addrA            <= DescAddr                                                ;
-            dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
-            dinA.DstAddr     <= CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
-            dinA.BytesToSend <= CHI_DATA_WIDTH * 25 + 2 * insertedTrans                 ;
-            dinA.SentBytes   <= 0                                                       ;
-            dinA.Status      <= `StatusActive                                           ;
-            IncrDescAddr     <= 1                                                       ;
+          if(VLarge)begin // insert large Trans
+            weA               = {BRAM_NUM_COL{1'b1}}                                    ;
+            addrA             = DescAddr                                                ;
+            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
+            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
+            dinA.BytesToSend  = CHI_DATA_WIDTH * 25 + 2 * insertedTrans                 ;
+            dinA.SentBytes    = 0                                                       ;
+            dinA.Status       = `StatusActive                                           ;
+            IncrDescAddr      = 1                                                       ;
           end
-          else if(DelayCnt % 3 == 0 )begin // insert small Trans
-            weA              <= {BRAM_NUM_COL{1'b1}}                                  ;
-            addrA            <= DescAddr                                              ;
-            dinA.SrcAddr     <= CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  ;
-            dinA.DstAddr     <= CHI_DATA_WIDTH * 100000 + 10 * insertedTrans          ;
-            dinA.BytesToSend <= CHI_DATA_WIDTH - insertedTrans                        ;
-            dinA.SentBytes   <= 0                                                     ;
-            dinA.Status      <= `StatusActive                                         ;
-            IncrDescAddr     <= 1                                                     ;
+          else if(VSmall)begin // insert small Trans
+            weA               = {BRAM_NUM_COL{1'b1}}                                  ;
+            addrA             = DescAddr                                              ;
+            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  ;
+            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans          ;
+            dinA.BytesToSend  = CHI_DATA_WIDTH - insertedTrans                        ;
+            dinA.SentBytes    = 0                                                     ;
+            dinA.Status       = `StatusActive                                         ;
+            IncrDescAddr      = 1                                                     ;
           end
           else begin 
-            weA          <= 0 ;
-            addrA        <= 0 ;
-            dinA         <= 0 ;
-            IncrDescAddr <= 0 ;
+            weA           = 0 ;
+            addrA         = 0 ;
+            dinA          = 0 ;
+            IncrDescAddr  = 0 ;
           end     
         end
         else begin 
-          weA          <= 0 ;
-          addrA        <= 0 ;
-          dinA         <= 0 ;
-          IncrDescAddr <= 0 ;
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
         end     
       end
  //-----------------------END 5th Phase -------------------------
@@ -246,59 +257,59 @@ module PseudoCPU#(
             begin            
             // if should schedule a new transaction ReadBRAM else wait               
               if(numOfTrans != 0)begin
-                weA                 <= 0               ;  
-                addrA               <= RandBRAMpointer ;
-                dinA                <= 0               ;
-                IncrRandBRAMpointer <= 0               ;
+                weA                  = 0               ;  
+                addrA                = RandBRAMpointer ;
+                dinA                 = 0               ;
+                IncrRandBRAMpointer  = 0               ;
               end
               else begin
-                weA                 <= 0           ;  
-                addrA               <= 0           ;
-                dinA                <= 0           ;
-                IncrRandBRAMpointer <= 0           ;
+                weA                  = 0           ;  
+                addrA                = 0           ;
+                dinA                 = 0           ;
+                IncrRandBRAMpointer  = 0           ;
               end
             end
           WriteState :
             begin
             // if Ready FIFO Arbiter and there is an empty Descriptor schedule transaction
               if(BRAMdoutA.Status == `StatusIdle)begin 
-                addrA                <= RandBRAMpointer                                                                      ;
-                weA                  <= {BRAM_NUM_COL{1'b1}}                                                                 ;  
-                dinA                 <= '{default : 0}                                                                       ;
-                dinA.SrcAddr         <= $urandom_range(0,2**(BRAM_COL_WIDTH-6-1)) * CHI_DATA_WIDTH                           ; // 6 = log2(CHI_DATA_WIDTH)  so maxSrcAddr = 2^(BRAM_COL_WIDTH-1), SrcAddr is aligned
-                dinA.DstAddr         <= $urandom_range(2**(BRAM_COL_WIDTH-6-1)+1,(2**(BRAM_COL_WIDTH-6))-1) * CHI_DATA_WIDTH ; // minDstAddr = 2^(BRAM_COL_WIDTH-1) + 1, maxDsyAddr = 2^(BRAM_COL_WIDTH) - 1,  DstAddr is aligned
-                dinA.BytesToSend     <= $urandom_range(1,MAX_BytesToSend)                                                    ;
-                dinA.SentBytes       <= 0                                                                                    ;
-                dinA.Status          <= `StatusActive                                                                        ;
-                IncrRandBRAMpointer  <= 1                                                                                    ;
-                NextRandBRAMpointer  <= $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)                                             ;
+                addrA                 = RandBRAMpointer                                                                      ;
+                weA                   = {BRAM_NUM_COL{1'b1}}                                                                 ;  
+                dinA                  = '{default : 0}                                                                       ;
+                dinA.SrcAddr          = $urandom_range(0,2**(BRAM_COL_WIDTH-6-1)) * CHI_DATA_WIDTH                           ; // 6 = log2(CHI_DATA_WIDTH)  so maxSrcAddr = 2^(BRAM_COL_WIDTH-1), SrcAddr is aligned
+                dinA.DstAddr          = $urandom_range(2**(BRAM_COL_WIDTH-6-1)+1,(2**(BRAM_COL_WIDTH-6))-1) * CHI_DATA_WIDTH ; // minDstAddr = 2^(BRAM_COL_WIDTH-1) + 1, maxDsyAddr = 2^(BRAM_COL_WIDTH) - 1,  DstAddr is aligned
+                dinA.BytesToSend      = $urandom_range(1,MAX_BytesToSend)                                                    ;
+                dinA.SentBytes        = 0                                                                                    ;
+                dinA.Status           = `StatusActive                                                                        ;
+                IncrRandBRAMpointer   = 1                                                                                    ;
+                NextRandBRAMpointer   = $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)                                             ;
               end 
               // if this is no empty Descriptor Read the Next one
               else begin  
-                weA                    <= 0                                                           ;  
-                addrA                  <= RandBRAMpointer + $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)  ;
-                dinA                   <= '{default:0}                                                ;
-                IncrRandBRAMpointer    <= 1                                                           ;
-                NextRandBRAMpointer    <= addrA                                                       ;
+                weA                     = 0                                                           ;  
+                addrA                   = RandBRAMpointer + $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)  ;
+                dinA                    = '{default:0}                                                ;
+                IncrRandBRAMpointer     = 1                                                           ;
+                NextRandBRAMpointer     = addrA                                                       ;
               end
             end
           default begin
-                weA                    <= 0              ;  
-                addrA                  <= 0              ;
-                dinA                   <= 0              ;
-                IncrRandBRAMpointer    <= 0              ;
-                NextRandBRAMpointer    <= 0              ;
+                weA                     = 0              ;  
+                addrA                   = 0              ;
+                dinA                    = 0              ;
+                IncrRandBRAMpointer     = 0              ;
+                NextRandBRAMpointer     = 0              ;
           end
         endcase   
       end
  //-----------------------END Last Phase -------------------------
       else begin
-        weA                    <= 0              ;  
-        addrA                  <= 0              ;
-        dinA                   <= 0              ;
-        IncrRandBRAMpointer    <= 0              ;
-        NextRandBRAMpointer    <= 0              ;
-        IncrDescAddr           <= 0              ;  
+        weA                     = 0              ;  
+        addrA                   = 0              ;
+        dinA                    = 0              ;
+        IncrRandBRAMpointer     = 0              ;
+        NextRandBRAMpointer     = 0              ;
+        IncrDescAddr            = 0              ;  
       end
     end
     

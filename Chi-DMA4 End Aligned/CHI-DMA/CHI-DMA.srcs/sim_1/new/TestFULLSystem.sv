@@ -47,12 +47,12 @@ module TestFULLSystem#(
   parameter MAX_BytesToSend  = 5000  ,
   parameter P1_NUM_OF_TRANS   = 1    , // Number of inserted transfers for each phase
   parameter P2_NUM_OF_TRANS   = 1    ,  
-  parameter P3_NUM_OF_TRANS   = 30   ,  
-  parameter P4_NUM_OF_TRANS   = 5    ,  
-  parameter P5_NUM_OF_TRANS   = 25   ,  
-  parameter P6_NUM_OF_TRANS   = 150  ,                            
+  parameter P3_NUM_OF_TRANS   = 250  ,  
+  parameter P4_NUM_OF_TRANS   = 15   ,  
+  parameter P5_NUM_OF_TRANS   = 45   ,  
+  parameter P6_NUM_OF_TRANS   = 450  ,                            
   parameter PHASE_WIDTH       = 3    , // width of register that keeps the phase
-  parameter Test_FIFO_Length = 120 
+  parameter Test_FIFO_Length  = 120 
 //--------------------------------------------------------------------------
 );
 
@@ -156,6 +156,7 @@ module TestFULLSystem#(
      end
      else begin
        if(PhaseIn  == 0)begin
+         #period;
          PhaseIn  = 1 ;
          NewPhase = 1 ;   
          #(period*2)  ;   
@@ -163,6 +164,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 2 ;
          NewPhase = 1 ;     
          #(period*2)  ; 
@@ -170,6 +172,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 3 ;
          NewPhase = 1 ;     
          #(period*2)  ;   
@@ -177,6 +180,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 4 ;
          NewPhase = 1 ;    
          #(period*2)  ;   
@@ -184,6 +188,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 5 ;
          NewPhase = 1 ;   
          #(period*2)  ;   
@@ -191,6 +196,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 6 ;
          NewPhase = 1 ;   
          #(period*2)  ;   
@@ -198,6 +204,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
          PhaseIn  = 6 ;
          NewPhase = 0 ;   
          #(period*2)  ;  
@@ -572,12 +579,12 @@ module TestFULLSystem#(
    always_ff@(posedge Clk)begin 
      // if Empty AddrFIFO and Empty CommandFIFO(All Desc have been scheduled)
      // check if every Desc is fully scheduled
-     if(DMA.AddrPointerFIFO.Empty & DMA.CHI_Conv.SigCommandEmpty & CSpointer != lastCheckPointer)begin
+     if(DMA.AddrPointerFIFO.Empty & DMA.CHI_Conv.SigCommandEmpty & DMA.CHI_Conv.myCompleter.Empty & CSpointer != lastCheckPointer)begin
        lastCheckPointer <= CSpointer ;
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
         //if for some reason a Descriptor is written but BTS != SB or lastDescAddr == 0 (not Fully sheduled)
          if((TestVectorBRAM[3][i] != TestVectorBRAM[2][i] | TestVectorBRAM[4][i] == 0) & TestVectorBRAM[2][i] != 0 )begin
-           $display("Desc : %d is not fully scheduled", i);
+           $display("Desc : %d is not fully scheduled BTS : %d , SB : %D , LastDescTrans : %d", i,TestVectorBRAM[2][i],TestVectorBRAM[3][i],TestVectorBRAM[4][i]);
            $stop;
          end
        end
@@ -588,6 +595,7 @@ module TestFULLSystem#(
      
      // If All CHI_Transactions have been finished and all BRAM Status have been updated
      if(PhaseReqOver & DMA.CHI_Conv.myCompleter.Empty & DMA.CHI_Conv.SigSizeEmpty)begin
+       $display("------------------------PHASE : %d------------------------",PhaseIn);
        // -------Check if state of BRAM is correct-------
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
          static bit errFlag = 0;
@@ -606,7 +614,6 @@ module TestFULLSystem#(
        CorrectSched   .sort   ();
        CorrectTransfer.reverse();
        CorrectSched   .reverse();
-       $display("------------------------PHASE : %d------------------------",PhaseIn);
        NZ = 1 ;
        for(int i = 0 ; i < P6_NUM_OF_TRANS ; i++)begin
          if(CorrectSched[i] != 0)begin

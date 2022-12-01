@@ -29,7 +29,7 @@ module ArbiterBRAM#(
     
     assign ReadyA  = ValidA                               ;
     assign ReadyB  = (!ValidA)& ValidB                    ;
-    assign weOut   = ValidA ? weA :(ValidB ? weB : 0)     ;
+    assign weOut   = ValidA ? weA   :(ValidB ? weB   : 0) ;
     assign addrOut = ValidA ? addrA :(ValidB ? addrB : 0) ;
-    assign dOut    = ValidA ? dinA :(ValidB ? dinB : 0)   ;
+    assign dOut    = ValidA ? dinA  :(ValidB ? dinB  : 0) ;
 endmodule
