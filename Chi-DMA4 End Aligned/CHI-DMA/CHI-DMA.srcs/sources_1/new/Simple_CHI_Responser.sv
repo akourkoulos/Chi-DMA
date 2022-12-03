@@ -41,7 +41,7 @@
 
 module Simple_CHI_Responser#(
 //-------------------------------------------------------------------------- 
-  parameter TIME_DELAY         = 10             ,
+  parameter TIME_DELAY         = 11             ,
   parameter TIME_DELAY_WIDTH   = 4              ,  
   parameter FIFO_Length        = TIME_DELAY + 2 ,
   parameter BRAM_COL_WIDTH     = 32             ,        
@@ -69,10 +69,12 @@ module Simple_CHI_Responser#(
     reg                                 SigDeqReq              ;
     reg                                 SigReqEmpty            ;
     ReqFlit                             SigTXREQFLIT           ;
-    reg     [TIME_DELAY_WIDTH  - 1 : 0] SigDelay               ;
     
     reg     [`DBIDRespWidth    - 1 : 0] DBID_Count             ; // NextDBID field for DBID RSP
-    reg     [TIME_DELAY_WIDTH  - 1 : 0] TimeDelayCnt           ; // Waiting Time of First request of FIFO
+    
+    reg     [TIME_DELAY        - 1 : 0] Delayer                ; // delay Req for TIME_DEALY
+    reg     [TIME_DELAY_WIDTH  - 1 : 0] SigResp                ;
+    
    // Req FIFO (keeps all the uncomplete Requests)
    FIFO #(     
        .FIFO_WIDTH  ( REQ_FLIT_WIDTH ) ,       
@@ -89,24 +91,23 @@ module Simple_CHI_Responser#(
        .Empty    ( SigReqEmpty        ) 
        );
        
-    // Delay FIFO (keeps the time that every Request needs to finish)
-   FIFO #(     
-       .FIFO_WIDTH  ( TIME_DELAY_WIDTH ) ,       
-       .FIFO_LENGTH ( FIFO_Length      )         
-       )     
-       myDelayFIFO(     
-       .RST       ( RST                                                                               ) ,      
-       .Clk       ( Clk                                                                               ) ,      
-       .Inp       ( (myFIFOReq.state == 0) ? TIME_DELAY : ((myFIFOReq.state == 1) ? TimeDelayCnt : 0) ) , 
-       .Enqueue   ( ReqChan.TXREQFLITV                                                                ) , 
-       .Dequeue   ( SigDeqReq                                                                         ) , 
-       .Outp      ( SigDelay                                                                          ) , 
-       .FULL      (                                                                                   ) , 
-       .Empty     (                                                                                   ) 
-       );
-       
-       
-    //Count Converter's inbound Crds
+   always_ff@(posedge Clk)begin
+     if(RST)
+       Delayer <= 0 ;
+     else
+     begin
+       if(!(SigResp & (CountDataCrdsInb == 0 | CountRspCrdsInb == 0)))begin
+         for(int i = 0 ; i < TIME_DELAY - 1 ; i++) begin
+           Delayer[i] <= Delayer[i+1];
+         end
+         Delayer[TIME_DELAY - 1] <= ReqChan.TXREQFLITV & CountReqCrdsOutb != 0 ;
+       end
+     end
+   end
+   
+   assign SigResp = Delayer[0];
+ 
+   //Count Converter's inbound Crds
     always_ff@(posedge Clk) begin
       if(RST)begin
         CountDataCrdsInb = 0 ;
@@ -185,7 +186,7 @@ module Simple_CHI_Responser#(
     
     
     always_comb begin     
-      if(!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce & CountDataCrdsInb != 0 & TimeDelayCnt == SigDelay)begin
+      if(!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce & CountDataCrdsInb != 0 & SigResp)begin
         // Data Response
         DatInbChan.RXDATFLITV = 1;
         DatInbChan.RXDATFLIT = '{default     : 0                                            ,                       
@@ -217,7 +218,7 @@ module Simple_CHI_Responser#(
       end
 
       //DBID Respose    
-      if(!SigReqEmpty & SigTXREQFLIT.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0 & TimeDelayCnt == SigDelay)begin
+      if(!SigReqEmpty & SigTXREQFLIT.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0 & SigResp)begin
         RspInbChan.RXRSPFLITV = 1; 
         RspInbChan.RXRSPFLIT = '{default   : 0                                        ,                       
                                   QoS      : 0                                        ,
@@ -240,21 +241,10 @@ module Simple_CHI_Responser#(
       end
       
       //sig to dequeue FIFO
-      if((!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce & CountDataCrdsInb != 0 & TimeDelayCnt == SigDelay)|(!SigReqEmpty & SigTXREQFLIT.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0 & TimeDelayCnt == SigDelay))
+      if((!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce & CountDataCrdsInb != 0 & SigResp)|(!SigReqEmpty & SigTXREQFLIT.Opcode == `WriteUniquePtl & CountRspCrdsInb != 0 & SigResp))
         SigDeqReq = 1 ;
       else
         SigDeqReq = 0 ;    
-    end
-    
-    // increas time delay Counter
-    always_ff@(posedge Clk)begin
-      if(RST)
-        TimeDelayCnt <= 0 ;
-      else 
-        if(SigDeqReq)
-          TimeDelayCnt <= 0 ; 
-        else if(!SigReqEmpty)
-          TimeDelayCnt <= TimeDelayCnt + 1 ;
     end
     
     // Create new DBID

@@ -149,7 +149,7 @@ module Scheduler#(
              ValidFIFO  = 0 ;
              RegWESig   = 1 ;
              IssueValid = 0 ;
-             ValidBRAM  = 0 ;
+             ValidBRAM  = 1 ;
            end
            else begin                         // Schedule a new transaction 
              WEControl  = 1                      ;

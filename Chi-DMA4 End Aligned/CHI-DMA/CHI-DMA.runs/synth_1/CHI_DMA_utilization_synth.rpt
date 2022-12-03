@@ -1,7 +1,7 @@
 Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-| Date         : Tue Nov 22 14:30:12 2022
+| Date         : Sat Dec  3 19:43:46 2022
 | Host         : Aggelos-PC running 64-bit Service Pack 1  (build 7601)
 | Command      : report_utilization -file CHI_DMA_utilization_synth.rpt -pb CHI_DMA_utilization_synth.pb
 | Design       : CHI_DMA
@@ -30,8 +30,8 @@ Table of Contents
 +-------------------------+-------+-------+-----------+-------+
 |        Site Type        |  Used | Fixed | Available | Util% |
 +-------------------------+-------+-------+-----------+-------+
-| Slice LUTs*             | 31031 |     0 |    303600 | 10.22 |
-|   LUT as Logic          | 31031 |     0 |    303600 | 10.22 |
+| Slice LUTs*             | 35256 |     0 |    303600 | 11.61 |
+|   LUT as Logic          | 35256 |     0 |    303600 | 11.61 |
 |   LUT as Memory         |     0 |     0 |    130800 |  0.00 |
 | Slice Registers         | 31093 |     0 |    607200 |  5.12 |
 |   Register as Flip Flop | 31093 |     0 |    607200 |  5.12 |
@@ -88,28 +88,28 @@ Table of Contents
 4. IO and GT Specific
 ---------------------
 
-+-----------------------------+------+-------+-----------+--------+
-|          Site Type          | Used | Fixed | Available |  Util% |
-+-----------------------------+------+-------+-----------+--------+
-| Bonded IOB                  | 1948 |     0 |       600 | 324.67 |
-| Bonded IPADs                |    0 |     0 |        62 |   0.00 |
-| Bonded OPADs                |    0 |     0 |        40 |   0.00 |
-| PHY_CONTROL                 |    0 |     0 |        14 |   0.00 |
-| PHASER_REF                  |    0 |     0 |        14 |   0.00 |
-| OUT_FIFO                    |    0 |     0 |        56 |   0.00 |
-| IN_FIFO                     |    0 |     0 |        56 |   0.00 |
-| IDELAYCTRL                  |    0 |     0 |        14 |   0.00 |
-| IBUFDS                      |    0 |     0 |       576 |   0.00 |
-| GTXE2_COMMON                |    0 |     0 |         5 |   0.00 |
-| GTXE2_CHANNEL               |    0 |     0 |        20 |   0.00 |
-| PHASER_OUT/PHASER_OUT_PHY   |    0 |     0 |        56 |   0.00 |
-| PHASER_IN/PHASER_IN_PHY     |    0 |     0 |        56 |   0.00 |
-| IDELAYE2/IDELAYE2_FINEDELAY |    0 |     0 |       700 |   0.00 |
-| ODELAYE2/ODELAYE2_FINEDELAY |    0 |     0 |       700 |   0.00 |
-| IBUFDS_GTE2                 |    0 |     0 |        10 |   0.00 |
-| ILOGIC                      |    0 |     0 |       600 |   0.00 |
-| OLOGIC                      |    0 |     0 |       600 |   0.00 |
-+-----------------------------+------+-------+-----------+--------+
++-----------------------------+------+-------+-----------+-------+
+|          Site Type          | Used | Fixed | Available | Util% |
++-----------------------------+------+-------+-----------+-------+
+| Bonded IOB                  |    0 |     0 |       600 |  0.00 |
+| Bonded IPADs                |    0 |     0 |        62 |  0.00 |
+| Bonded OPADs                |    0 |     0 |        40 |  0.00 |
+| PHY_CONTROL                 |    0 |     0 |        14 |  0.00 |
+| PHASER_REF                  |    0 |     0 |        14 |  0.00 |
+| OUT_FIFO                    |    0 |     0 |        56 |  0.00 |
+| IN_FIFO                     |    0 |     0 |        56 |  0.00 |
+| IDELAYCTRL                  |    0 |     0 |        14 |  0.00 |
+| IBUFDS                      |    0 |     0 |       576 |  0.00 |
+| GTXE2_COMMON                |    0 |     0 |         5 |  0.00 |
+| GTXE2_CHANNEL               |    0 |     0 |        20 |  0.00 |
+| PHASER_OUT/PHASER_OUT_PHY   |    0 |     0 |        56 |  0.00 |
+| PHASER_IN/PHASER_IN_PHY     |    0 |     0 |        56 |  0.00 |
+| IDELAYE2/IDELAYE2_FINEDELAY |    0 |     0 |       700 |  0.00 |
+| ODELAYE2/ODELAYE2_FINEDELAY |    0 |     0 |       700 |  0.00 |
+| IBUFDS_GTE2                 |    0 |     0 |        10 |  0.00 |
+| ILOGIC                      |    0 |     0 |       600 |  0.00 |
+| OLOGIC                      |    0 |     0 |       600 |  0.00 |
++-----------------------------+------+-------+-----------+-------+
 
 
 5. Clocking
@@ -118,7 +118,7 @@ Table of Contents
 +------------+------+-------+-----------+-------+
 |  Site Type | Used | Fixed | Available | Util% |
 +------------+------+-------+-----------+-------+
-| BUFGCTRL   |    1 |     0 |        32 |  3.13 |
+| BUFGCTRL   |    0 |     0 |        32 |  0.00 |
 | BUFIO      |    0 |     0 |        56 |  0.00 |
 | MMCME2_ADV |    0 |     0 |        14 |  0.00 |
 | PLLE2_ADV  |    0 |     0 |        14 |  0.00 |
@@ -153,19 +153,15 @@ Table of Contents
 | Ref Name |  Used | Functional Category |
 +----------+-------+---------------------+
 | FDRE     | 31090 |        Flop & Latch |
-| LUT6     | 19303 |                 LUT |
-| LUT3     |  8794 |                 LUT |
-| LUT5     |  6189 |                 LUT |
-| OBUF     |  1136 |                  IO |
-| IBUF     |   809 |                  IO |
-| LUT2     |   672 |                 LUT |
-| LUT4     |   608 |                 LUT |
-| LUT1     |   240 |                 LUT |
+| LUT6     | 19358 |                 LUT |
+| LUT3     |  8792 |                 LUT |
+| LUT5     |  6012 |                 LUT |
+| LUT4     |   752 |                 LUT |
+| LUT2     |   659 |                 LUT |
+| LUT1     |   208 |                 LUT |
 | CARRY4   |   171 |          CarryLogic |
 | RAMB36E1 |     8 |        Block Memory |
-| OBUFT    |     3 |                  IO |
 | FDSE     |     3 |        Flop & Latch |
-| BUFG     |     1 |               Clock |
 +----------+-------+---------------------+
 
 

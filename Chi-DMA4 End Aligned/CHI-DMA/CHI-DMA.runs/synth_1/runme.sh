@@ -24,7 +24,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1'
+HD_PWD='C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.runs/synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
