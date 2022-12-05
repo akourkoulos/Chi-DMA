@@ -36,9 +36,7 @@ module CHI_DMA#(
     input                                                  RST                  ,
     input                       [BRAM_NUM_COL    - 1 : 0]  weA                  ,
     input                       [BRAM_ADDR_WIDTH - 1 : 0]  addrA                ,
-    input          Data_packet                             dinA                 ,
-    input                                                  ValidArbIn           , //----------------
-    output                                                 ReadyArbProc         , // From Arb_FIFO to Proc
+    input          Data_packet                             dinA                 , //----------------
     output         Data_packet                             BRAMdoutA            , // From BRAM to Proc  
     ReqChannel    .OUTBOUND                                ReqChan              , //-----CHI Channels----
     RspOutbChannel.OUTBOUND                                RspOutbChan          ,
@@ -101,7 +99,7 @@ module CHI_DMA#(
     Arbiter#( 
        .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH )  
     )ArbiterFIFO( 
-      .Valid           ({ValidArbFIFOSched , ValidArbIn} ) ,
+      .Valid           ({ValidArbFIFOSched , (weA != 0)} ) ,
       .DescAddrInProc  (addrA                            ) ,
       .DescAddrInSched (WriteBackPointer                 ) ,
       .Ready           ({ReadyArbFIFOSched,ReadyArbProc} ) ,
@@ -116,7 +114,7 @@ module CHI_DMA#(
       .RST     (RST                                                                  ) ,
       .Clk     (Clk                                                                  ) ,
       .Inp     (ArbPointer                                                           ) ,
-      .Enqueue (ValidArbFIFOSched & ReadyArbFIFOSched | (ValidArbIn & ReadyArbProc)  ) ,
+      .Enqueue (ValidArbFIFOSched & ReadyArbFIFOSched | ((weA != 0) & ReadyArbProc)  ) ,
       .Dequeue (DequeueFIFO                                                          ) ,
       .Outp    (PointerFIFO                                                          ) ,
       .FULL    (                                                                     ) ,
@@ -150,6 +148,7 @@ module CHI_DMA#(
       .Command           ( Command              ) 
     );
     
+    // Arbiter BRAM
     ArbiterBRAM#( 
       .BRAM_NUM_COL   ( BRAM_NUM_COL    ) ,
       .BRAM_ADDR_WIDTH( BRAM_ADDR_WIDTH ) 
@@ -169,6 +168,7 @@ module CHI_DMA#(
       .dOut    ( BRAMdinB        )
     ); 
     
+    //CHI-Converter
     CHIConverter CHI_Conv    (
      .Clk                    ( Clk                   ) ,
      .RST                    ( RST                   ) ,

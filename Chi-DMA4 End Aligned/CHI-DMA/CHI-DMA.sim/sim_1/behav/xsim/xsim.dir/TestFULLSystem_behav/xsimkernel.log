@@ -2,3 +2,6 @@ Running: xsim.dir/TestFULLSystem_behav/xsimk.exe -simmode gui -wdb TestFULLSyste
 Design successfully loaded
 Design Loading Memory Usage: 6868 KB (Peak: 6868 KB)
 Design Loading CPU Usage: 78 ms
+Simulation completed
+Simulation Memory Usage: 12820 KB (Peak: 12820 KB)
+Simulation CPU Usage: 233 ms

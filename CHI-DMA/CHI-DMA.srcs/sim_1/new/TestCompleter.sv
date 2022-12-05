@@ -30,7 +30,9 @@ import CompleterPkg::*;
 `define StatusRegIndx     4
 // Status state
 `define StatusIdle        0
+`define StatusActive      1
 `define StatusError       2
+`define TempStatusError   3
 
 `define RspErrWidth       2
 `define NoError           0
@@ -44,17 +46,17 @@ module TestCompleter#(
   parameter FIFO_WIDTH         = BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // Width is DescAdd + RespErrorWidth + LastDescTrans
 //----------------------------------------------------------------------
 );
-   reg                                           RST          ;
-   reg                                           Clk          ;
-   Completer_Packet                              CompDataPack ;
-   reg                                           ValidUpdate  ;
-   Data_packet                                   DescData     ;
-   reg                                           ReadyBRAM    ;
-   wire                                          ValidBRAM    ;
-   wire              [BRAM_ADDR_WIDTH   - 1 : 0] AddrOut      ;
-   Data_packet                                   DataOut      ;
-   wire              [BRAM_NUM_COL      - 1 : 0] WE           ;
-   wire                                          FULL         ;
+   reg                                            RST          ;
+   reg                                            Clk          ;
+   Completer_Packet                               CompDataPack ;
+   reg                                            ValidUpdate  ;
+   Data_packet                                    DescData     ;
+   reg                                            ReadyBRAM    ;
+   wire                                           ValidBRAM    ;
+   wire              [BRAM_ADDR_WIDTH   - 1 : 0]  AddrOut      ;
+   Data_packet                                    DataOut      ;
+   wire              [BRAM_NUM_COL      - 1 : 0]  WE           ;
+   wire                                           FULL         ;
                                                  
                                                  
     // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
@@ -92,7 +94,10 @@ module TestCompleter#(
       #(period + 2*period*$urandom_range(2));
       if(ValidBRAM)begin
         ReadyBRAM = 1                        ;
-        DescData.Status = $urandom_range(1,2);
+        if($urandom_range(1,2) == 1 )
+          DescData.Status = `StatusActive    ;
+        else
+          DescData.Status = `TempStatusError ;
         #(period*2*$urandom_range(2))        ;
         ReadyBRAM = 0                        ;
         DescData.Status = 0                  ;
@@ -158,7 +163,7 @@ module TestCompleter#(
              TestVectorPackIn[pointerInp] <= CompDataPack   ;
              pointerInp                   <= pointerInp + 1 ;      
            end // if write DescBRAM or read it but not write it because it is already written update testvectors
-           if((ValidBRAM & ReadyBRAM & WE != 0)|(ValidBRAM & ReadyBRAM & UUT.state == UUT.WriteState))begin
+           if((ValidBRAM & ReadyBRAM & WE != 0))begin
              TestVectorAddrOut  [pointerOutp] <= AddrOut         ;
              TestVectorDataOut  [pointerOutp] <= DataOut         ;
              TestVectorWE       [pointerOutp] <= WE              ;
@@ -189,16 +194,19 @@ module TestCompleter#(
         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)begin
           if(TestVectorPackIn[i] != 0)begin
             // for every repetition if addrOut is the same with DescAddr , WE is on when or WE is of but Desc is already written with error and StatusOut is idle when desc is not written and 0 when it is already written with error then corect process
-            if(TestVectorPackIn[i].DescAddr == TestVectorAddrOut[i] & ((TestVectorWE[i] == ('d1 << `StatusRegIndx)) | (TestVectorWE[i] == 0 & TestVectorDescData[i].Status == `StatusError))
-            & ((TestVectorDescData[i].Status != `StatusError & TestVectorDataOut[i].Status == `StatusIdle) | (TestVectorDescData[i].Status == `StatusError & TestVectorWE[i] == 0) | (TestVectorDataOut[i].Status == `StatusError)))
+            if(TestVectorPackIn[i].DescAddr == TestVectorAddrOut[i] & ((TestVectorWE[i] == ('d1 << `StatusRegIndx)))
+             & ((TestVectorDescData[i].Status != `TempStatusError & TestVectorDataOut[i].Status == `StatusIdle & TestVectorPackIn[i].DBIDRespErr == 0 & TestVectorPackIn[i].DataRespErr == 0 & TestVectorPackIn[i].LastDescTrans) 
+             | (TestVectorDescData[i].Status == `TempStatusError &  TestVectorDataOut[i].Status == `StatusError & TestVectorPackIn[i].LastDescTrans))
+             | (TestVectorDataOut[i].Status == `TempStatusError & (TestVectorPackIn[i].DBIDRespErr != 0 | TestVectorPackIn[i].DataRespErr != 0 ))
+             | (TestVectorDescData[i].Status != `TempStatusError & TestVectorDataOut[i].Status == `StatusError & (TestVectorPackIn[i].DBIDRespErr != 0 | TestVectorPackIn[i].DataRespErr != 0) & TestVectorPackIn[i].LastDescTrans))
               $display("%d. Correct",i);
             // if DataPack Addr is Different from AddrOut Wrong
             else if (TestVectorPackIn[i].DescAddr != TestVectorAddrOut[i])begin
               $display("%d. --Error:: Wrong Addr. Expected :%d but Addr was %d ",i,TestVectorPackIn[i].DescAddr,TestVectorAddrOut[i]);
               $stop;
             end
-            // if WE isnt on or it is off when DescStatus is not Error Wrong WE
-            else if ((TestVectorWE[i] != ('d1 << `StatusRegIndx)) & !(TestVectorWE[i] == 0 & TestVectorDescData[i].Status == `StatusError))begin
+            // Wrong WE
+            else if ((TestVectorWE[i] != ('d1 << `StatusRegIndx)))begin
               $display("%d. --Error:: Wrong WE. Expected :%d but WE was %d ",i,('d1 << `StatusRegIndx),TestVectorWE[i]);
               $stop;
             end

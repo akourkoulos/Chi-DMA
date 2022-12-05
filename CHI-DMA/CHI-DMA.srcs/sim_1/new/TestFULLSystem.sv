@@ -40,13 +40,20 @@ import CHIFIFOsPkg::*;
 
 module TestFULLSystem#(
 //--------------------------------------------------------------------------
-  parameter BRAM_NUM_COL     = 8     , // As the Data_packet fields
-  parameter BRAM_COL_WIDTH   = 32    , // As the Data_packet field width
-  parameter BRAM_ADDR_WIDTH  = 10    , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
-  parameter CHI_DATA_WIDTH   = 64    ,
-  parameter MAX_BytesToSend  = 5000  ,
-  parameter NUM_OF_TRANS     = 350    ,
-  parameter Test_FIFO_Length = 120 
+  parameter BRAM_NUM_COL      = 8    , // As the Data_packet fields
+  parameter BRAM_COL_WIDTH    = 32   , // As the Data_packet field width
+  parameter BRAM_ADDR_WIDTH   = 10   , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
+  parameter CHI_DATA_WIDTH    = 64   ,
+  parameter MAX_BytesToSend   = 5000 ,
+  parameter P1_NUM_OF_TRANS   = 1    , // Number of inserted transfers for each phase
+  parameter P2_NUM_OF_TRANS   = 1    ,  
+  parameter P3_NUM_OF_TRANS   = 250  ,  
+  parameter P4_NUM_OF_TRANS   = 15   ,  
+  parameter P5_NUM_OF_TRANS   = 45   ,  
+  parameter P6_NUM_OF_TRANS   = 450  ,   
+  parameter LastPhase         = 6    ,// Number of Last Phase
+  parameter PHASE_WIDTH       = 3    , // width of register that keeps the phase
+  parameter Test_FIFO_Length  = 120 
 //--------------------------------------------------------------------------
 );
 
@@ -56,14 +63,14 @@ module TestFULLSystem#(
   wire         [BRAM_NUM_COL    - 1 : 0]  weA            ;
   wire         [BRAM_ADDR_WIDTH - 1 : 0]  addrA          ;
   Data_packet                             dinA           ;
-  wire                                    ValidArbIn     ;
-  wire                                    ReadyArbProc   ;
-  Data_packet                             BRAMdoutA      ;
-  ReqChannel                              ReqChan     () ;
-  RspOutbChannel                          RspOutbChan () ;
-  DatOutbChannel                          DatOutbChan () ;
-  RspInbChannel                           RspInbChan  () ;
-  DatInbChannel                           DatInbChan  () ; 
+  Data_packet                             BRAMdoutA      ; 
+  reg           [PHASE_WIDTH    - 1 : 0]  PhaseIn        ;
+  reg                                     NewPhase       ;
+  ReqChannel                              ReqChan    ()  ;
+  RspOutbChannel                          RspOutbChan()  ;
+  DatOutbChannel                          DatOutbChan()  ;
+  RspInbChannel                           RspInbChan ()  ;
+  DatInbChannel                           DatInbChan ()  ; 
 
  
   
@@ -73,8 +80,6 @@ module TestFULLSystem#(
      .weA          (weA          ) ,
      .addrA        (addrA        ) ,
      .dinA         (dinA         ) ,
-     .ValidArbIn   (ValidArbIn   ) ,
-     .ReadyArbProc (ReadyArbProc ) ,
      .BRAMdoutA    (BRAMdoutA    ) ,
      .ReqChan      (ReqChan      ) ,
      .RspOutbChan  (RspOutbChan  ) ,
@@ -85,65 +90,162 @@ module TestFULLSystem#(
     
     
    PseudoCPU #(
-   .NUM_OF_TRANS    (NUM_OF_TRANS   ),
-   .MAX_BytesToSend (MAX_BytesToSend)
+   .P1_NUM_OF_TRANS    (P1_NUM_OF_TRANS  ),
+   .P2_NUM_OF_TRANS    (P2_NUM_OF_TRANS  ),
+   .P3_NUM_OF_TRANS    (P3_NUM_OF_TRANS  ),
+   .P4_NUM_OF_TRANS    (P4_NUM_OF_TRANS  ),
+   .P5_NUM_OF_TRANS    (P5_NUM_OF_TRANS  ),
+   .P6_NUM_OF_TRANS    (P6_NUM_OF_TRANS  ),
+   .LastPhase          (LastPhase        ),
+   .MAX_BytesToSend    (MAX_BytesToSend  )
    )myCPU(
      .RST          (RST          ) ,
      .Clk          (Clk          ) ,
-     .ReadyArbProc (ReadyArbProc ) ,
      .BRAMdoutA    (BRAMdoutA    ) ,
+     .PhaseIn      (PhaseIn      ) ,
+     .NewPhase     (NewPhase     ) ,
      .weA          (weA          ) ,
      .addrA        (addrA        ) ,
-     .dinA         (dinA         ) ,
-     .ValidArbIn   (ValidArbIn   )  
+     .dinA         (dinA         ) 
     );
- 
-   CHI_Responser#(
+  
+  // Simple CHI Responser
+   Simple_CHI_Responser#(
      .FIFO_Length(Test_FIFO_Length)
-   ) CHI_RSP  (
-     .Clk                 (Clk                     ) ,
-     .RST                 (RST                     ) ,
-     .ReqChan             (ReqChan      .INBOUND   ) ,
-     .RspOutbChan         (RspOutbChan  .INBOUND   ) ,
-     .DatOutbChan         (DatOutbChan  .INBOUND   ) ,
-     .RspInbChan          (RspInbChan   .OUTBOUND  ) ,
-     .DatInbChan          (DatInbChan   .OUTBOUND  )  
-    );
-       
-    
-  always
-  begin
-      Clk = 1'b1; 
-      #20; // high for 20 * timescale = 20 ns
-  
-      Clk = 1'b0;
-      #20; 
-  end
+   ) Simp_CHI_RSP         (
+     .Clk                 (Clk                               ) ,
+     .RST                 (RST                               ) ,
+     .ReqChan             (ReqChan       .INBOUND            ) ,
+     .RspOutbChan         (RspOutbChan   .INBOUND            ) ,
+     .DatOutbChan         (DatOutbChan   .INBOUND            ) ,
+     .RspInbChan          (RspInbChan    .OUTBOUND           ) ,
+     .DatInbChan          (DatInbChan    .OUTBOUND           )  
+    );  
+   
+   // Fully correctly transfered Descriptors
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [P6_NUM_OF_TRANS - 1 : 0] ;
+   int                           CTpointer        = 0                       ;
 
-// duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
-  localparam period = 20;  
-  
-  initial begin
-    RST = 1 ;
-    #(period*3);
-    RST = 0 ;
-  end
+   // Fully correctly scheduled Descriptors
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectSched    [P6_NUM_OF_TRANS - 1 : 0]  ;
+   int                           CSpointer       = 0                        ;
+   wire                          PhaseReqOver                               ;
+   
+   assign PhaseReqOver = ((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS));
+   
+   always
+   begin
+       Clk = 1'b1; 
+       #20; // high for 20 * timescale = 20 ns
+   
+       Clk = 1'b0;
+       #20; 
+   end
+
+   // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
+   localparam period = 20;  
+   
+   initial begin
+     RST = 1 ;
+     #(period*3);
+     RST = 0 ;
+   end
+   
+   always@(posedge Clk) begin
+     if(RST)begin
+       PhaseIn  = 0 ;
+       NewPhase = 0 ;
+       #period;
+     end
+     else begin
+     // After Reset go to Phase 1 : 1 small(single CHI-transaction) Transfer
+       if(PhaseIn  == 0)begin
+         #period;
+         PhaseIn  = 1 ;
+         NewPhase = 1 ;   
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 1 is over (all of its transaction has finished and FIFOs of Converter and Completer are empty ) go to the Phase 2 : one big Transfer
+       else if((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 2 ;
+         NewPhase = 1 ;     
+         #(period*2)  ; 
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 2 is over go to Phase 3 : many of small (single CHI-transaction) transfers
+       else if((PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 3 ;
+         NewPhase = 1 ;     
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 3 is over go to Phase 4 : many of Large transfers
+       else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 4 ;
+         NewPhase = 1 ;    
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 4 is over go to Phase 5 : combination of large and small Transfers that they are comming with random delay
+       else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 5 ;
+         NewPhase = 1 ;   
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 5 is over go to Phase 6 (LastPhase) : a lot of Transfers with random size random Addresses (Descriptor and Memory) which are inserted in random time
+       else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 6 ;
+         NewPhase = 1 ;   
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // All phases are finished
+       else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 6 ;
+         NewPhase = 0 ;   
+         #(period*2)  ;  
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       else begin
+         NewPhase = 0 ; 
+         #(period)    ;    
+       end
+     end
+   end  
   
    //@@@@@@@@@@@@@@@@@@@@@@@@@ Check of Scheduling  @@@@@@@@@@@@@@@@@@@@@@@@@
    // Vector that keeps information for ckecking the operation of module
    reg [BRAM_COL_WIDTH  - 1 : 0] TestVectorBRAM [5            - 1 : 0][2**BRAM_ADDR_WIDTH - 1 : 0] ; // first dimention 0 : SrcAddr , 1 : DstAddr, 2 : BTS, 3 : SB, 4 : LastDescValid
-   // Fully correctly scheduled Descriptors
-   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectSched   [NUM_OF_TRANS - 1 : 0]                             ;
-   int                           CSpointer      = 0                                                ;
-   
+
+   //This block Stores in TestVector all Transfers tha have been inserted in DMA and 
+   //checks if the scheduling of the tranfers is executed coreclty by comparing the 
+   //addresses of the command with the correspondings of transfers. When the lastDescTrans
+   //field of command is set then the Transfer is fully scheduled and the corresponding
+   //DescAddr which is sheduled correctly is stored in CorrectSched Vector 
    always_ff@(posedge Clk) begin
-     if(RST)begin
+     // Reset TestVector every time there is a phase change or a RST
+     if(RST | (DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
        TestVectorBRAM     <= '{default:0};
        CorrectSched       <= '{default:0};
        CSpointer          <= 0           ;
      end
      else begin
-       if(weA != 0 & ReadyArbProc & ValidArbIn)begin  // when store someting in Descriptor update TestVector's SrcAddr ,DstAddr ,BTS fields
+       if(weA != 0)begin  // when store someting in Descriptor update TestVector's SrcAddr ,DstAddr ,BTS fields
          for(int i = 0 ; i < 4 ; i++)begin
            if(weA[i])begin
              TestVectorBRAM[i][addrA] <= dinA[i*BRAM_COL_WIDTH +: BRAM_COL_WIDTH] ;
@@ -152,14 +254,14 @@ module TestFULLSystem#(
        end
        
        if(!DMA.mySched.CmdFIFOFULL & DMA.mySched.IssueValid) begin //When scheduler send command to the CHI-Converter Check correctness and update TestVector's SB and LastDescValid field 
-         // if ReadAddr in command is SrcAddr+SB and WriteAddr = DstAddr + SB
+         // if ReadAddr in command is SrcAddr+SB and WriteAddr = DstAddr + SB update TestVector's Sb and LastDescTrans fields
          if((TestVectorBRAM[0][DMA.mySched.Command.DescAddr] + TestVectorBRAM[3][DMA.mySched.Command.DescAddr] == DMA.mySched.Command.SrcAddr) & (TestVectorBRAM[1][DMA.mySched.Command.DescAddr] + TestVectorBRAM[3][DMA.mySched.Command.DescAddr] == DMA.mySched.Command.DstAddr))begin
            TestVectorBRAM[3][DMA.mySched.Command.DescAddr] <= TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length ;
-           TestVectorBRAM[4][DMA.mySched.Command.DescAddr] <= DMA.mySched.Command.LastDescTrans                                            ;
-           // if LastDescTrans and SB == BTS display correct scheduling
+           TestVectorBRAM[4][DMA.mySched.Command.DescAddr] <= DMA.mySched.Command.LastDescTrans ;
+           // if LastDescTrans and SB == BTS display correct scheduling : Store Desc Addr in Array CorrectSched
            if(DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length == TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
              CorrectSched[CSpointer] = DMA.mySched.Command.DescAddr;
-             CSpointer              <= CSpointer + 1               ;
+             CSpointer <= CSpointer + 1 ;
            end
            // if LastDescTrans and SB != BTS  or SB > BTS display Error 
            else if((DMA.mySched.Command.LastDescTrans & (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length != TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))| (TestVectorBRAM[3][DMA.mySched.Command.DescAddr] + DMA.mySched.Command.Length > TestVectorBRAM[2][DMA.mySched.Command.DescAddr]))begin
@@ -168,7 +270,7 @@ module TestFULLSystem#(
            end
          end
          else begin // if Expected ReadAddr is different from the real output ReadAddr display an Error
-           $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Addr : %d, ExpReadAddr : %d , TrueReadAddr : %d" , DMA.mySched.Command.DescAddr,TestVectorBRAM[0][DMA.mySched.Command.DescAddr]+TestVectorBRAM[3][DMA.mySched.Command.DescAddr],DMA.mySched.Command.SrcAddr);
+           $display("--ERROR :: Wrong ReadAddrOut or WriteAddrOut at Desc : %d, ExpReadAddr : %d , TrueReadAddr : %d" , DMA.mySched.Command.DescAddr,TestVectorBRAM[0][DMA.mySched.Command.DescAddr]+TestVectorBRAM[3][DMA.mySched.Command.DescAddr],DMA.mySched.Command.SrcAddr);
            $stop;
          end
        end
@@ -178,32 +280,33 @@ module TestFULLSystem#(
    
    
    //########################## Check CHI functionality ##########################
-   int                           CTpointer        = 0                    ;
-   // Vector with Addresses of all corrctly fully transfered Descriptors
-   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [NUM_OF_TRANS - 1 : 0] ;
-   // Read Req FIFO signals
-   wire                          Dequeue                                 ;
-   wire                          ReqEmptyR                               ;
-   wire                          ReqFULLR                                ;
-   ReqFlit                       SigTXREQFLITR                           ;
-   // Write Req FIFO signals
-   wire                          ReqFULLW                                ;
-   wire                          ReqEmptyW                               ;
-   ReqFlit                       SigTXREQFLITW                           ;
-   // Data Oub  FIFO signals
-   wire                          DataOutbFULL                            ;
-   wire                          DataOutbEmpty                           ;
-   DataFlit                      SigTXDATFLIT                            ;
-   // Data Inb FIFO signals
-   wire                          DataInbFULL                             ;
-   wire                          DataInbEmpty                            ;
-   DataFlit                      SigRXDATFLIT                            ;
-   // Rsp Inb FIFO signals
-   wire                          RspInbFULL                              ;
-   wire                          RspInbEmpty                             ;
-   RspFlit                       SigRXRSPFLIT                            ;
+   //Sigs for Read Request FIFO
+   wire     Dequeue         ;
+   wire     ReqEmptyR       ;
+   wire     ReqFULLR        ;
+   ReqFlit  SigTXREQFLITR   ;
+   //Sigs for Write Request FIFO                         
+   wire     ReqFULLW        ;
+   wire     ReqEmptyW       ;
+   ReqFlit  SigTXREQFLITW   ;
+   //Sigs for Data Outbound FIFO                         
+   wire     DataOutbFULL    ;
+   wire     DataOutbEmpty   ;
+   DataFlit SigTXDATFLIT    ;
+   //Sigs for Data Inbound FIFO                         
+   wire     DataInbFULL     ;
+   wire     DataInbEmpty    ;
+   DataFlit SigRXDATFLIT    ;
+   //Sigs for Rsp Inbound FIFO                         
+   wire     RspInbFULL      ;
+   wire     RspInbEmpty     ;
+   RspFlit  SigRXRSPFLIT    ;
    
    //---------------------Crd Manager--------------------------
+   //Count the number of Credits on each channel and if a Transaction is 
+   //attempted to happen without Credits
+   
+   //Credit Counters for each channel
     reg     [`CrdRegWidth      - 1 : 0] CountReqCrdsOutb  = 0  ; 
     reg     [`CrdRegWidth      - 1 : 0] CountDataCrdsOutb = 0  ;
     reg     [`CrdRegWidth      - 1 : 0] CountRspCrdsOutb  = 0  ;
@@ -250,6 +353,8 @@ module TestFULLSystem#(
       end
     end
     
+    //Display Error when a Transaction is 
+    //attempted to happen without Credits
     always_ff@(posedge Clk)begin
       if(DMA.ReqChan.TXREQFLITV & CountReqCrdsOutb == 0)begin
         $display("--Error :: There are no Crds to send a Request");
@@ -277,7 +382,7 @@ module TestFULLSystem#(
    //Test Cmnd FIFO Signals
    reg         DequeueCmnd   ;
    CHI_Command SigCommand    ;
-   // Test Command FIFO 
+   // Test Command FIFO : Each command that has been sheduled is enqueued in FIFO
    FIFO #(     
        .FIFO_WIDTH  ( COMMAND_WIDTH                                     ) ,       
        .FIFO_LENGTH ( 2*Test_FIFO_Length                                )     
@@ -375,19 +480,28 @@ module TestFULLSystem#(
      end
    end
    
-   int lengthCount = 0;
+   //variable that counts the requested Bytes for each command
+   int    lengthCount = 0;
    
+   //When all FIFOs are non-Empty the functionality of read and write transactions has been checked so Dequeue Transaction-FIFOs
    assign Dequeue     = !RspInbEmpty & !DataInbEmpty & !DataOutbEmpty & !ReqEmptyW & !ReqEmptyR ;
+   //When all of bytes of the command has been transfered and Dequeue Transaction-FIFOs then dequeue Command as well
    assign DequeueCmnd = ((lengthCount + CHI_DATA_WIDTH >= SigCommand.Length) & Dequeue) ? 1 : 0 ;
    
-   // When all FIFOs is Non-Empty check if CHI-Transaction has been executed correctly 
+   // When all FIFOs are Non-Empty check if CHI-Transaction has been executed correctly 
    always_ff@(posedge Clk)begin
-     if(RST)begin
-       CorrectTransfer <= '{default:0};
-       CTpointer        <= 0          ;            
+     // when a phase is over or Reset then reset vector that stores correct Transactions
+     if(RST | (DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
+       CorrectTransfer <= '{default:0} ;
+       CTpointer       <= 0            ;            
      end
      else begin
        if(Dequeue)begin
+          //The Transactions are correct when Read is ReadOnce, the Read Address is the correct one , Response to Read is CompData ,
+          //TxnID of response is the same with Request,Write transaction is WriteUniqueuePtl , it has the correct Address,
+          //the Response for Write Request is DBIDResp or CompDBIDResp,TxnID of Write is tha same with Response,the outbound Data Rsp
+          //is NonCopyBackWrData, its TxnID is the same with the DBID of the previous Response and BE = '1 except of last transaction 
+          //of command where it can be any value. In every other case print Error message
           if((SigTXREQFLITR.Opcode == `ReadOnce & (SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCount)))
           &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
           // if correct opcode and Addr of a Write Req and correct opcode TxnID of a DBID Rsp and correct Data Out Rsp opcode ,TxnID and BE then print correct
@@ -467,19 +581,23 @@ module TestFULLSystem#(
        end
      end
    end
-   //Check for double used TxnID every time a new Request happens 
+   
+   //Check for double used TxnID every time a new Request happens
+   //When a Request happens check if there is the same TxnId inside Read or Write Req FIFO
+   //and the corresponding response has not been arrived . If there is a double use TxnID
+   //print an Error message
    always_ff@(posedge Clk)begin
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
        automatic int i = 0 ;
        while(i < 2*Test_FIFO_Length & (myRFIFOReq.MyQueue[i] != 0 | myWFIFOReq.MyQueue[i] != 0))begin
          // if there is a Request with the same TxnID in ReadReqFIFO and the corresponding DataRsp hasnt arrived the print error
-         if(CHI_Responser.ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i].TxnID & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
-           $display("\n--ERROR :: TXNID : %d is already used for ReadReq ", CHI_Responser.ReqChan.TXREQFLIT.TxnID);
+         if(ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i].TxnID & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
+           $display("\n--ERROR :: TXNID : %d is already used for ReadReq ", ReqChan.TXREQFLIT.TxnID);
            $stop;
          end
          // if there is a Request with the same TxnID in WriteReqFIFO and the corresponding DBIDRsp hasnt arrived the print error
-         else if(CHI_Responser.ReqChan.TXREQFLIT.TxnID == myWFIFOReq.MyQueue[i].TxnID & myWFIFOReq.MyQueue[i] != 0 & myInbDBIDFIFO.MyQueue[i] == 0)begin
-           $display("\n--ERROR :: TXNID : %d is already used for WriteReq", CHI_Responser.ReqChan.TXREQFLIT.TxnID);
+         else if(ReqChan.TXREQFLIT.TxnID == myWFIFOReq.MyQueue[i].TxnID & myWFIFOReq.MyQueue[i] != 0 & myInbDBIDFIFO.MyQueue[i] == 0)begin
+           $display("\n--ERROR :: TXNID : %d is already used for WriteReq", ReqChan.TXREQFLIT.TxnID);
            $stop;
          end
          i++;
@@ -489,30 +607,31 @@ module TestFULLSystem#(
    
    //########################## End of CHI functionality Checking ##########################
    
-   // End of process
+   
    //********************************* DISPLAY THE CORRECT TRANS *********************************
    // When All Transactions has Finished Print the correct ones   
-   reg [BRAM_ADDR_WIDTH - 1 : 0] helpVect              ;
    int                           lastCheckPointer  = 0 ;
-   always@(negedge Clk)begin 
-     // if Empty AddrFIFO and Empty CommandFIFO(All Desc have been scheduled)
+   int                           NZ                = 0 ; // used to count Non-Zero Finished Descriptors
+   always_ff@(posedge Clk)begin 
+     // if Empty AddrFIFO and Empty CommandFIFO and empty completer FIFO (All Desc have been scheduled)
      // check if every Desc is fully scheduled
-     if(DMA.AddrPointerFIFO.Empty & DMA.CHI_Conv.SigCommandEmpty & CSpointer != lastCheckPointer)begin
-       lastCheckPointer = CSpointer ;
+     if(DMA.AddrPointerFIFO.Empty & DMA.CHI_Conv.SigCommandEmpty & DMA.CHI_Conv.myCompleter.Empty & CSpointer != lastCheckPointer)begin
+       lastCheckPointer <= CSpointer ;
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
         //if for some reason a Descriptor is written but BTS != SB or lastDescAddr == 0 (not Fully sheduled)
          if((TestVectorBRAM[3][i] != TestVectorBRAM[2][i] | TestVectorBRAM[4][i] == 0) & TestVectorBRAM[2][i] != 0 )begin
-           $display("Desc : %d is not fully scheduled", i);
+           $display("Desc : %d is not fully scheduled BTS : %d , SB : %D , LastDescTrans : %d", i,TestVectorBRAM[2][i],TestVectorBRAM[3][i],TestVectorBRAM[4][i]);
            $stop;
          end
        end
-       if(CSpointer == NUM_OF_TRANS )begin
+       if(((PhaseIn  == 1 & CSpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CSpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CSpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CSpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CSpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CSpointer == P6_NUM_OF_TRANS)))begin
          $display("All Descriptors are Fully scheduled ");
        end
      end
      
-     // If All CHI_Transactions have been finished and all BRAM Status have been updated
-     if(CTpointer == NUM_OF_TRANS & DMA.CHI_Conv.myCompleter.Empty )begin
+     // If All CHI_Transactions have been finished and all BRAM Status have been updated in each Phase
+     if(PhaseReqOver & DMA.CHI_Conv.myCompleter.Empty & DMA.CHI_Conv.SigSizeEmpty)begin
+       $display("------------------------PHASE : %d------------------------",PhaseIn);
        // -------Check if state of BRAM is correct-------
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
          static bit errFlag = 0;
@@ -531,11 +650,15 @@ module TestFULLSystem#(
        CorrectSched   .sort   ();
        CorrectTransfer.reverse();
        CorrectSched   .reverse();
-  
-       for(int i = 0 ; i < NUM_OF_TRANS ; i++)begin
-         $write  ("%d Correct Sheduled Desc : %d",i , CorrectSched[i]);
-         $display("!!Correct Transfer for Desc : %d",CorrectTransfer[i]);
+       NZ = 1 ;
+       for(int i = 0 ; i < P6_NUM_OF_TRANS ; i++)begin
+         if(CorrectSched[i] != 0)begin
+           $write  ("%d Correct Sheduled Desc : %d",NZ , CorrectSched[i]);
+           $display("!!Correct Transfer for Desc : %d",CorrectTransfer[i]);
+           NZ = NZ + 1 ;
+         end
        end
+       $display("----------------------------------------------------------",);
      end
    end
 //***********************************************************************************************

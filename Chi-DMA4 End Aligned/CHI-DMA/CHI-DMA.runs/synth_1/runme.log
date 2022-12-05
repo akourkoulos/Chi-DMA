@@ -9,18 +9,18 @@
     ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 
 source CHI_DMA.tcl -notrace
-create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:09 . Memory (MB): peak = 413.473 ; gain = 109.844
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 412.410 ; gain = 112.289
 Command: synth_design -top CHI_DMA -part xc7vx485tffg1157-1 -mode out_of_context
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
-INFO: [Common 17-86] Your Synthesis license expires in 14 day(s)
+INFO: [Common 17-86] Your Synthesis license expires in 12 day(s)
 INFO: [Common 17-1540] The version limit for your license is '2022.11' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
 INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 9808 
+INFO: Helper process launched with PID 9832 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1110.266 ; gain = 237.078
+Starting RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1122.172 ; gain = 251.219
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'CHI_DMA' [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
 INFO: [Synth 8-6157] synthesizing module 'ReqChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:134]
@@ -215,7 +215,7 @@ WARNING: [Synth 8-3331] design Completer has unconnected port DescData[SentBytes
 WARNING: [Synth 8-3331] design Completer has unconnected port DescData[SentBytes][28]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1353.469 ; gain = 480.281
+Finished RTL Elaboration : Time (s): cpu = 00:00:50 ; elapsed = 00:00:51 . Memory (MB): peak = 1368.867 ; gain = 497.914
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -228,40 +228,41 @@ Report Check Netlist:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:50 ; elapsed = 00:00:53 . Memory (MB): peak = 1375.297 ; gain = 502.109
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:57 ; elapsed = 00:00:58 . Memory (MB): peak = 1390.703 ; gain = 519.750
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:50 ; elapsed = 00:00:53 . Memory (MB): peak = 1375.297 ; gain = 502.109
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:57 ; elapsed = 00:00:58 . Memory (MB): peak = 1390.703 ; gain = 519.750
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1378.109 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1390.703 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
 Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc]
+WARNING: [Constraints 18-619] A clock with name 'clk' already exists, overwriting the previous clock with the same name. [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc:3]
 Finished Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.025 . Memory (MB): peak = 1586.340 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.020 . Memory (MB): peak = 1610.270 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:06 ; elapsed = 00:00:04 . Memory (MB): peak = 1605.992 ; gain = 19.652
+Constraint Validation Runtime : Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 1621.074 ; gain = 10.805
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:02:14 ; elapsed = 00:02:13 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished Constraint Validation : Time (s): cpu = 00:02:15 ; elapsed = 00:02:14 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7vx485tffg1157-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:02:14 ; elapsed = 00:02:13 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished Loading Part and Timing Information : Time (s): cpu = 00:02:15 ; elapsed = 00:02:14 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:02:14 ; elapsed = 00:02:13 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:02:15 ; elapsed = 00:02:14 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Scheduler'
@@ -295,7 +296,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'Completer'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:05:43 ; elapsed = 00:05:56 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:06:06 ; elapsed = 00:06:14 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -601,7 +602,7 @@ INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instan
 INFO: [Synth 8-3971] The signal "i_0/myBRAM/ram_block_reg" was recognized as a true dual port RAM template.
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:08:35 ; elapsed = 00:10:05 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:08:36 ; elapsed = 00:10:06 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -638,8 +639,9 @@ Report RTL Partitions:
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
+WARNING: [Synth 8-565] redefining clock 'clk'
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:09:04 ; elapsed = 00:10:35 . Memory (MB): peak = 1605.992 ; gain = 732.805
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:09:22 ; elapsed = 00:10:52 . Memory (MB): peak = 1621.074 ; gain = 750.121
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
@@ -668,7 +670,7 @@ INFO: [Synth 8-3886] merging instance 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][
 INFO: [Synth 8-3886] merging instance 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][78]' (FDRE) to 'CHI_Convi_10/CommandFIFO/MyQueue_reg[31][79]'
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (CHI_Convi_10/CommandFIFO/\MyQueue_reg[31][79] )
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:11:38 ; elapsed = 00:13:10 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Timing Optimization : Time (s): cpu = 00:12:00 ; elapsed = 00:13:31 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -717,7 +719,7 @@ INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_5 (imp
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:12:12 ; elapsed = 00:13:44 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Technology Mapping : Time (s): cpu = 00:12:31 ; elapsed = 00:14:01 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -764,13 +766,13 @@ INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_7 (impleme
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:13:30 ; elapsed = 00:15:05 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished IO Insertion : Time (s): cpu = 00:13:50 ; elapsed = 00:15:23 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:13:31 ; elapsed = 00:15:05 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Renaming Generated Instances : Time (s): cpu = 00:13:51 ; elapsed = 00:15:24 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -789,25 +791,25 @@ Report Check Netlist:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:13:53 ; elapsed = 00:15:28 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:14:21 ; elapsed = 00:15:55 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:13:54 ; elapsed = 00:15:28 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Renaming Generated Ports : Time (s): cpu = 00:14:22 ; elapsed = 00:15:55 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:15:52 ; elapsed = 00:17:29 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Handling Custom Attributes : Time (s): cpu = 00:16:19 ; elapsed = 00:17:54 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:15:52 ; elapsed = 00:17:30 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Renaming Generated Nets : Time (s): cpu = 00:16:19 ; elapsed = 00:17:54 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -852,29 +854,29 @@ Report Instance Areas:
 |11    |  mySched          |Scheduler            |   247|
 +------+-------------------+---------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:15:52 ; elapsed = 00:17:30 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Finished Writing Synthesis Report : Time (s): cpu = 00:16:19 ; elapsed = 00:17:54 . Memory (MB): peak = 1713.941 ; gain = 842.988
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 560 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:14:01 ; elapsed = 00:16:35 . Memory (MB): peak = 1702.695 ; gain = 598.813
-Synthesis Optimization Complete : Time (s): cpu = 00:15:53 ; elapsed = 00:17:33 . Memory (MB): peak = 1702.695 ; gain = 829.508
+Synthesis finished with 0 errors, 0 critical warnings and 561 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:14:25 ; elapsed = 00:17:02 . Memory (MB): peak = 1713.941 ; gain = 612.617
+Synthesis Optimization Complete : Time (s): cpu = 00:16:20 ; elapsed = 00:17:57 . Memory (MB): peak = 1713.941 ; gain = 842.988
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1702.695 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 1713.941 ; gain = 0.000
 INFO: [Netlist 29-17] Analyzing 179 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.052 . Memory (MB): peak = 1702.695 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.053 . Memory (MB): peak = 1713.941 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-121 Infos, 209 Warnings, 0 Critical Warnings and 0 Errors encountered.
+121 Infos, 211 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:16:51 ; elapsed = 00:18:35 . Memory (MB): peak = 1702.695 ; gain = 1289.223
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.036 . Memory (MB): peak = 1702.695 ; gain = 0.000
+synth_design: Time (s): cpu = 00:17:09 ; elapsed = 00:18:49 . Memory (MB): peak = 1713.941 ; gain = 1301.531
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.031 . Memory (MB): peak = 1713.941 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/Chi-DMA4 End Aligned/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:24 ; elapsed = 00:00:21 . Memory (MB): peak = 1702.695 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:24 ; elapsed = 00:00:21 . Memory (MB): peak = 1713.941 ; gain = 0.000
 INFO: [runtcl-4] Executing : report_utilization -file CHI_DMA_utilization_synth.rpt -pb CHI_DMA_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sat Dec  3 19:43:47 2022...
+INFO: [Common 17-206] Exiting Vivado at Mon Dec  5 12:15:59 2022...

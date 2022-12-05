@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1879500fs"></ZoomStartTime>
-      <ZoomEndTime time="2236501fs"></ZoomEndTime>
-      <Cursor1Time time="1960000fs"></Cursor1Time>
+      <ZoomStartTime time="10201616666fs"></ZoomStartTime>
+      <ZoomEndTime time="10203756667fs"></ZoomEndTime>
+      <Cursor1Time time="10203400000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="233"></ValueColumnWidth>
+      <ValueColumnWidth column_width="228"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="23" />
    <wvobject fp_name="/TestCompleter/RST" type="logic">
       <obj_property name="ElementShortName">RST</obj_property>
       <obj_property name="ObjectShortName">RST</obj_property>
@@ -33,6 +33,7 @@
    <wvobject fp_name="/TestCompleter/CompDataPack" type="array">
       <obj_property name="ElementShortName">CompDataPack</obj_property>
       <obj_property name="ObjectShortName">CompDataPack</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/TestCompleter/ValidUpdate" type="logic">
       <obj_property name="ElementShortName">ValidUpdate</obj_property>
@@ -53,6 +54,7 @@
    <wvobject fp_name="/TestCompleter/AddrOut" type="array">
       <obj_property name="ElementShortName">AddrOut[9:0]</obj_property>
       <obj_property name="ObjectShortName">AddrOut[9:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/TestCompleter/DataOut" type="array">
       <obj_property name="ElementShortName">DataOut</obj_property>
@@ -87,6 +89,11 @@
    <wvobject fp_name="/TestCompleter/UUT/next_state" type="array">
       <obj_property name="ElementShortName">next_state[31:0]</obj_property>
       <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestCompleter/UUT/FIFODATA" type="array">
+      <obj_property name="ElementShortName">FIFODATA</obj_property>
+      <obj_property name="ObjectShortName">FIFODATA</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/TestCompleter/NUM_OF_REPETITIONS" type="array">
       <obj_property name="ElementShortName">NUM_OF_REPETITIONS[31:0]</obj_property>

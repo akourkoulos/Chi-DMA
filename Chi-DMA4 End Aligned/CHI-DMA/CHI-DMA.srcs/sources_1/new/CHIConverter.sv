@@ -186,7 +186,7 @@ module CHIConverter#(
        );
        
    // DBID FIFO
-   assign SigDBIDFIFOIn = '{default : 0                                ,
+   assign SigDBIDFIFOIn = '{default : 0                             ,
                             DBID    : RspInbChan.RXRSPFLIT.DBID     ,
                             RespErr : RspInbChan.RXRSPFLIT.RespErr   };
                             

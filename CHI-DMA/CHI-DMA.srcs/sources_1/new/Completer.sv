@@ -20,6 +20,7 @@ import CompleterPkg::*;
 // Status state
 `define StatusIdle        0
 `define StatusError       2
+`define TempStatusError   3
 
 `define RspErrWidth       2
 `define NoError           0
@@ -28,7 +29,7 @@ module Completer#(
   parameter BRAM_ADDR_WIDTH   = 10                                   ,
   parameter BRAM_NUM_COL      = 8                                    ,  // As the Data_packet fields
   parameter FIFO_Length       = 32                                   ,
-  parameter FIFO_WIDTH        = BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // Width is DescAdd + RespErrorWidth + LastDescTrans
+  parameter FIFO_WIDTH        = BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // Width is DescAdd + RespErrorWidth*2 + LastDescTrans
 )(
     input                                                RST          ,
     input                                                Clk          ,
@@ -85,14 +86,17 @@ module Completer#(
      case(state)
        ReadState :
          begin                           
-           if(ValidBRAM & ReadyBRAM & FIFODATA.DBIDRespErr == `NoError & FIFODATA.DataRespErr == `NoError)  
+           if(ValidBRAM & ReadyBRAM & FIFODATA.LastDescTrans)  
              next_state = WriteState ;  
            else
              next_state = ReadState ;
          end
        WriteState :
          begin
-           next_state = ReadState ;
+           if(ValidBRAM & ReadyBRAM & WE == ('d1 << `StatusRegIndx))
+             next_state = ReadState  ;
+            else
+             next_state = WriteState ;
          end
        default : next_state = ReadState;
      endcase   
@@ -103,10 +107,10 @@ module Completer#(
        ReadState :
          begin            
          // if Error Update error Status               
-           if(ValidBRAM & ReadyBRAM & (FIFODATA.DBIDRespErr != `NoError | FIFODATA.DataRespErr != `NoError))begin
-             WE      = ('d1 << `StatusRegIndx)                  ;
-             DataOut = '{ default : 0 , Status : `StatusError } ; 
-             Dequeue = 1                                        ;
+           if(ValidBRAM & ReadyBRAM & !FIFODATA.LastDescTrans & (FIFODATA.DBIDRespErr != `NoError | FIFODATA.DataRespErr != `NoError))begin
+             WE      = ('d1 << `StatusRegIndx)                      ;
+             DataOut = '{ default : 0 , Status : `TempStatusError } ; 
+             Dequeue = 1                                            ;
            end
            else begin
              WE      = 'b0 ;   
@@ -117,15 +121,20 @@ module Completer#(
        WriteState :
          begin
          // if there is control of BRAM and status is non-Error update Status to IdleStatus
-           if(ValidBRAM & ReadyBRAM & DescData.Status != `StatusError)begin 
-             WE      = ('d1 << `StatusRegIndx) ;
+           if(ValidBRAM & ReadyBRAM & DescData.Status != `TempStatusError & (FIFODATA.DBIDRespErr == `NoError & FIFODATA.DataRespErr == `NoError))begin 
+             WE      = ('d1 << `StatusRegIndx)                 ;
              DataOut = '{ default : 0 , Status : `StatusIdle } ;
              Dequeue = 1                                       ;
            end
+           else if(ValidBRAM & ReadyBRAM & (DescData.Status == `TempStatusError | FIFODATA.DBIDRespErr != `NoError | FIFODATA.DataRespErr != `NoError)) begin
+             WE      = ('d1 << `StatusRegIndx)                   ;   
+             DataOut = '{ default : 0 , Status : `StatusError }  ;
+             Dequeue = 1                                         ;
+           end
            else begin
-             WE      = 'b0                     ;   
-             DataOut = 'b0                     ;
-             Dequeue = ValidBRAM & ReadyBRAM   ;
+             WE      = 'b0 ;   
+             DataOut = 'b0 ;
+             Dequeue = 0   ;
            end
          end
        default begin

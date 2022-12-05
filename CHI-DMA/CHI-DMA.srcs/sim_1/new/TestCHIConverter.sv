@@ -49,70 +49,93 @@ module TestCHIConverter#(
   parameter NUM_OF_REPETITIONS = 500 ,
   parameter FIFO_Length        = 120
 //----------------------------------------------------------------------
-);
- reg                                              Clk               ;                                                                                        
- reg                                              RST               ;                                                                                        
- Data_packet                                      DataBRAM          ; // From BRAM                                                                           
- reg                                              IssueValid        ;                                                                                        
- reg                                              ReadyBRAM         ; // From Arbiter_BRAM                                                                   
- CHI_Command                                      Command           ; // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)                         
- reg                                              LastDescTrans     ; // From BS                                                                             
- reg                   [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr          ;                                                                                        
- reg                   [CHI_DATA_WIDTH  - 1 : 0]  BE                ;                                                                                        
- reg                   [CHI_DATA_WIDTH*8- 1 : 0]  ShiftedData       ;                                                                                        
- reg                   [`RspErrWidth    - 1 : 0]  DataErr           ;                                                                                        
- reg                                              EmptyBS           ;                                                                                        
- reg                                              FULLBS            ;                                                                                        
- ReqChannel                                       ReqChan      ()   ; // Request ChannelS                                                                    
- RspOutbChannel                                   RspOutbChan  ()   ; // Response outbound Chanel                                                            
- DatOutbChannel                                   DatOutbChan  ()   ; // Data outbound Chanel                                                                
- RspInbChannel                                    RspInbChan   ()   ; // Response inbound Chanel                                                             
- DatInbChannel                                    DatInbChan   ()   ; // Data inbound Chanel                                                                 
- wire                                             CmdFIFOFULL       ; // For Scheduler                                                                       
- wire                                             ValidBRAM         ; // For Arbiter_BRAM                                                                    
- wire                   [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM                                                                            
- Data_packet                                      DescStatus        ;                                                                                        
- wire                   [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;                                                                                        
- wire                                             EnqueueBS         ; // For BS                                                                              
- CHI_Command                                      CommandBS         ;                                                                                        
- wire                                             DequeueBS         ;                                                                                        
-                                                                                                                                                             
-
-
-
-  
+  );
+   reg                                              Clk               ;                                                                                        
+   reg                                              RST               ;                                                                                        
+   Data_packet                                      DataBRAM          ; // From BRAM                                                                           
+   reg                                              IssueValid        ;                                                                                        
+   reg                                              ReadyBRAM         ; // From Arbiter_BRAM                                                                   
+   CHI_Command                                      Command           ; // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)                         
+   reg                                              LastDescTrans     ; // From BS                                                                             
+   reg                   [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr          ;                                                                                        
+   reg                   [CHI_DATA_WIDTH  - 1 : 0]  BE                ;                                                                                        
+   reg                   [CHI_DATA_WIDTH*8- 1 : 0]  ShiftedData       ;                                                                                        
+   reg                   [`RspErrWidth    - 1 : 0]  DataErr           ;                                                                                        
+   reg                                              EmptyBS           ;                                                                                        
+   reg                                              FULLBS            ;                                                                                        
+   ReqChannel                                       ReqChan      ()   ; // Request ChannelS                                                                    
+   RspOutbChannel                                   RspOutbChan  ()   ; // Response outbound Chanel                                                            
+   DatOutbChannel                                   DatOutbChan  ()   ; // Data outbound Chanel                                                                
+   RspInbChannel                                    RspInbChan   ()   ; // Response inbound Chane
+   DatInbChannel                                    DatInbChan   ()   ;
+   wire                                             CmdFIFOFULL       ; // For Scheduler                                                                       
+   wire                                             ValidBRAM         ; // For Arbiter_BRAM                                                                    
+   wire                   [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          ; // For BRAM                                                                            
+   Data_packet                                      DescStatus        ;                                                                                        
+   wire                   [BRAM_NUM_COL    - 1 : 0] WEBRAM            ;                                                                                        
+   wire                                             EnqueueBS         ; // For BS                                                                              
+   CHI_Command                                      CommandBS         ;                                                                                        
+   wire                                             DequeueBS         ;                                                                                        
+                      
     // duration for each bit = 20 * timescdoutBale = 20 * 1 ns  = 20ns
     localparam period = 20;  
+                                                                                                                                           
+    CHI_Command                            CommandIn ;
+    wire                                   EnqueueIn ;
+    wire                                   DequeueBS ;
+    wire        [CHI_DATA_WIDTH   - 1 : 0] BEOut     ;
+    wire        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut   ;
+    wire                                   EmptyBS   ;
+    wire                                   BSFULL    ;
+DataError
+LastDescTrans
+DescAddr
 
-    CHIConverter UUT    (
-     .Clk                ( Clk                     ) ,
-     .RST                ( RST                     ) ,
-     .DataBRAM           ( DataBRAM                ) ,
-     .IssueValid         ( IssueValid              ) ,
-     .ReadyBRAM          ( ReadyBRAM               ) ,
-     .Command            ( Command                 ) ,                                       
-     .LastDescTrans      ( LastDescTrans           ) ,                                       
-     .DescAddr           ( DescAddr                ) ,                                       
-     .BE                 ( BE                      ) ,                                       
-     .ShiftedData        ( ShiftedData             ) ,                                       
-     .DataErr            ( DataErr                 ) ,
-     .EmptyBS            ( EmptyBS                 ) ,
-     .FULLBS             ( FULLBS                  ) ,
-     .ReqChan            ( ReqChan      .OUTBOUND  ) ,
-     .RspOutbChan        ( RspOutbChan  .OUTBOUND  ) ,
-     .DatOutbChan        ( DatOutbChan  .OUTBOUND  ) ,   
-     .RspInbChan         ( RspInbChan   .INBOUND   ) ,
-     .DatInbChan         ( DatInbChan   .INBOUND   ) ,
-     .CmdFIFOFULL        ( CmdFIFOFULL             ) ,
-     .ValidBRAM          ( ValidBRAM               ) ,
-     .AddrBRAM           ( AddrBRAM                ) ,
-     .DescStatus         ( DescStatus              ) ,
-     .WEBRAM             ( WEBRAM                  ) ,
-     .EnqueueBS          ( EnqueueBS               ) ,
-     .CommandBS          ( CommandBS               ) ,
-     .DequeueBS          ( DequeueBS               )
+    CHIConverter UUT     (
+     .Clk                (Clk                      ) ,
+     .RST                (RST                      ) ,
+     .DataBRAM           (DataBRAM                 ) ,
+     .IssueValid         (IssueValid               ) ,
+     .ReadyBRAM          (ReadyBRAM                ) ,
+     .Command            (Command                  ) ,                                       
+     .LastDescTrans      (LastDescTrans            ) ,                                       
+     .DescAddr           (DescAddr                 ) ,                                       
+     .BE                 (BEOut                    ) ,                                       
+     .ShiftedData        (DataOut                  ) ,                                       
+     .DataErr            (DataError                ) ,
+     .EmptyBS            (EmptyBS                  ) ,
+     .FULLBS             (BSFULL                   ) ,
+     .ReqChan            (ReqChan      .OUTBOUND   ) ,
+     .RspOutbChan        (RspOutbChan  .OUTBOUND   ) ,
+     .DatOutbChan        (DatOutbChan  .OUTBOUND   ) ,   
+     .RspInbChan         (RspInbChan   .INBOUND    ) ,
+     .RXDATFLITV         (DatInbChan   .RXDATFLITV ) ,
+     .RXDATFLIT          (DatInbChan   .RXDATFLIT  ) ,
+     .CmdFIFOFULL        (CmdFIFOFULL              ) ,
+     .ValidBRAM          (ValidBRAM                ) ,
+     .AddrBRAM           (AddrBRAM                 ) ,
+     .DescStatus         (DescStatus               ) ,
+     .WEBRAM             (WEBRAM                   ) ,
+     .EnqueueBS          (EnqueueBS                ) ,
+     .CommandBS          (CommandBS                ) ,
+     .DequeueBS          (DequeueBS                )
     );
     
+     BarrelShifter BS (
+     .  RST              ( RST                       ),
+     .  Clk              ( Clk                       ),
+     .  CommandIn        ( CommandIn                 ),
+     .  EnqueueIn        ( EnqueueIn                 ),
+     .  DequeueBS        ( DequeueBS                 ),
+     .  DatInbChan       ( DatInbChan      . INBOUND ),
+     .  BEOut            ( BEOut                     ),
+     .  DataOut          ( DataOut                   ),
+     .  DataError        ( DataError                 ),
+     .  DescAddr         ( DescAddr                  ),
+     .  LastDescTrans    ( LastDescTrans             ),
+     .  EmptyBS          ( EmptyBS                   ),
+     .  BSFULL           ( BSFULL                    )
+    );      
     //Crds signals
     int                               CountRspCrdsInb   = 0  ;
     int                               CountReqCrdsOutb  = 0  ; 
@@ -120,31 +143,12 @@ module TestCHIConverter#(
     int                               CountRspCrdsOutb  = 0  ;
     reg     [31 : 0]                  GivenReqCrds           ;// use in order not to give more crds than fifo length
     //FIFO signals
-    reg                               SigDeqReqR         ;
-    reg                               SigReqEmptyR       ;
-    reg                               SigDeqReqW         ;
-    reg                               SigReqEmptyW       ;
-    ReqFlit                           SigTXREQFLITR      ;
-    ReqFlit                           SigTXREQFLITW      ;
+    reg                               SigDeqReqW             ;
+    reg                               SigReqEmptyW           ;
+    ReqFlit                           SigTXREQFLITW          ;
     //Last Trans signals
-    reg     [MEM_ADDR_WIDTH  - 1 : 0] SrcAddrReg         ;
-    int                               DBID_Count    = 0  ; 
     
-    // Read Req FIFO (keeps all the uncomplete read Requests)
-   FIFO #(     
-       .FIFO_WIDTH  ( REQ_FLIT_WIDTH ) ,       
-       .FIFO_LENGTH ( FIFO_Length    )      
-       )     
-       myRFIFOReq  (     
-       .RST      ( RST                                                        ) ,      
-       .Clk      ( Clk                                                        ) ,      
-       .Inp      ( ReqChan.TXREQFLIT                                          ) , 
-       .Enqueue  ( ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `ReadOnce ) , 
-       .Dequeue  ( SigDeqReqR                                                 ) , 
-       .Outp     ( SigTXREQFLITR                                              ) , 
-       .FULL     (                                                            ) , 
-       .Empty    ( SigReqEmptyR                                               ) 
-       );
+    int                               DBID_Count    = 0      ; 
        
     // Write Req FIFO (keeps all the uncomplete read Writeuests)
    FIFO #(     
@@ -282,50 +286,65 @@ module TestCHIConverter#(
       end
     end
     
-    // Data Response
-    always begin     
-      if(!SigReqEmptyR & SigTXREQFLITR.Opcode == `ReadOnce & CountDataCrdsInb != 0)begin
-        //Response delay
-        if(SrcAddrReg + 64 != SigTXREQFLITR.Addr)begin // 0 delay if addresses are continuous
-          DatInbChan.RXDATFLITPEND     = 0      ;
-          DatInbChan.RXDATFLITV        = 0      ;
-          DatInbChan.RXDATFLIT         = 0      ;
-          SigDeqReqR                   = 0      ;
-          #(2*period*$urandom_range(40) + 4*period);  // random delay if addresses arent continuous
-        end
-          DatInbChan.RXDATFLITV = 1;
-          DatInbChan.RXDATFLIT = '{default     : 0                                            ,                       
-                                    QoS        : 0                                            ,
-                                    TgtID      : 1                                            ,
-                                    SrcID      : 2                                            ,
-                                    TxnID      : SigTXREQFLITR.TxnID                          ,
-                                    HomeNID    : 0                                            ,
-                                    Opcode     : `CompData                                    ,
-                                    RespErr    : `StatusError*(($urandom_range(0,100)) == 1)  , // samll probability to be an error
-                                    Resp       : 0                                            , // Resp should be 0 when NonCopyBackWrData Rsp
-                                    DataSource : 0                                            , 
-                                    DBID       : 0                                            ,
-                                    CCID       : 0                                            , 
-                                    DataID     : 0                                            ,
-                                    TraceTag   : 0                                            ,
-                                    BE         : {64{1'b1}}                                   ,
-                                    Data       : 2**$urandom_range(0,512) - $urandom()        ,  //512 width of data
-                                    DataCheck  : 0                                            ,
-                                    Poison     : 0                                        
-                                    }; 
-          SrcAddrReg   = SigTXREQFLITR.Addr ;    
-          SigDeqReqR   = 1;
-          #(period*2);
+   // Barrel shifter's signals   
+   reg                          SigDeqBS     ;
+   reg [BRAM_COL_WIDTH - 1 : 0] writtenBytes ;
+
+   assign SigDeqBS =  (DatOutbChan.TXDATFLITV & CountReqCrdsOutb != 0 & CommandBS.Length <= writtenBytes + CHI_DATA_WIDTH) ? 1 : 0 ;
+   always_ff@(posedge Clk)begin
+     if(RST)
+       writtenBytes <= 0 ;
+     else begin
+       if(DatOutbChan.TXDATFLITV & CountReqCrdsOutb != 0 & CommandBS.Length > writtenBytes + CHI_DATA_WIDTH)begin
+         writtenBytes <= writtenBytes + CHI_DATA_WIDTH ;
+       end
+       else if(DatOutbChan.TXDATFLITV & CountReqCrdsOutb != 0 & CommandBS.Length <= writtenBytes + CHI_DATA_WIDTH)begin
+         writtenBytes <= 0 ;
+       end
+     end     
+   end
+   // BS FIFO (keeps all the uncomplete command length)
+   FIFO #(     
+       .FIFO_WIDTH  ( BRAM_COL_WIDTH ) ,       
+       .FIFO_LENGTH ( FIFO_Length    )      
+       )     
+       BSFiFO    (     
+       .RST      ( RST                                                              ) ,      
+       .Clk      ( Clk                                                              ) ,      
+       .Inp      ( CommandBS.Length                                                 ) , 
+       .Enqueue  ( EnqueueBS                                                        ) , 
+       .Dequeue  ( SigDeqBS                                                         ) , 
+       .Outp     (                                                                  ) , 
+       .FULL     ( FULLBS                                                           ) , 
+       .Empty    (                                                                  ) 
+       );
+       
+    always@(posedge Clk)begin
+      if(RST)begin
+        EmptyBS <= 1 ;
       end
       else begin
-        DatInbChan.RXDATFLITPEND     = 0      ;
-        DatInbChan.RXDATFLITV        = 0      ;
-        DatInbChan.RXDATFLIT         = 0      ;
-        SigDeqReqR        = 0      ;
-        if(RST)
-          SrcAddrReg      = 0      ;    
-        #(period*2) ;
-      end
+        if(DequeueBS & $urandom_range(0,3) == 1)begin
+          EmptyBS <= 1;
+          #(period*20);
+        end
+        else
+          EmptyBS <= 0;
+      end        
+    end
+    
+    always@(negedge Clk) begin  
+      LastDescTrans = SigDeqBS                                    ;
+      DescAddr      = $urandom_range(0,1023)                      ;
+      BE            = {CHI_DATA_WIDTH{1'b1}}                      ;
+      ShiftedData   = 2**$urandom_range(0,512) - $urandom()       ;
+      DataErr       = `StatusError*(($urandom_range(0,100)) == 1) ;  
+      #(period*2) ;
+      LastDescTrans = 0 ;
+      DescAddr      = 0 ;
+      BE            = 0 ;
+      ShiftedData   = 0 ;
+      DataErr       = 0 ; 
     end
     
     //DBID Respose 
@@ -477,10 +496,6 @@ module TestCHIConverter#(
             TestVectorRspIn[RspInPointer] <= RspInbChan.RXRSPFLIT ;
             RspInPointer <= RspInPointer + 1 ;
           end
-          if(DatInbChan.RXDATFLITV & CountDataCrdsInb != 0 )begin    // update Data In TestVector when a new RspData comes 
-            TestVectorDataIn[DataInPointer] <= DatInbChan.RXDATFLIT ;
-            DataInPointer  <= DataInPointer + 1 ;
-          end
           if(DatOutbChan.TXDATFLITV & CountDataCrdsOutb != 0 )begin // update Data Out TestVector when a new Data out Rsp Happens
             TestVectorDataOut[DataOutPointer] <= DatOutbChan.TXDATFLIT ;
             DataOutPointer <= DataOutPointer + 1 ;
@@ -488,9 +503,9 @@ module TestCHIConverter#(
           if(UUT.SigDeqCommand)begin //Count finished Command Requests
             CountFinishedCommands <= CountFinishedCommands + 1;
           end
-          if(CountFinishedCommands == NUM_OF_REPETITIONS & UUT.SigSizeEmpty)begin //When all commands are finished Check if every transaction happened ok
+          if(CountFinishedCommands == NUM_OF_REPETITIONS & UUT.SigDBIDEmpty & SigReqEmptyW)begin //When all commands are finished Check if every transaction happened ok
             CountFinishedCommands <= 0 ;
-            printCheckList            ;
+            printCheckList             ;
           end
         end
       end
@@ -534,14 +549,7 @@ module TestCHIConverter#(
             if((TestVectorWriteReq[j].Opcode == `WriteUniquePtl & (TestVectorWriteReq[j].Addr == (TestVectorCommand[i].DstAddr + lengthCount)))
             &(((TestVectorRspIn[j].Opcode == `DBIDResp) | (TestVectorRspIn[j].Opcode == `CompDBIDResp)) & (TestVectorRspIn[j].TxnID == (TestVectorWriteReq[j].TxnID)))
             &((TestVectorDataOut[j].Opcode == `NonCopyBackWrData) & (TestVectorRspIn[j].DBID == TestVectorDataOut[j].TxnID)) )
-              if(TestVectorDataOut[j].BE != ~({CHI_DATA_WIDTH{1'b1}} << (TestVectorCommand[i].Length - lengthCount)))begin
-               // wrong Data Out BE
-                $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",TestVectorDataOut[j].BE ,~({CHI_DATA_WIDTH{1'b1}} << (TestVectorCommand[i].Length - lengthCount)),TestVectorDataOut[j].TxnID);
-                $stop;
-              end
-              else 
-                // Corect
-                $display("%d Correct Write Trans",lengthCount/64+1);
+              $display("%d Correct Write Trans",lengthCount/64+1);
             // Wrong Write Opcode
             else if(TestVectorReadReq[j].Opcode != `WriteUniquePtl)begin
               $display("\n--ERROR :: WriteReq Opcode is not WriteUniquePtl");

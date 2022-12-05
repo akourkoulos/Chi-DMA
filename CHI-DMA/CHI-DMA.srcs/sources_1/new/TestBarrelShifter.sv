@@ -28,6 +28,7 @@ module TestBarrelShifte#(
   parameter ADDR_WIDTH_OF_DATA  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
   parameter SHIFT_WIDTH         = 9                     , // log2(CHI_DATA_WIDTH*8)
   parameter BRAM_COL_WIDTH      = 32                    ,
+  parameter BRAM_ADDR_WIDTH     = 10                    ,
   parameter FIFO_LENGTH         = 32                    ,
   parameter DATA_FIFO_LENGTH    = 32                    ,
   parameter COUNTER_WIDTH       = 6                     , // log2(FIFO_LENGTH) + 1
@@ -35,35 +36,36 @@ module TestBarrelShifte#(
   parameter NUM_OF_REPETITIONS  = 900
 //--------------------------------------------------------------------------
 );
-     reg                                   RST         ;
-     reg                                   Clk         ;
-     CHI_Command                           CommandIn   ;
-     reg                                   EnqueueIn   ;
-     reg                                   DequeueBS   ;
-     reg                                   RXDATFLITV  ;
-     DataFlit                              RXDATFLIT   ;
-     wire                                  RXDATLCRDV  ;
-     wire       [CHI_DATA_WIDTH   - 1 : 0] BEOut       ;
-     wire       [CHI_DATA_WIDTH*8 - 1 : 0] DataOut     ;
-     wire                                  EmptyBS     ;
-     wire                                  BSFULL      ;
-                                                     
-
+     reg                                                 RST          ;
+     reg                                                 Clk          ;
+     CHI_Command                                         CommandIn    ;
+     reg                                                 EnqueueIn    ;
+     reg                                                 DequeueBS    ;
+     DatInbChannel                                       DatInbChan() ;// Data inbound Chanel
+     wire                     [CHI_DATA_WIDTH   - 1 : 0] BEOut        ;
+     wire                     [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ;
+     wire                     [`RspErrWidth     - 1 : 0] DataError    ;
+     wire                     [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr     ;
+     wire                                                LastDescTrans;
+     wire                                                EmptyBS      ;
+     wire                                                BSFULL       ;
+     
     localparam period           = 20   ;   // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns  
     
     BarrelShifter UUT (
-     .  RST           (  RST          ),
-     .  Clk           (  Clk          ),
-     .  CommandIn     (  CommandIn    ),
-     .  EnqueueIn     (  EnqueueIn    ),
-     .  DequeueBS     (  DequeueBS    ),
-     .  RXDATFLITV    (  RXDATFLITV   ),
-     .  RXDATFLIT     (  RXDATFLIT    ),
-     .  RXDATLCRDV    (  RXDATLCRDV   ),
-     .  BEOut         (  BEOut        ),
-     .  DataOut       (  DataOut      ),
-     .  EmptyBS       (  EmptyBS      ),
-     .  BSFULL        (  BSFULL       )
+     .  RST             (  RST                      ),
+     .  Clk             (  Clk                      ),
+     .  CommandIn       (  CommandIn                ),
+     .  EnqueueIn       (  EnqueueIn                ),
+     .  DequeueBS       (  DequeueBS                ),
+     .  DatInbChan      (  DatInbChan     . INBOUND ),
+     .  BEOut           (  BEOut                    ),
+     .  DataOut         (  DataOut                  ),
+     .  DataError       (  DataError                ),
+     .  DescAddr        (  DescAddr                 ),
+     .  LastDescTrans   (  LastDescTrans            ),
+     .  EmptyBS         (  EmptyBS                  ),
+     .  BSFULL          (  BSFULL                   )
     );                
     //count Credits
     reg [`CrdRegWidth - 1 : 0]CntCrds ;
@@ -96,30 +98,30 @@ module TestBarrelShifte#(
       if(RST)
         CntCrds = 0 ;
       else  
-        if(RXDATLCRDV & !RXDATFLITV)
+        if(DatInbChan.RXDATLCRDV & !DatInbChan.RXDATFLITV)
           CntCrds = CntCrds + 1 ;
-        else if(!RXDATLCRDV & RXDATFLITV)
+        else if(!DatInbChan.RXDATLCRDV & DatInbChan.RXDATFLITV)
           CntCrds = CntCrds - 1 ;
     end
     
     // Manage Data In
     always begin
       if(RST)begin
-        RXDATFLITV = 0 ;
-        RXDATFLIT  = 0 ;
+        DatInbChan.RXDATFLITV = 0 ;
+        DatInbChan.RXDATFLIT  = 0 ;
         #(period);
       end
       else begin
-        RXDATFLITV = 0 ;
-        RXDATFLIT  = 0 ;
+        DatInbChan.RXDATFLITV = 0 ;
+        DatInbChan.RXDATFLIT  = 0 ;
         #(period*2*$urandom_range(0,3) + period); // wait for random delay for the next enqueue
         if(CntCrds != 0 & !(UUT.EmptyCom))begin
-          RXDATFLITV      = 1        ;
-          RXDATFLIT.Data  = randVect ;
+          DatInbChan.RXDATFLITV      = 1        ;
+          DatInbChan.RXDATFLIT.Data  = randVect ;
           #(period*2);
         end 
-        RXDATFLITV      = 0 ;
-        RXDATFLIT.Data  = 0 ;
+        DatInbChan.RXDATFLITV      = 0 ;
+        DatInbChan.RXDATFLIT.Data  = 0 ;
         #period;
       end
     end
@@ -139,8 +141,8 @@ module TestBarrelShifte#(
         CommandIn.DstAddr      <= 0 ;
         CommandIn.Length       <= 0 ;
         EnqueueIn              <= 0 ;
-        RXDATFLITV             <= 0 ;
-        RXDATFLIT.Data         <= 0 ;
+        DatInbChan.RXDATFLITV             <= 0 ;
+        DatInbChan.RXDATFLIT.Data         <= 0 ;
         
         #(period*2); // wait for period
         # period   ; // wait for period

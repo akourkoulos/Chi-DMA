@@ -28,29 +28,28 @@ import CHIFIFOsPkg ::*;
 module BarrelShifter#(
 //--------------------------------------------------------------------------
   parameter CHI_DATA_WIDTH      = 64                    , // Bytes
-  parameter ADDR_WIDTH_OF_DATA  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
+  parameter ADDR_WIDTH_OF_DATA  = 6                     , // log2(CHI_DATA_WIDTH)  
   parameter SHIFT_WIDTH         = 9                     , // log2(CHI_DATA_WIDTH*8)
   parameter BRAM_COL_WIDTH      = 32                    ,
+  parameter BRAM_ADDR_WIDTH     = 10                    ,
   parameter CMD_FIFO_LENGTH     = 32                    ,
   parameter DATA_FIFO_LENGTH    = 32                    ,
   parameter COUNTER_WIDTH       = 6                       // log2(FIFO_LENGTH) + 1
 //--------------------------------------------------------------------------
 ) ( 
-    input                                         RST           ,
-    input                                         Clk           ,
-    input   CHI_Command                           CommandIn     , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
-    input                                         EnqueueIn     ,
-    input                                         DequeueBS     ,
-    input                                         RXDATFLITV    ,
-    input   DataFlit                              RXDATFLIT     ,
-    output                                        RXDATLCRDV    ,
-    output  reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ,
-    output  reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ,
-    output             [`RspErrWidth     - 1 : 0] DataError     ,
-    output             [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
-    output                                        LastDescTrans ,
-    output  reg                                   EmptyBS       ,
-    output                                        BSFULL
+    input                                                RST           ,
+    input                                                Clk           ,
+    input          CHI_Command                           CommandIn     , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
+    input                                                EnqueueIn     ,
+    input                                                DequeueBS     ,
+    DatInbChannel                                        DatInbChan    , // Data inbound Chanel
+    output         reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ,
+    output         reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ,
+    output                    [`RspErrWidth     - 1 : 0] DataError     ,
+    output                    [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
+    output                                               LastDescTrans ,
+    output         reg                                   EmptyBS       ,
+    output                                               BSFULL
     );
     
     enum int unsigned { StartState         = 0 , 
@@ -95,7 +94,7 @@ module BarrelShifter#(
    assign DescAddr      = Command.DescAddr                ;
    assign DataError     = DataFIFO.RespErr                ;
    
-   assign DataFIFOIn    = '{default : 0 , Data : RXDATFLIT.Data  , RespErr : RXDATFLIT.RespErr};
+   assign DataFIFOIn    = '{default : 0 , Data : DatInbChan.RXDATFLIT.Data  , RespErr : DatInbChan.RXDATFLIT.RespErr};
    // Command FIFO(SrcAddr,DstAddr,BTS,SB,DescAddr,LastDescTrans)
    FIFO #(  
        .FIFO_WIDTH   (3*BRAM_COL_WIDTH + BRAM_ADDR_WIDTH + 1 )     ,  //FIFO_WIDTH       
@@ -118,21 +117,21 @@ module BarrelShifter#(
        .FIFO_LENGTH  (DATA_FIFO_LENGTH               )    //FIFO_LENGTH   
        )     
        FIFOData        (             
-       .RST            ( RST                              ),     
-       .Clk            ( Clk                              ),     
-       .Inp            ( DataFIFOIn                       ),
-       .Enqueue        ( RXDATFLITV & DataCrdInbound != 0 ),
-       .Dequeue        ( DeqData                          ),
-       .Outp           ( DataFIFO                         ),
-       .FULL           (                                  ),
-       .Empty          ( DataEmpty                        )
+       .RST            ( RST                                         ),     
+       .Clk            ( Clk                                         ),     
+       .Inp            ( DataFIFOIn                                  ),
+       .Enqueue        ( DatInbChan.RXDATFLITV & DataCrdInbound != 0 ),
+       .Dequeue        ( DeqData                                     ),
+       .Outp           ( DataFIFO                                    ),
+       .FULL           (                                             ),
+       .Empty          ( DataEmpty                                   )
        );                           
     
     // Manage counters 
     assign NextSrcAddr  = (CountReadBytes  + Command.SrcAddr);
-    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - Command.SrcAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - Command.SrcAddr) : Command.Length ;
+    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) : Command.Length ;
     assign NextDstAddr  = (CountWriteBytes + Command.DstAddr);
-    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - Command.DstAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} - Command.DstAddr) : Command.Length ;
+    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) : Command.Length ;
     always_ff@(posedge Clk)begin
       if(RST)begin
         CountWriteBytes <= 0 ;
@@ -166,8 +165,8 @@ module BarrelShifter#(
     // or of FIFO's empty
     assign EmptyFIFO = EmptyCom | DataEmpty ;
     
-    assign AlignedSrcAddr = {Command.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}};
-    assign AlignedDstAddr = {Command.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}};
+    assign AlignedSrcAddr = {Command.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}};
+    assign AlignedDstAddr = {Command.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}};
     assign shift          = ((Command.SrcAddr - AlignedSrcAddr) - (Command.DstAddr - AlignedDstAddr))<<3   ;//*8
     
     // ---------------------Barrel Shifter comb---------------------
@@ -201,19 +200,19 @@ module BarrelShifter#(
      end        
      else begin
        // Inbound Data chanle Crd Counter
-       if(RXDATLCRDV & !(DataCrdInbound != 0 & RXDATFLITV))
+       if(DatInbChan.RXDATLCRDV & !(DataCrdInbound != 0 & DatInbChan.RXDATFLITV))
          DataCrdInbound <= DataCrdInbound + 1 ;
-       else if(!RXDATLCRDV & (DataCrdInbound != 0 & RXDATFLITV))
+       else if(!DatInbChan.RXDATLCRDV & (DataCrdInbound != 0 & DatInbChan.RXDATFLITV))
          DataCrdInbound <= DataCrdInbound - 1 ;
        // Count the number of given Data Crds in order not to give more than DATA FIFO length
-       if(RXDATLCRDV & !DeqData)
+       if(DatInbChan.RXDATLCRDV & !DeqData)
          GivenDataCrd <= GivenDataCrd + 1 ;       
-       else if(!RXDATLCRDV & DeqData)
+       else if(!DatInbChan.RXDATLCRDV & DeqData)
          GivenDataCrd <= GivenDataCrd - 1 ;
      end
    end
    // Give an extra Crd in outbound Data Chanel
-   assign RXDATLCRDV = !RST & (GivenDataCrd < CMD_FIFO_LENGTH & DataCrdInbound < `MaxCrds) ;
+   assign DatInbChan.RXDATLCRDV = !RST & (GivenDataCrd < CMD_FIFO_LENGTH & DataCrdInbound < `MaxCrds) ;
     
      //FSM's state
    always_ff @ (posedge Clk) begin

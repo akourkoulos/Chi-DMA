@@ -15,13 +15,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="643482fs"></ZoomStartTime>
-      <ZoomEndTime time="55683304fs"></ZoomEndTime>
-      <Cursor1Time time="46510000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="651625fs"></ZoomEndTime>
+      <Cursor1Time time="92960fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="195"></ValueColumnWidth>
+      <ValueColumnWidth column_width="190"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="17" />
    <wvobject fp_name="/TestCHIConverter/Clk" type="logic">
@@ -83,26 +83,6 @@
       <wvobject fp_name="group168" type="group">
          <obj_property name="label">DataQueue</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[2]" type="array">
-            <obj_property name="ElementShortName">[2][513:0]</obj_property>
-            <obj_property name="ObjectShortName">[2][513:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[1]" type="array">
-            <obj_property name="ElementShortName">[1][513:0]</obj_property>
-            <obj_property name="ObjectShortName">[1][513:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/MyQueue[0]" type="array">
-            <obj_property name="ElementShortName">[0][513:0]</obj_property>
-            <obj_property name="ObjectShortName">[0][513:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/FULL" type="logic">
-            <obj_property name="ElementShortName">FULL</obj_property>
-            <obj_property name="ObjectShortName">FULL</obj_property>
-         </wvobject>
-         <wvobject fp_name="/TestCHIConverter/UUT/FIFOData/state" type="array">
-            <obj_property name="ElementShortName">state[31:0]</obj_property>
-            <obj_property name="ObjectShortName">state[31:0]</obj_property>
-         </wvobject>
       </wvobject>
       <wvobject fp_name="/TestCHIConverter/UUT/CommandFIFO/MyQueue" type="array">
          <obj_property name="DisplayName">label</obj_property>
@@ -118,35 +98,11 @@
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/SizeFIFO/MyQueue" type="array">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">MyQueue[31:0][17:0]</obj_property>
-         <obj_property name="ObjectShortName">MyQueue[31:0][17:0]</obj_property>
-         <obj_property name="label">SizeMyQueue[31:0][17:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="group170" type="group">
       <obj_property name="label">ReqChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/TXREQFLITV" type="logic">
-         <obj_property name="ElementShortName">TXREQFLITV</obj_property>
-         <obj_property name="ObjectShortName">TXREQFLITV</obj_property>
-         <obj_property name="CustomSignalColor">#FFA500</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/TXREQFLIT" type="array">
-         <obj_property name="ElementShortName">TXREQFLIT</obj_property>
-         <obj_property name="ObjectShortName">TXREQFLIT</obj_property>
-         <obj_property name="CustomSignalColor">#FFA500</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/TXREQLCRDV" type="logic">
-         <obj_property name="ElementShortName">TXREQLCRDV</obj_property>
-         <obj_property name="ObjectShortName">TXREQLCRDV</obj_property>
-         <obj_property name="CustomSignalColor">#FFA500</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject fp_name="/TestCHIConverter/UUT/WriteReqBytes" type="array">
          <obj_property name="ElementShortName">WriteReqBytes[43:0]</obj_property>
          <obj_property name="ObjectShortName">WriteReqBytes[43:0]</obj_property>
@@ -159,20 +115,47 @@
          <obj_property name="CustomSignalColor">#FFA500</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReqChan/TXREQFLITPEND" type="logic">
+         <obj_property name="ElementShortName">TXREQFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLITPEND</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReqChan/TXREQFLITV" type="logic">
+         <obj_property name="ElementShortName">TXREQFLITV</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLITV</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReqChan/TXREQFLIT" type="array">
+         <obj_property name="ElementShortName">TXREQFLIT</obj_property>
+         <obj_property name="ObjectShortName">TXREQFLIT</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/ReqChan/TXREQLCRDV" type="logic">
+         <obj_property name="ElementShortName">TXREQLCRDV</obj_property>
+         <obj_property name="ObjectShortName">TXREQLCRDV</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="group1515" type="group">
       <obj_property name="label">OutbRspChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/UUT/TXRSPFLITV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspOutbChan/TXRSPFLITPEND" type="logic">
+         <obj_property name="ElementShortName">TXRSPFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">TXRSPFLITPEND</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/RspOutbChan/TXRSPFLITV" type="logic">
          <obj_property name="ElementShortName">TXRSPFLITV</obj_property>
          <obj_property name="ObjectShortName">TXRSPFLITV</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/TXRSPFLIT" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspOutbChan/TXRSPFLIT" type="array">
          <obj_property name="ElementShortName">TXRSPFLIT</obj_property>
          <obj_property name="ObjectShortName">TXRSPFLIT</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/TXRSPLCRDV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspOutbChan/TXRSPLCRDV" type="logic">
          <obj_property name="ElementShortName">TXRSPLCRDV</obj_property>
          <obj_property name="ObjectShortName">TXRSPLCRDV</obj_property>
       </wvobject>
@@ -181,19 +164,25 @@
       <obj_property name="label">OutbDataChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/TXDATFLITV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatOutbChan/TXDATFLITPEND" type="logic">
+         <obj_property name="ElementShortName">TXDATFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">TXDATFLITPEND</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/DatOutbChan/TXDATFLITV" type="logic">
          <obj_property name="ElementShortName">TXDATFLITV</obj_property>
          <obj_property name="ObjectShortName">TXDATFLITV</obj_property>
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/TXDATFLIT" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatOutbChan/TXDATFLIT" type="array">
          <obj_property name="ElementShortName">TXDATFLIT</obj_property>
          <obj_property name="ObjectShortName">TXDATFLIT</obj_property>
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/TXDATLCRDV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatOutbChan/TXDATLCRDV" type="logic">
          <obj_property name="ElementShortName">TXDATLCRDV</obj_property>
          <obj_property name="ObjectShortName">TXDATLCRDV</obj_property>
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
@@ -204,22 +193,28 @@
       <obj_property name="label">InbRspChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/RXRSPFLITV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspInbChan/RXRSPFLITPEND" type="logic">
+         <obj_property name="ElementShortName">RXRSPFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">RXRSPFLITPEND</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/RspInbChan/RXRSPFLITV" type="logic">
          <obj_property name="ElementShortName">RXRSPFLITV</obj_property>
          <obj_property name="ObjectShortName">RXRSPFLITV</obj_property>
-         <obj_property name="CustomSignalColor">#A0A0A4</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/RXRSPFLIT" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspInbChan/RXRSPFLIT" type="array">
          <obj_property name="ElementShortName">RXRSPFLIT</obj_property>
          <obj_property name="ObjectShortName">RXRSPFLIT</obj_property>
-         <obj_property name="CustomSignalColor">#A0A0A4</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/RXRSPLCRDV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/RspInbChan/RXRSPLCRDV" type="logic">
          <obj_property name="ElementShortName">RXRSPLCRDV</obj_property>
          <obj_property name="ObjectShortName">RXRSPLCRDV</obj_property>
-         <obj_property name="CustomSignalColor">#A0A0A4</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
@@ -227,19 +222,25 @@
       <obj_property name="label">InbDataChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/RXDATFLITV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLITPEND" type="logic">
+         <obj_property name="ElementShortName">RXDATFLITPEND</obj_property>
+         <obj_property name="ObjectShortName">RXDATFLITPEND</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLITV" type="logic">
          <obj_property name="ElementShortName">RXDATFLITV</obj_property>
          <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/RXDATFLIT" type="array">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLIT" type="array">
          <obj_property name="ElementShortName">RXDATFLIT</obj_property>
          <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/RXDATLCRDV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATLCRDV" type="logic">
          <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
          <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
@@ -258,12 +259,6 @@
       <wvobject fp_name="/TestCHIConverter/UUT/RspCrdOutbound" type="array">
          <obj_property name="ElementShortName">RspCrdOutbound[3:0]</obj_property>
          <obj_property name="ObjectShortName">RspCrdOutbound[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FF00</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/DataCrdInbound" type="array">
-         <obj_property name="ElementShortName">DataCrdInbound[3:0]</obj_property>
-         <obj_property name="ObjectShortName">DataCrdInbound[3:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FF00</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>

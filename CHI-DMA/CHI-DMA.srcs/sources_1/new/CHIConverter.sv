@@ -53,7 +53,7 @@ module CHIConverter#(
   parameter SIZE_WIDTH          = BRAM_ADDR_WIDTH + 7 + 1                , //DescAddr*BRAM_ADDR_WIDTH + Size*(log2(CHI_DATA_WIDTH) + 1) + LastDescTrans*1 
   parameter COUNTER_WIDTH       = 6                                      , //log2(DATA_FIFO_LENGTH) + 1
   parameter CHI_DATA_WIDTH      = 64                                     , //Bytes
-  parameter ADDR_WIDTH_OF_DATA  = 7                                      , // log2(CHI_DATA_WIDTH) + 1 
+  parameter ADDR_WIDTH_OF_DATA  = 6                                      , // log2(CHI_DATA_WIDTH)  
   parameter QoS                 = 8                                      , //??
   parameter TgtID               = 2                                      , //??
   parameter SrcID               = 1                                        //??
@@ -66,24 +66,25 @@ module CHIConverter#(
     input                                                           ReadyBRAM         , // From Arbiter_BRAM
     input          CHI_Command                                      Command           , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
     input                                                           LastDescTrans     , // From BS
-    input                                [BRAM_ADDR_WIDTH - 1 : 0]  DescAddr          ,
-    input                                [CHI_DATA_WIDTH  - 1 : 0]  BE                , 
-    input                                [CHI_DATA_WIDTH*8- 1 : 0]  ShiftedData       ,
-    input                                [`RspErrWidth    - 1 : 0]  DataErr           ,
+    input                               [BRAM_ADDR_WIDTH - 1 : 0]   DescAddr          ,
+    input                               [CHI_DATA_WIDTH  - 1 : 0]   BE                , 
+    input                               [CHI_DATA_WIDTH*8- 1 : 0]   ShiftedData       ,
+    input                               [`RspErrWidth    - 1 : 0]   DataErr           ,
     input                                                           EmptyBS           ,
     input                                                           FULLBS            ,
     ReqChannel                                                      ReqChan           , // Request ChannelS
     RspOutbChannel                                                  RspOutbChan       , // Response outbound Chanel
     DatOutbChannel                                                  DatOutbChan       , // Data outbound Chanel
     RspInbChannel                                                   RspInbChan        , // Response inbound Chanel
-    DatInbChannel                                                   DatInbChan        , // Data inbound Chanel
+    input          DataFlit                                         RXDATFLITV        , // Data inbound Chanel
+    input                                                           RXDATFLIT         , 
     output                                                          CmdFIFOFULL       , // For Scheduler
     output                                                          ValidBRAM         , // For Arbiter_BRAM
-    output                                [BRAM_ADDR_WIDTH - 1 : 0] AddrBRAM          , // For BRAM
-    output          Data_packet                                     DescStatus        ,
-    output                                [BRAM_NUM_COL    - 1 : 0] WEBRAM            ,
+    output                               [BRAM_ADDR_WIDTH - 1 : 0]  AddrBRAM          , // For BRAM
+    output         Data_packet                                      DescStatus        ,
+    output                               [BRAM_NUM_COL    - 1 : 0]  WEBRAM            ,
     output                                                          EnqueueBS         , // For BS
-    output          CHI_Command                                     CommandBS         ,
+    output         CHI_Command                                      CommandBS         ,
     output                                                          DequeueBS
     );                         
     
@@ -128,7 +129,7 @@ module CHIConverter#(
    wire                 [MEM_ADDR_WIDTH   - 1  : 0] SigWriteAddr      ;
    wire                 [MEM_ADDR_WIDTH   - 1  : 0] NextDstAddr       ;
    //Updater signal
-   wire                                             FULLUpdater       ;
+   wire                                             FULLCmplter       ;
    //Arbiter signal
    reg                                              AccessReg         ; //register to for arbitrate the order of access
    
@@ -194,7 +195,7 @@ module CHIConverter#(
        .AddrOut      ( AddrBRAM      ) ,
        .DataOut      ( DescStatus    ) ,
        .WE           ( WEBRAM        ) ,
-       .FULL         ( FULLUpdater   )
+       .FULL         ( FULLCmplter   )
        );
     
    // $$$$$$$$$$$$$$$$$$TxnID producer$$$$$$$$$$$$$$$$$$
@@ -207,7 +208,7 @@ module CHIConverter#(
       end
       else begin
         if(ReqChan.TXREQFLITV & ReqChan.TXREQFLIT.Opcode == `ReadOnce)begin // if a Read Request is happening
-          if(!DatInbChan.RXDATFLITV)
+          if(!RXDATFLITV)
             FreeReadTxnID <= FreeReadTxnID - 1; // decrease number of available TxnID if there is not a DataRsp
           if(NextReadTxnID == 127) // update TxnID that will be used for the next Read
             NextReadTxnID <= 0 ;
@@ -215,7 +216,7 @@ module CHIConverter#(
             NextReadTxnID <= NextReadTxnID + 1 ;
         end
         else begin
-          if(DatInbChan.RXDATFLITV)  // if a Read Request is not happening increase number of available TxnID if there is a DataRsp
+          if(RXDATFLITV)  // if a Read Request is not happening increase number of available TxnID if there is a DataRsp
             FreeReadTxnID <= FreeReadTxnID + 1;
         end
         
@@ -244,8 +245,11 @@ module CHIConverter#(
    // Dequeue Read command FIFO 
    assign SigDeqRead = !FULLBS & ((SigCommand.Length - ReadReqBytes <= CHI_DATA_WIDTH & ReadReqArbValid & ReadReqArbReady) | (SigCommand.Length == ReadReqBytes)) & !SigCommandEmpty ;
    // Create Addr field of Request Read flit 
+   //----
    assign NextSrcAddr  = SigCommand.SrcAddr + ReadReqBytes ;
-   assign SigReadAddr  = {{MEM_ADDR_WIDTH-BRAM_COL_WIDTH{1'b0}},{NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}}}; // Aligned Addrs
+   // Next Read Addr is the aligned (SrcAddr + number of byets that have been sent) . To finde Aligned address just ignore the log2(CHI_DATA_WIDTH) least significant bits. The most significant bits are 0 because CHI_MEM_ADDR is larger than Requested SrcAddr Width
+   assign SigReadAddr  = {{MEM_ADDR_WIDTH-BRAM_COL_WIDTH{1'b0}},{NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA ],{ADDR_WIDTH_OF_DATA {1'b0}}}}; // Aligned Addrs
+   //----
    // Create Addr field of Request Read flit 
    assign ReadReqFlit  = '{default       : 0             ,                       
                            QoS           : QoS           ,
@@ -282,9 +286,12 @@ module CHIConverter#(
          GaveBSCommand <= 0 ;                           // A new command should be given to BS
        end
        else if(ReadReqArbValid & ReadReqArbReady)begin  // When new Read Req increase value of reg
-         if({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr < SigCommand.Length)
-           ReadReqBytes <= {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr ;
+         // if next Aligned read Addr - SrcAddr is smaller than Length then Requested Bytes are the difference else are Length  
+         if({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr < SigCommand.Length)
+           // ReadReqBytes = next read Aligned Addr - SrcAddr
+           ReadReqBytes <= {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr ;
          else 
+           // ReadReqBytes = Length
            ReadReqBytes <= SigCommand.Length ;
            
          if(EnqueueBS & !FULLBS)
@@ -298,7 +305,6 @@ module CHIConverter#(
    // ################## End Read Requester ##################
    
    // ****************** Write Requester ******************
-   
    // Request chanel from Arbiter
    assign WriteReqArbValid = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & (SigCommand.Length != WriteReqBytes));
    // Enable valid for CHI-Request transaction 
@@ -306,9 +312,12 @@ module CHIConverter#(
    // Dequeue Write command FIFO 
    assign SigDeqWrite = !FULLBS & ((SigCommand.Length - WriteReqBytes <= CHI_DATA_WIDTH & WriteReqArbValid & WriteReqArbReady) | (SigCommand.Length == WriteReqBytes)) & !SigCommandEmpty ; ;
    // Create Addr field of Request Read flit 
+   //----
    assign NextDstAddr  = SigCommand.DstAddr + WriteReqBytes ;
-   assign SigWriteAddr  = {{MEM_ADDR_WIDTH - BRAM_COL_WIDTH{1'b0}},{NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}}}; // Aligned Addrs
+   // Next Write Addr is the aligned (DstAddr + number of byets that have been sent) . To finde Aligned address just ignore the log2(CHI_DATA_WIDTH) least significant bits. The most significant bits are 0 because CHI_MEM_ADDR is larger than Requested DstAddr Width
+   assign SigWriteAddr  = {{MEM_ADDR_WIDTH - BRAM_COL_WIDTH{1'b0}},{NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA ],{ADDR_WIDTH_OF_DATA {1'b0}}}}; // Aligned Addrs
    // Create Addr field of Request Read flit 
+   //----
    assign WriteReqFlit  = ( '{ default       : 0               ,                       
                                QoS           : QoS             ,
                                TgtID         : TgtID           ,
@@ -342,9 +351,12 @@ module CHIConverter#(
        if(SigDeqCommand)        // When last Write Req reset value of reg
          WriteReqBytes <= 0 ;
        else if(WriteReqArbValid & WriteReqArbReady)begin    // When new non-last Write Req increase value of reg
-         if({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr < SigCommand.Length)
-           WriteReqBytes <= {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA - 1],{ADDR_WIDTH_OF_DATA - 1{1'b0}}} + CHI_DATA_WIDTH - SigCommand.DstAddr ;
+         // if next Aligned write Addr - DstAddr is smaller than Length then Write Requested Bytes are the difference else are Length  
+         if({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr < SigCommand.Length)
+           // WriteReqBytes = next Aligned write Addr - DstAddr
+           WriteReqBytes <= {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.DstAddr ;
          else 
+           // WriteReqBytes = Length
            WriteReqBytes <= SigCommand.Length ;       end
      end                   
    end                                            
@@ -428,7 +440,7 @@ module CHIConverter#(
    
     // ****************** Data Sender ******************
    // Enable valid of CHI-DATA chanel 
-   assign DatOutbChan.TXDATFLITV = (!EmptyBS & !SigDBIDEmpty & !FULLUpdater & DataCrdOutbound != 0) ? 1 : 0 ;
+   assign DatOutbChan.TXDATFLITV = (!EmptyBS & !SigDBIDEmpty & !FULLCmplter & DataCrdOutbound != 0) ? 1 : 0 ;
    // Dequeue FIFOs for DATA transfer 
    assign SigDeqDBID = DatOutbChan.TXDATFLITV ;
    // Dequeue BarrelShifter first sifted Data 
