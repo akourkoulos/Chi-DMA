@@ -127,11 +127,11 @@ module BarrelShifter#(
        .Empty          ( DataEmpty                                   )
        );                           
     
-    // Manage counters 
+    //----------- Manage Read-Write Req Bytes counters -----------
     assign NextSrcAddr  = (CountReadBytes  + Command.SrcAddr);
-    assign NextReadCnt  = (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) : Command.Length ;
+    assign NextReadCnt  = (CHI_DATA_WIDTH  + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.SrcAddr) : Command.Length ;
     assign NextDstAddr  = (CountWriteBytes + Command.DstAddr);
-    assign NextWriteCnt = (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) : Command.Length ;
+    assign NextWriteCnt = (CHI_DATA_WIDTH  + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) < Command.Length ? (CHI_DATA_WIDTH + {NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} - Command.DstAddr) : Command.Length ;
     always_ff@(posedge Clk)begin
       if(RST)begin
         CountWriteBytes <= 0 ;
@@ -139,15 +139,16 @@ module BarrelShifter#(
       end
       else begin
         if(CntReadWE == 1 | DeqFIFO == 1)begin
-          CountReadBytes = (DeqFIFO) ? 0 : NextReadCnt ;
+          CountReadBytes <= (DeqFIFO) ? 0 : NextReadCnt ;
         end
         if(CntWriteWE == 1 | DeqFIFO == 1)begin
-          CountWriteBytes = (DeqFIFO) ? 0 : NextWriteCnt ;
+          CountWriteBytes <= (DeqFIFO) ? 0 : NextWriteCnt ;
         end
       end      
     end
+    //------------------------------------------------------------------
     
-    // Enable the corect Bytes to be written 
+    //////////////////////Enable the corect Bytes to be written////////////////////// 
     always_comb begin
       if(NextWriteCnt == Command.Length)begin // if last trans
         if(Command.Length < CHI_DATA_WIDTH &  AlignedDstAddr + CHI_DATA_WIDTH - Command.DstAddr > Command.Length)begin // if address range of Data that should be written is internal of CHI_DATA_WIDTH
@@ -161,13 +162,16 @@ module BarrelShifter#(
          BEOut = ~({CHI_DATA_WIDTH{1'b1}}>>(NextWriteCnt - CountWriteBytes)) ; // enable the most significant or all bytes 
       end
     end
+    ////////////////////////////////////////////////////////////////////////////////////////
     
-    // or of FIFO's empty
+    // or of FIFOs' empty
     assign EmptyFIFO = EmptyCom | DataEmpty ;
     
+    //>>>>>> Create Shift for BS comb <<<<<<<<<<
     assign AlignedSrcAddr = {Command.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}};
     assign AlignedDstAddr = {Command.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}};
     assign shift          = ((Command.SrcAddr - AlignedSrcAddr) - (Command.DstAddr - AlignedDstAddr))<<3   ;//*8
+    //>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
     
     // ---------------------Barrel Shifter comb---------------------
     /*Barrel Shifter comb does a circular right shifts of its Data input by
@@ -185,14 +189,14 @@ module BarrelShifter#(
     // Manage Register that stores the shifted data from BScomb
     always_ff@(posedge Clk) begin
       if(RST)
-        PrevShiftedData = 0 ;
+        PrevShiftedData <= 0 ;
       else
         if(PrvShftdDataWE)begin
-          PrevShiftedData = ShiftedData ;
+          PrevShiftedData <= ShiftedData ;
         end
     end    
     
-    // manage Crds
+    //-------------------------------------Crds manager------------------------------------
      always_ff @ (posedge Clk) begin
      if(RST)begin
        DataCrdInbound <= 0 ;        // Reset FSM
@@ -213,8 +217,10 @@ module BarrelShifter#(
    end
    // Give an extra Crd in outbound Data Chanel
    assign DatInbChan.RXDATLCRDV = !RST & (GivenDataCrd < CMD_FIFO_LENGTH & DataCrdInbound < `MaxCrds) ;
-    
-     //FSM's state
+  //------------------------------------End Crds manager------------------------------------ 
+  
+  //################################ FSM  ################################
+   //FSM's state
    always_ff @ (posedge Clk) begin
      if(RST)
        state <= StartState ;        // Reset FSM
@@ -227,7 +233,7 @@ module BarrelShifter#(
      case(state)
        StartState :
          begin                           
-           if(!EmptyFIFO & NextReadCnt < Command.Length & ((NextWriteCnt < Command.Length & DequeueBS & (Command.DstAddr - AlignedDstAddr) > (Command.SrcAddr - AlignedSrcAddr)) | ((Command.DstAddr - AlignedDstAddr) < (Command.SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read and Write then in the next state 2 Read Data shoudld be merged to create the Write Data word
+           if(!EmptyFIFO & NextReadCnt < Command.Length & ((NextWriteCnt < Command.Length & DequeueBS & (Command.DstAddr - AlignedDstAddr) > (Command.SrcAddr - AlignedSrcAddr)) | ((Command.DstAddr - AlignedDstAddr) < (Command.SrcAddr - AlignedSrcAddr))))  // When Data should be shifted left or right and not last Chunk's Read then in the next state 2 Read Data shoudld be merged to create the Write Data word
              next_state = MergeReadDataState ;
            else if(!EmptyFIFO & NextWriteCnt < Command.Length & NextReadCnt == Command.Length & DequeueBS & (Command.DstAddr - AlignedDstAddr) > (Command.SrcAddr - AlignedSrcAddr))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
              next_state = ExtraWriteState ;
@@ -236,7 +242,7 @@ module BarrelShifter#(
          end
        MergeReadDataState :
          begin
-           if( NextReadCnt == Command.Length &  NextWriteCnt == Command.Length & !EmptyFIFO & DequeueBS)         //  When last Read becomes the last Write return to StartState
+           if( NextReadCnt == Command.Length &  NextWriteCnt == Command.Length & !EmptyFIFO & DequeueBS)        //  When last Read becomes the last Write return to StartState
              next_state = StartState ;
            else if ( NextReadCnt == Command.Length &  NextWriteCnt < Command.Length & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
              next_state = ExtraWriteState ;
@@ -257,7 +263,7 @@ module BarrelShifter#(
     case(state)
        StartState :
          begin                      
-           if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
+           if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is empty and do nothing
              EmptyBS        = 1 ;
              CntReadWE      = 0 ;
              CntWriteWE     = 0 ;
@@ -267,7 +273,8 @@ module BarrelShifter#(
              DeqData        = 0 ;
            end
            else begin
-             if((Command.DstAddr - AlignedDstAddr) < (Command.SrcAddr - AlignedSrcAddr) & NextReadCnt < Command.Length)begin  // When Data must be shifted right and its not last Read then no enough data for a write  
+           // When Data must be shifted right and its not last Read then no enough data for a write  
+             if((Command.DstAddr - AlignedDstAddr) < (Command.SrcAddr - AlignedSrcAddr) & NextReadCnt < Command.Length)begin  
                EmptyBS        = 1 ; // Barrel Shifter is empty because there are not enough data for a Write
                CntReadWE      = 1 ; // Update Read Counter
                CntWriteWE     = 0 ; // Dont update Write Counter because there are not enough data for a Write
@@ -276,7 +283,8 @@ module BarrelShifter#(
                DeqFIFO        = 0 ; // Dont Dequeue FIFOs (SrcAddr,DstAddr,Legnth)
                DeqData        = 1 ; // Dequeue Data FIFO because there are Data that have been read
              end
-             else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length & (Command.DstAddr - AlignedDstAddr) > (Command.SrcAddr - AlignedSrcAddr))begin // When last Read but not last write and data must be shifted left then give first data for write (read must become 2 writes) 
+             // When last Read but not last Write and data must be shifted left then give first data for write (read must become 2 writes) 
+             else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length & (Command.DstAddr - AlignedDstAddr) > (Command.SrcAddr - AlignedSrcAddr))begin 
                EmptyBS        = 0           ;
                CntReadWE      = 0           ; // Dont Update Read Counter because it is the last Read but not last write
                CntWriteWE     = DequeueBS   ; // Update Write Counter
@@ -285,7 +293,8 @@ module BarrelShifter#(
                DeqFIFO        = 0           ;
                DeqData        = 0           ;
              end
-             else if((NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) | (NextReadCnt < Command.Length  & NextWriteCnt < Command.Length  & (Command.DstAddr - AlignedDstAddr) >= (Command.SrcAddr - AlignedSrcAddr)))begin // when last Read-Write or no shift or left shift of data needed then give Data for Write
+             // when last Read-Write or no shift or left shift of data is needed then give Data for Write
+             else if((NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) | (NextReadCnt < Command.Length  & NextWriteCnt < Command.Length  & (Command.DstAddr - AlignedDstAddr) >= (Command.SrcAddr - AlignedSrcAddr)))begin
                EmptyBS        = 0                                                                             ;
                CntReadWE      = DequeueBS                                                                     ;
                CntWriteWE     = DequeueBS                                                                     ;
@@ -317,16 +326,18 @@ module BarrelShifter#(
              DeqData        = 0 ;
            end
            else begin
-             if((NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) | (NextReadCnt < Command.Length & NextWriteCnt < Command.Length ))begin  // If both of Read and Write are last trans then create the right DataOut and dequeue FIFO else just create the right DataOut
+           // If both of Read and Write are last trans then create the right DataOut and dequeue FIFO else just create the right DataOut
+             if((NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) | (NextReadCnt < Command.Length & NextWriteCnt < Command.Length ))begin  
                EmptyBS        = 0                                                                                                                    ;
                CntReadWE      = DequeueBS                                                                                                            ;
                CntWriteWE     = DequeueBS                                                                                                            ;
                PrvShftdDataWE = DequeueBS                                                                                                            ;
-               DeqFIFO        = (DequeueBS & NextReadCnt == Command.Length & NextWriteCnt == Command.Length )                                                        ;
+               DeqFIFO        = (DequeueBS & NextReadCnt == Command.Length & NextWriteCnt == Command.Length )                                        ;
                DeqData        = DequeueBS                                                                                                            ;    
                DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
-             else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length)begin  // If it is the last Read and but not the last Write create the right DataOut and next cycle do an extra write
+             // If it is the last Read and but not the last Write create the right DataOut and next cycle do an extra write
+             else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length)begin  
                EmptyBS        = 0                                                                                                                    ;
                CntReadWE      = 0                                                                                                                    ;
                CntWriteWE     = DequeueBS                                                                                                            ;
@@ -348,7 +359,7 @@ module BarrelShifter#(
            end
          end
        ExtraWriteState : 
-          if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
+          if(EmptyFIFO)begin     // if one of FIFOs are empty then BS is empty and do nothing
              EmptyBS        = 1 ;
              CntReadWE      = 0 ;
              CntWriteWE     = 0 ;
@@ -359,11 +370,11 @@ module BarrelShifter#(
            end
            else begin
              EmptyBS        = 0               ;
-             CntReadWE      = 1               ;
-             CntWriteWE     = 1               ;
+             CntReadWE      = DequeueBS       ;
+             CntWriteWE     = DequeueBS       ;
              PrvShftdDataWE = 0               ;
-             DeqFIFO        = 1               ;
-             DeqData        = 1               ;
+             DeqFIFO        = DequeueBS       ;
+             DeqData        = DequeueBS       ;
              DataOut        = PrevShiftedData ; 
            end
        default :
@@ -378,5 +389,5 @@ module BarrelShifter#(
          end                  
     endcase ;
   end
-    
+   //################################ END FSM  ################################  
 endmodule

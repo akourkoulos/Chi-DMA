@@ -16,12 +16,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="651625fs"></ZoomEndTime>
-      <Cursor1Time time="92960fs"></Cursor1Time>
+      <ZoomEndTime time="2226001fs"></ZoomEndTime>
+      <Cursor1Time time="1380000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="190"></ValueColumnWidth>
+      <ValueColumnWidth column_width="185"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="17" />
    <wvobject fp_name="/TestCHIConverter/Clk" type="logic">
@@ -35,6 +35,7 @@
    <wvobject fp_name="group1517" type="group">
       <obj_property name="label">Inp</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestCHIConverter/IssueValid" type="logic">
          <obj_property name="ElementShortName">IssueValid</obj_property>
          <obj_property name="ObjectShortName">IssueValid</obj_property>
@@ -222,27 +223,51 @@
       <obj_property name="label">InbDataChanel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLITPEND" type="logic">
+      <wvobject fp_name="/TestCHIConverter/DatInbChan/RXDATFLITPEND" type="logic">
          <obj_property name="ElementShortName">RXDATFLITPEND</obj_property>
          <obj_property name="ObjectShortName">RXDATFLITPEND</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLITV" type="logic">
+      <wvobject fp_name="/TestCHIConverter/DatInbChan/RXDATFLITV" type="logic">
          <obj_property name="ElementShortName">RXDATFLITV</obj_property>
          <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATFLIT" type="array">
+      <wvobject fp_name="/TestCHIConverter/DatInbChan/RXDATFLIT" type="array">
          <obj_property name="ElementShortName">RXDATFLIT</obj_property>
          <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/DatInbChan/RXDATLCRDV" type="logic">
+         <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
+         <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/BS/EmptyBS" type="logic">
+         <obj_property name="ElementShortName">EmptyBS</obj_property>
+         <obj_property name="ObjectShortName">EmptyBS</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestCHIConverter/UUT/DatInbChan/RXDATLCRDV" type="logic">
-         <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
-         <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+      <wvobject fp_name="/TestCHIConverter/BS/BSFULL" type="logic">
+         <obj_property name="ElementShortName">BSFULL</obj_property>
+         <obj_property name="ObjectShortName">BSFULL</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/BS/EnqueueIn" type="logic">
+         <obj_property name="ElementShortName">EnqueueIn</obj_property>
+         <obj_property name="ObjectShortName">EnqueueIn</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestCHIConverter/BS/DequeueBS" type="logic">
+         <obj_property name="ElementShortName">DequeueBS</obj_property>
+         <obj_property name="ObjectShortName">DequeueBS</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -278,7 +303,6 @@
    <wvobject fp_name="group167" type="group">
       <obj_property name="label">Arbiter</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestCHIConverter/UUT/WriteReqArbValid" type="logic">
          <obj_property name="ElementShortName">WriteReqArbValid</obj_property>
          <obj_property name="ObjectShortName">WriteReqArbValid</obj_property>
