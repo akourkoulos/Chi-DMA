@@ -336,7 +336,7 @@ module BarrelShifter#(
                DeqData        = DequeueBS                                                                                                            ;    
                DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
-             // If it is the last Read and but not the last Write create the right DataOut and next cycle do an extra write
+             // If it is the last Read but not the last Write create the right DataOut and next cycle do an extra write
              else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length)begin  
                EmptyBS        = 0                                                                                                                    ;
                CntReadWE      = 0                                                                                                                    ;

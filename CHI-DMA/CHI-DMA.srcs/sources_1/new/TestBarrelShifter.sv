@@ -114,7 +114,7 @@ module TestBarrelShifte#(
       else begin
         DatInbChan.RXDATFLITV = 0 ;
         DatInbChan.RXDATFLIT  = 0 ;
-        #(period*2*$urandom_range(0,3) + period); // wait for random delay for the next enqueue
+        #(period*2*$urandom_range(0,3) + period); // wait for random delay for the next CHI-Data in
         if(CntCrds != 0 & !(UUT.EmptyCom))begin
           DatInbChan.RXDATFLITV      = 1        ;
           DatInbChan.RXDATFLIT.Data  = randVect ;
@@ -136,18 +136,81 @@ module TestBarrelShifte#(
     // manage inputs
     initial
         begin       
-        RST                    <= 1 ;
-        CommandIn.SrcAddr      <= 0 ;
-        CommandIn.DstAddr      <= 0 ;
-        CommandIn.Length       <= 0 ;
-        EnqueueIn              <= 0 ;
+        RST                               <= 1 ;
+        CommandIn.SrcAddr                 <= 0 ;
+        CommandIn.DstAddr                 <= 0 ;
+        CommandIn.Length                  <= 0 ;
+        EnqueueIn                         <= 0 ;
         DatInbChan.RXDATFLITV             <= 0 ;
         DatInbChan.RXDATFLIT.Data         <= 0 ;
         
         #(period*2); // wait for period
-        # period   ; // wait for period
+        # period   ; // wait for period     
+                                            
+       //case 1 (all Read and Write Bytes are in one line )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 5       ;
+          CommandIn.DstAddr      <= 64 + 10 ;
+          CommandIn.Length       <= 10      ;
+          EnqueueIn              <= 1       ;
         
-        for( int j=0 ; j < NUM_OF_REPETITIONS ; j=j+0)begin       
+        #(period*2); // wait for period
+        //case 2 (aligned Addr)
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 5       ;
+          CommandIn.DstAddr      <= 64 + 5  ;
+          CommandIn.Length       <= 128     ;
+          EnqueueIn              <= 1       ;
+        
+        #(period*2); // wait for period
+        //case 3 (Shift left NumbOfRead == NumOfWrite )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 5       ;
+          CommandIn.DstAddr      <= 64 + 10 ;
+          CommandIn.Length       <= 128     ;
+          EnqueueIn              <= 1       ;
+       
+        #(period*2); // wait for period  
+        //case 4 (Shift left NumbOfRead != NumOfWrite )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 5       ;
+          CommandIn.DstAddr      <= 64 + 10 ;
+          CommandIn.Length       <= 122     ;
+          EnqueueIn              <= 1       ;
+       
+        #(period*2); // wait for period 
+        //case 5 (Shift right NumbOfRead == NumOfWrite )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 10      ;
+          CommandIn.DstAddr      <= 64 + 5  ;
+          CommandIn.Length       <= 128     ;
+          EnqueueIn              <= 1       ;
+       
+        #(period*2); // wait for period 
+        //case 6 (Shift right NumbOfRead != NumOfWrite )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 10      ;
+          CommandIn.DstAddr      <= 64 + 5  ;
+          CommandIn.Length       <= 122     ;
+          EnqueueIn              <= 1       ;
+        
+        #(period*2); // wait for period 
+        //case 7 (one Read 2 Writes )
+          RST                    <= 0       ;
+          CommandIn.SrcAddr      <= 5       ;
+          CommandIn.DstAddr      <= 64 + 10 ;
+          CommandIn.Length       <= 59      ;
+          EnqueueIn              <= 1       ;
+        
+        #(period*2); // wait for period 
+          RST                    <= 0 ;
+          CommandIn.SrcAddr      <= 0 ;
+          CommandIn.DstAddr      <= 0 ;
+          CommandIn.Length       <= 0 ;
+          EnqueueIn              <= 0 ;
+        #(period*150); // wait until all cases are finished
+        
+        for( int j=7 ; j < NUM_OF_REPETITIONS ; j=j+0)begin       
           if(!BSFULL) begin
           RST                    <= 0                                                            ;
           CommandIn.SrcAddr      <= 'd64*$urandom_range(0,10**6) + $urandom_range(0,64)          ;
