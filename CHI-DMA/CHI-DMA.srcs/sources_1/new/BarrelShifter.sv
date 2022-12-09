@@ -49,7 +49,7 @@ module BarrelShifter#(
     output                    [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
     output                                               LastDescTrans ,
     output         reg                                   EmptyBS       ,
-    output                                               BSFULL
+    output                                               FULLCmndBS
     );
     
     enum int unsigned { StartState         = 0 , 
@@ -107,7 +107,7 @@ module BarrelShifter#(
        .Enqueue    ( EnqueueIn  ) , 
        .Dequeue    ( DeqFIFO    ) , 
        .Outp       ( Command    ) , 
-       .FULL       ( BSFULL     ) , 
+       .FULL       ( FULLCmndBS ) , 
        .Empty      ( EmptyCom   ) 
        );   
           
@@ -176,14 +176,14 @@ module BarrelShifter#(
     // ---------------------Barrel Shifter comb---------------------
     /*Barrel Shifter comb does a circular right shifts of its Data input by
      the amount of its shift input*/
-    wire  [CHI_DATA_WIDTH*8 - 1 : 0] muxout [CHI_DATA_WIDTH*8 - 1 : 0];  // muxes of Barrel Shifter
-    assign muxout[0] = shift[0] ? ({DataFIFO.Data[0],DataFIFO.Data[CHI_DATA_WIDTH*8  - 1 :1]}): DataFIFO.Data ;
+    wire  [CHI_DATA_WIDTH*8 - 1 : 0] muxout [SHIFT_WIDTH - 3 - 1 : 0];  // muxes of Barrel Shifter
+    assign muxout[0] = shift[3] ? ({DataFIFO.Data[7 : 0],DataFIFO.Data[CHI_DATA_WIDTH*8  - 1 :8]}): DataFIFO.Data ;
     genvar i ;
     generate 
-    for(i = 1 ; i < SHIFT_WIDTH ; i++)
-      assign muxout[i] = shift[i] ? ({muxout[i-1][2**i - 1 : 0],muxout[i-1][CHI_DATA_WIDTH*8  - 1 : 2**i]}): muxout[i-1] ;
+    for(i = 1 ; i < SHIFT_WIDTH - 3 ; i++)
+      assign muxout[i] = shift[i+3] ? ({muxout[i-1][2**(i + 3) - 1 : 0],muxout[i-1][CHI_DATA_WIDTH*8  - 1 : 2**(i + 3)]}): muxout[i-1] ;
     endgenerate
-    assign ShiftedData = muxout[SHIFT_WIDTH - 1];
+    assign ShiftedData = muxout[SHIFT_WIDTH - 3 - 1];
     // ---------------------end Barrel Shifter comb---------------------
 
     // Manage Register that stores the shifted data from BScomb

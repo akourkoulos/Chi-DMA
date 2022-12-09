@@ -71,7 +71,7 @@ module CHIConverter#(
     input                               [CHI_DATA_WIDTH*8- 1 : 0]   ShiftedData       ,
     input                               [`RspErrWidth    - 1 : 0]   DataErr           ,
     input                                                           EmptyBS           ,
-    input                                                           FULLBS            ,
+    input                                                           FULLCmndBS        ,
     ReqChannel                                                      ReqChan           , // Request ChannelS
     RspOutbChannel                                                  RspOutbChan       , // Response outbound Chanel
     DatOutbChannel                                                  DatOutbChan       , // Data outbound Chanel
@@ -243,7 +243,7 @@ module CHIConverter#(
    // Enable valid for CHI-Request transaction 
    assign ReadReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeReadTxnID != 0 & ReadReqArbReady & (SigCommand.Length != ReadReqBytes));
    // Dequeue Read command FIFO when all bytes for read have been requested
-   assign SigDeqRead = !FULLBS & ((({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr) >= SigCommand.Length & ReadReqArbValid & ReadReqArbReady) | (SigCommand.Length == ReadReqBytes)) & !SigCommandEmpty ;
+   assign SigDeqRead = !FULLCmndBS & ((({NextSrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.SrcAddr) >= SigCommand.Length & ReadReqArbValid & ReadReqArbReady) | (SigCommand.Length == ReadReqBytes)) & !SigCommandEmpty ;
    // Create Addr field of Request Read flit 
    //----
    assign NextSrcAddr  = SigCommand.SrcAddr + ReadReqBytes ;
@@ -294,7 +294,7 @@ module CHIConverter#(
            // ReadReqBytes = Length
            ReadReqBytes <= SigCommand.Length ;
            
-         if(EnqueueBS & !FULLBS)
+         if(EnqueueBS & !FULLCmndBS)
            GaveBSCommand <= 1 ; // a command to BS have been given
        end
      end                   
@@ -310,7 +310,7 @@ module CHIConverter#(
    // Enable valid for CHI-Request transaction 
    assign WriteReqV = (!SigCommandEmpty & ReqCrd != 0 & FreeWriteTxnID != 0 & WriteReqArbReady & (SigCommand.Length != WriteReqBytes)) ;
    // Dequeue Write command FIFO when all bytes for write have been requested 
-   assign SigDeqWrite = !FULLBS & ((({NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.DstAddr) >= SigCommand.Length & WriteReqArbValid & WriteReqArbReady) | (SigCommand.Length == WriteReqBytes)) & !SigCommandEmpty ; ;
+   assign SigDeqWrite = !FULLCmndBS & ((({NextDstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA {1'b0}}} + CHI_DATA_WIDTH - SigCommand.DstAddr) >= SigCommand.Length & WriteReqArbValid & WriteReqArbReady) | (SigCommand.Length == WriteReqBytes)) & !SigCommandEmpty ; ;
    // Create Addr field of Request Read flit 
    //----
    assign NextDstAddr  = SigCommand.DstAddr + WriteReqBytes ;

@@ -80,7 +80,7 @@ module TestCHIConverter#(
     wire        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ;
     wire        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ;
     wire                                   EmptyBS       ;
-    wire                                   BSFULL        ;
+    wire                                   FULLCmndBS    ;
     wire        [`RspErrWidth     - 1 : 0] DataError     ;
     wire                                   LastDescTrans ;
     wire        [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ;
@@ -98,7 +98,7 @@ module TestCHIConverter#(
      .ShiftedData        (DataOut                  ) ,                                       
      .DataErr            (DataError                ) ,
      .EmptyBS            (EmptyBS                  ) ,
-     .FULLBS             (BSFULL                   ) ,
+     .FULLCmndBS         (FULLCmndBS               ) ,
      .ReqChan            (ReqChan      .OUTBOUND   ) ,
      .RspOutbChan        (RspOutbChan  .OUTBOUND   ) ,
      .DatOutbChan        (DatOutbChan  .OUTBOUND   ) ,   
@@ -128,7 +128,7 @@ module TestCHIConverter#(
      .  DescAddr         ( DescAddr                  ),
      .  LastDescTrans    ( LastDescTrans             ),
      .  EmptyBS          ( EmptyBS                   ),
-     .  BSFULL           ( BSFULL                    )
+     .  FULLCmndBS       ( FULLCmndBS                )
     );      
     
     //Crds signals

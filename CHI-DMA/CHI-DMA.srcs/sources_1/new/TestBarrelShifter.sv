@@ -48,7 +48,7 @@ module TestBarrelShifte#(
      wire                     [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr     ;
      wire                                                LastDescTrans;
      wire                                                EmptyBS      ;
-     wire                                                BSFULL       ;
+     wire                                                FULLCmndBS   ;
      
     localparam period           = 20   ;   // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns  
     
@@ -65,7 +65,7 @@ module TestBarrelShifte#(
      .  DescAddr        (  DescAddr                 ),
      .  LastDescTrans   (  LastDescTrans            ),
      .  EmptyBS         (  EmptyBS                  ),
-     .  BSFULL          (  BSFULL                   )
+     .  FULLCmndBS      (  FULLCmndBS               )
     );                
     //count Credits
     reg [`CrdRegWidth - 1 : 0]CntCrds ;
@@ -211,7 +211,7 @@ module TestBarrelShifte#(
         #(period*150); // wait until all cases are finished
         
         for( int j=7 ; j < NUM_OF_REPETITIONS ; j=j+0)begin       
-          if(!BSFULL) begin
+          if(!FULLCmndBS) begin
           RST                    <= 0                                                            ;
           CommandIn.SrcAddr      <= 'd64*$urandom_range(0,10**6) + $urandom_range(0,64)          ;
           CommandIn.DstAddr      <= 'd64*$urandom_range(10**6,2**32 - 1) + $urandom_range(0,64)  ;
@@ -253,7 +253,7 @@ module TestBarrelShifte#(
           DataPointerW   <= 0           ;
         end
         else begin
-          if(EnqueueIn & !BSFULL) begin
+          if(EnqueueIn & !FULLCmndBS) begin
             // When Enqueue comand in BS add SrcAddr,DstAddr,Length in TestVector
             TestVector[0][EnqueueCounter] <= {{(CHI_DATA_WIDTH*8*Chunk - BRAM_COL_WIDTH){1'b0}},CommandIn.Length } ;
             TestVector[1][EnqueueCounter] <= {{(CHI_DATA_WIDTH*8*Chunk - BRAM_COL_WIDTH){1'b0}},CommandIn.SrcAddr} ; 
@@ -296,7 +296,7 @@ module TestBarrelShifte#(
         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every command in BS check
           automatic int errflag = 0 ;
           for(int j = 0 ; j < CHI_DATA_WIDTH*8*Chunk ; j ++)begin
-          // Ckeck if Read data have been re-positioned with the right way to create WriteDAta
+          // Ckeck if Read data have been re-positioned with the right way to create WriteData
             if(TestVector[4][i][j + ((TestVector[2][i][SHIFT_WIDTH - 1 : 0]%64)*8)] != TestVector[3][i][j + ((TestVector[1][i][SHIFT_WIDTH - 1 : 0]%64)*8)] & j < 8*TestVector[0][i])
             // if there is e problem Display it
             begin
