@@ -26,7 +26,7 @@ module TestScheduler#(
   parameter BRAM_ADDR_WIDTH   = 10 ,
   parameter BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
   parameter BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
-  parameter CHI_Word_Width    = 64 ,  
+  parameter CHI_DATA_WIDTH    = 64 ,  
   parameter Chunk             = 5  , // number of CHI-Words
   parameter MEMAddrWidth      = 32   
  );

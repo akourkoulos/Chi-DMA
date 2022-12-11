@@ -104,7 +104,6 @@ module TestCHIConverter#(
      .DatOutbChan        (DatOutbChan  .OUTBOUND   ) ,   
      .RspInbChan         (RspInbChan   .INBOUND    ) ,
      .RXDATFLITV         (DatInbChan   .RXDATFLITV ) ,
-     .RXDATFLIT          (DatInbChan   .RXDATFLIT  ) ,
      .CmdFIFOFULL        (CmdFIFOFULL              ) ,
      .ValidBRAM          (ValidBRAM                ) ,
      .AddrBRAM           (AddrBRAM                 ) ,

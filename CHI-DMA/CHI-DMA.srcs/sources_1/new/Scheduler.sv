@@ -36,7 +36,7 @@ module Scheduler#(
   parameter BRAM_ADDR_WIDTH   = 10 , 
   parameter BRAM_NUM_COL      = 8  , // num of Reg in Descriptor
   parameter BRAM_COL_WIDTH    = 32 , // width of a Reg in Descriptor 
-  parameter CHI_Word_Width    = 64 , // CHI bus width
+  parameter CHI_DATA_WIDTH    = 64 , // CHI bus width
   parameter Chunk             = 5   // number of CHI-Words 
 )(
     input  logic                              RST               ,
@@ -74,7 +74,7 @@ module Scheduler#(
     reg                                   WEControl         ; // Signal that FSM provides and controls WE of BRAM 
     
     // Data output for Descriptor : updated SentBytes field (or Status field if Descriptor has no transactions)
-    assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_Word_Width * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_Word_Width * Chunk);                                                                                  ;
+    assign SigWordLength = ((DescDataIn.BytesToSend - DescDataIn.SentBytes < CHI_DATA_WIDTH * Chunk) ? DescDataIn.BytesToSend - DescDataIn.SentBytes : CHI_DATA_WIDTH * Chunk);                                                                                  ;
     assign DescDataOut   = ('{default : 0 , SentBytes : (SigWordLength + DescDataIn.SentBytes) , Status : `StatusIdle})                                                       ;
     // if FSM enables WEControl then WE for SentBytes field enables(or Status field if Descriptor has no transactions) els 0 ;  
     assign WE = WEControl ? ((SigWordLength == 0) ? ('b1 << `StatusRegIndx) : ('b1 << `SBRegIndx) ): 0 ;

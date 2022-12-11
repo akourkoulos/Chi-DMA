@@ -28,7 +28,7 @@ module TestRegSpaceAndSched#(
   parameter BRAM_COL_WIDTH      = 32                          ,
   parameter BRAM_ADDR_WIDTH     = 10                          ,
   parameter DATA_WIDTH          = BRAM_NUM_COL*BRAM_COL_WIDTH ,
-  parameter CHI_Word_Width      = 64                          ,
+  parameter CHI_DATA_WIDTH      = 64                          ,
   parameter Chunk               = 5                           ,
   parameter MEMAddrWidth        = 32                          ,
   parameter NUM_OF_REPETITIONS  = 1000

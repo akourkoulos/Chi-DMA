@@ -12,9 +12,8 @@ module BRAMAndSched#(
   parameter BRAM_COL_WIDTH    = 32                          ,
   parameter BRAM_ADDR_WIDTH   = 10                          ,
   parameter DATA_WIDTH        = BRAM_NUM_COL*BRAM_COL_WIDTH ,
-  parameter CHI_Word_Width    = 64                          ,
-  parameter Chunk             = 5                           ,
-  parameter MEMAddrWidth      = 32                          
+  parameter CHI_DATA_WIDTH    = 64                          ,
+  parameter Chunk             = 5                            
 )(
     input                             Clk                  ,//--- proc inp ---
     input                             RST                  ,
@@ -59,7 +58,7 @@ module BRAMAndSched#(
       .addrA(addrA     ) ,
       .dinA (dinA      ) ,
       .clkB (Clk       ) ,
-      .enaB (1         ) ,
+      .enaB (1'b1      ) ,
       .weB  (BRAMweB   ) ,
       .addrB(BRAMaddrB ) ,
       .dinB (BRAMdinB  ) ,
@@ -70,7 +69,7 @@ module BRAMAndSched#(
     //Arbiter
     Arbiter#( 
        BRAM_ADDR_WIDTH  
-    )ArbiterFIFO( 
+    )ArbiterFIFO       ( 
       .Valid           ({ValidArbFIFOSched , ValidArbIn} ) ,
       .DescAddrInProc  (addrA                            ) ,
       .DescAddrInSched (WriteBackPointer                 ) ,
@@ -95,29 +94,28 @@ module BRAMAndSched#(
     
     //Scheduler    
     Scheduler#(
-      BRAM_ADDR_WIDTH ,
-      BRAM_NUM_COL    ,
-      BRAM_COL_WIDTH  ,
-      CHI_Word_Width  ,
-      Chunk           ,
-      MEMAddrWidth    
+      .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH),
+      .BRAM_NUM_COL    (BRAM_NUM_COL   ),
+      .BRAM_COL_WIDTH  (BRAM_COL_WIDTH ),
+      .CHI_DATA_WIDTH  (CHI_DATA_WIDTH ),
+      .Chunk           (Chunk          )
     ) mySched (
-       .RST               ( RST                  ) ,
-       .Clk               ( Clk                  ) ,
-       .DescDataIn        ( BRAMdoutB            ) ,
-       .ReadyBRAM         ( InpReadyBRAM         ) ,
-       .ReadyFIFO         ( ReadyArbSched        ) ,
-       .FIFO_Addr         ( PointerFIFO          ) ,
-       .Empty             ( FIFOEmpty            ) ,
-       .CmdFIFOFULL       ( InpCmdFIFOFULL       ) ,
-       .DescDataOut       ( BRAMdinB             ) ,
-       .WE                ( BRAMweB              ) ,
-       .BRAMAddrOut       ( BRAMaddrB            ) ,
-       .ValidBRAM         ( OutValidBRAM         ) ,
-       .Dequeue           ( DequeueFIFO          ) ,
-       .ValidFIFO         ( ValidArbFIFOSched    ) ,
-       .DescAddrPointer   ( WriteBackPointer     ) ,
-       .IssueValid        ( OutIssueValid        ) ,
-       .Command           ( Command              ) 
+       . RST                ( RST                 ) ,
+       . Clk                ( Clk                 ) ,
+       . DescDataIn         ( DescDataIn          ) ,
+       . ReadyBRAM          ( ReadyBRAM           ) ,
+       . ReadyFIFO          ( ReadyFIFO           ) ,
+       . FIFO_Addr          ( FIFO_Addr           ) ,
+       . Empty              ( Empty               ) ,
+       . CmdFIFOFULL        ( CmdFIFOFULL         ) ,
+       . DescDataOut        ( DescDataOut         ) ,
+       . WE                 ( WE                  ) ,
+       . BRAMAddrOut        ( BRAMAddrOut         ) ,
+       . ValidBRAM          ( ValidBRAM           ) ,
+       . Dequeue            ( Dequeue             ) ,
+       . ValidFIFO          ( ValidFIFO           ) ,
+       . DescAddrPointer    ( DescAddrPointer     ) ,
+       . IssueValid         ( IssueValid          ) ,
+       . Command            ( Command             ) 
     );
 endmodule

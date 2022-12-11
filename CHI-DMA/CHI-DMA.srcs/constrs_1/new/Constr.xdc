@@ -1,1 +1,1 @@
-create_clock -period 5.000 -name clk -wavefor, {0.00 2.50} [get_ports Clk]
+create_clock -period 5.000 -name clk -waveform {0.00 2.50} [get_ports Clk]

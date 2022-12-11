@@ -37,19 +37,19 @@ module BarrelShifter#(
   parameter COUNTER_WIDTH       = 6                       // log2(FIFO_LENGTH) + 1
 //--------------------------------------------------------------------------
 ) ( 
-    input                                                RST           ,
-    input                                                Clk           ,
-    input          CHI_Command                           CommandIn     , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
-    input                                                EnqueueIn     ,
-    input                                                DequeueBS     ,
-    DatInbChannel                                        DatInbChan    , // Data inbound Chanel
-    output         reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ,
-    output         reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ,
-    output                    [`RspErrWidth     - 1 : 0] DataError     ,
-    output                    [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
-    output                                               LastDescTrans ,
-    output         reg                                   EmptyBS       ,
-    output                                               FULLCmndBS
+    input                                                        RST           ,
+    input                                                        Clk           ,
+    input                  CHI_Command                           CommandIn     , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
+    input                                                        EnqueueIn     ,
+    input                                                        DequeueBS     ,
+    DatInbChannel.INBOUND                                        DatInbChan    , // Data inbound Chanel
+    output                 reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ,
+    output                 reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ,
+    output                            [`RspErrWidth     - 1 : 0] DataError     ,
+    output                            [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
+    output                                                       LastDescTrans ,
+    output                 reg                                   EmptyBS       ,
+    output                                                       FULLCmndBS
     );
     
     enum int unsigned { StartState         = 0 , 
@@ -389,5 +389,5 @@ module BarrelShifter#(
          end                  
     endcase ;
   end
-   //################################ END FSM  ################################  
+   //################################ END FSM  ################################
 endmodule

@@ -40,20 +40,21 @@ import CHIFIFOsPkg::*;
 
 module TestFULLSystem#(
 //--------------------------------------------------------------------------
-  parameter BRAM_NUM_COL      = 8    , // As the Data_packet fields
-  parameter BRAM_COL_WIDTH    = 32   , // As the Data_packet field width
-  parameter BRAM_ADDR_WIDTH   = 10   , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
-  parameter CHI_DATA_WIDTH    = 64   ,
-  parameter MAX_BytesToSend   = 5000 ,
-  parameter P1_NUM_OF_TRANS   = 1    , // Number of inserted transfers for each phase
-  parameter P2_NUM_OF_TRANS   = 1    ,  
-  parameter P3_NUM_OF_TRANS   = 250  ,  
-  parameter P4_NUM_OF_TRANS   = 15   ,  
-  parameter P5_NUM_OF_TRANS   = 45   ,  
-  parameter P6_NUM_OF_TRANS   = 450  ,   
-  parameter LastPhase         = 6    ,// Number of Last Phase
-  parameter PHASE_WIDTH       = 3    , // width of register that keeps the phase
-  parameter Test_FIFO_Length  = 120 
+  parameter BRAM_NUM_COL        = 8    , // As the Data_packet fields
+  parameter BRAM_COL_WIDTH      = 32   , // As the Data_packet field width
+  parameter BRAM_ADDR_WIDTH     = 10   , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
+  parameter CHI_DATA_WIDTH      = 64   ,
+  parameter ADDR_WIDTH_OF_DATA  = 6    , // log2(CHI_DATA_WIDTH)  
+  parameter MAX_BytesToSend     = 5000 ,
+  parameter P1_NUM_OF_TRANS     = 1    , // Number of inserted transfers for each phase
+  parameter P2_NUM_OF_TRANS     = 1    ,  
+  parameter P3_NUM_OF_TRANS     = 250  ,  
+  parameter P4_NUM_OF_TRANS     = 15   ,  
+  parameter P5_NUM_OF_TRANS     = 45   ,  
+  parameter P6_NUM_OF_TRANS     = 450  ,   
+  parameter LastPhase           = 6    ,// Number of Last Phase
+  parameter PHASE_WIDTH         = 3    , // width of register that keeps the phase
+  parameter Test_FIFO_Length    = 120 
 //--------------------------------------------------------------------------
 );
 
@@ -168,7 +169,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // When Phase 1 is over (all of its transaction has finished and FIFOs of Converter and Completer are empty ) go to the Phase 2 : one big Transfer
-       else if((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 2 ;
          NewPhase = 1 ;     
@@ -177,7 +178,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // When Phase 2 is over go to Phase 3 : many of small (single CHI-transaction) transfers
-       else if((PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) & DMA.BS.EmptyCom& DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 3 ;
          NewPhase = 1 ;     
@@ -186,7 +187,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // When Phase 3 is over go to Phase 4 : many of Large transfers
-       else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 4 ;
          NewPhase = 1 ;    
@@ -195,7 +196,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // When Phase 4 is over go to Phase 5 : combination of large and small Transfers that they are comming with random delay
-       else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 5 ;
          NewPhase = 1 ;   
@@ -204,7 +205,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // When Phase 5 is over go to Phase 6 (LastPhase) : a lot of Transfers with random size random Addresses (Descriptor and Memory) which are inserted in random time
-       else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 6 ;
          NewPhase = 1 ;   
@@ -213,7 +214,7 @@ module TestFULLSystem#(
          #(period)    ;    
        end
        // All phases are finished
-       else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 6 ;
          NewPhase = 0 ;   
@@ -239,7 +240,7 @@ module TestFULLSystem#(
    //DescAddr which is sheduled correctly is stored in CorrectSched Vector 
    always_ff@(posedge Clk) begin
      // Reset TestVector every time there is a phase change or a RST
-     if(RST | (DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
+     if(RST | (DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
        TestVectorBRAM     <= '{default:0};
        CorrectSched       <= '{default:0};
        CSpointer          <= 0           ;
@@ -281,11 +282,12 @@ module TestFULLSystem#(
    
    //########################## Check CHI functionality ##########################
    //Sigs for Read Request FIFO
-   wire     Dequeue         ;
+   wire     DequeueR        ;
    wire     ReqEmptyR       ;
    wire     ReqFULLR        ;
    ReqFlit  SigTXREQFLITR   ;
-   //Sigs for Write Request FIFO                         
+   //Sigs for Write Request FIFO
+   wire     DequeueW        ;
    wire     ReqFULLW        ;
    wire     ReqEmptyW       ;
    ReqFlit  SigTXREQFLITW   ;
@@ -382,6 +384,7 @@ module TestFULLSystem#(
    //Test Cmnd FIFO Signals
    reg         DequeueCmnd   ;
    CHI_Command SigCommand    ;
+   wire        SigCmndFULL   ;
    // Test Command FIFO : Each command that has been sheduled is enqueued in FIFO
    FIFO #(     
        .FIFO_WIDTH  ( COMMAND_WIDTH                                     ) ,       
@@ -393,7 +396,7 @@ module TestFULLSystem#(
        .Enqueue     ( DMA.mySched.IssueValid & !DMA.mySched.CmdFIFOFULL ) , 
        .Dequeue     ( DequeueCmnd                                       ) , 
        .Outp        ( SigCommand                                        ) , 
-       .FULL        (                                                   ) , 
+       .FULL        ( SigCmndFULL                                       ) , 
        .Empty       (                                                   ) 
        );
        
@@ -406,7 +409,7 @@ module TestFULLSystem#(
        .Clk         ( Clk                                                                                        ) ,      
        .Inp         ( DMA.ReqChan.TXREQFLIT                                                                      ) , 
        .Enqueue     ( DMA.ReqChan.TXREQFLITV & DMA.ReqChan.TXREQFLIT.Opcode == `ReadOnce & CountReqCrdsOutb != 0 ) , 
-       .Dequeue     ( Dequeue                                                                                    ) , 
+       .Dequeue     ( DequeueR                                                                                   ) , 
        .Outp        ( SigTXREQFLITR                                                                              ) , 
        .FULL        ( ReqFULLR                                                                                   ) , 
        .Empty       ( ReqEmptyR                                                                                  ) 
@@ -420,7 +423,7 @@ module TestFULLSystem#(
        .Clk         ( Clk                                                                                              ) ,
        .Inp         ( DMA.ReqChan.TXREQFLIT                                                                            ) ,
        .Enqueue     ( DMA.ReqChan.TXREQFLITV & DMA.ReqChan.TXREQFLIT.Opcode == `WriteUniquePtl & CountReqCrdsOutb != 0 ) ,  
-       .Dequeue     ( Dequeue                                                                                          ) ,
+       .Dequeue     ( DequeueW                                                                                         ) ,
        .Outp        ( SigTXREQFLITW                                                                                    ) ,
        .FULL        ( ReqFULLW                                                                                         ) ,
        .Empty       ( ReqEmptyW                                                                                        ) 
@@ -435,7 +438,7 @@ module TestFULLSystem#(
        .Clk         ( Clk                                                                                                         ),
        .Inp         ( DMA.DatOutbChan.TXDATFLIT                                                                                   ),
        .Enqueue     ( DMA.DatOutbChan.TXDATFLITV & DMA.DatOutbChan.TXDATFLIT.Opcode == `NonCopyBackWrData & CountDataCrdsOutb != 0),   
-       .Dequeue     ( Dequeue                                                                                                     ),
+       .Dequeue     ( DequeueW                                                                                                    ),
        .Outp        ( SigTXDATFLIT                                                                                                ),
        .FULL        ( DataOutbFULL                                                                                                ),
        .Empty       ( DataOutbEmpty                                                                                               )
@@ -450,7 +453,7 @@ module TestFULLSystem#(
        .Clk         ( Clk                                                                                              ),
        .Inp         ( DMA.DatInbChan.RXDATFLIT                                                                         ),
        .Enqueue     ( DMA.DatInbChan.RXDATFLITV & DMA.DatInbChan.RXDATFLIT.Opcode == `CompData & CountDataCrdsInb != 0 ),   
-       .Dequeue     ( Dequeue                                                                                          ),
+       .Dequeue     ( DequeueR                                                                                         ),
        .Outp        ( SigRXDATFLIT                                                                                     ),
        .FULL        ( DataInbFULL                                                                                      ),
        .Empty       ( DataInbEmpty                                                                                     )
@@ -465,7 +468,7 @@ module TestFULLSystem#(
        .Clk         ( Clk                                                                                                                                                   ),
        .Inp         ( DMA.RspInbChan.RXRSPFLIT                                                                                                                              ),
        .Enqueue     ( DMA.RspInbChan.RXRSPFLITV & (DMA.RspInbChan.RXRSPFLIT.Opcode == `DBIDResp | DMA.RspInbChan.RXRSPFLIT.Opcode == `CompDBIDResp) & CountRspCrdsInb != 0  ),   
-       .Dequeue     ( Dequeue                                                                                                                                               ),
+       .Dequeue     ( DequeueW                                                                                                                                              ),
        .Outp        ( SigRXRSPFLIT                                                                                                                                          ),
        .FULL        ( RspInbFULL                                                                                                                                            ),
        .Empty       ( RspInbEmpty                                                                                                                                           )
@@ -474,51 +477,59 @@ module TestFULLSystem#(
    
    // FIFOs should never be FULL because they are bigger than CHI_Responser 's FIFO and it wont give enough crds to make its FIFOs FULL    
    always_ff@(posedge Clk)begin
-     if(RspInbFULL | DataInbFULL | DataOutbFULL | ReqFULLW | ReqFULLR)begin
+     if(SigCmndFULL | RspInbFULL | DataInbFULL | DataOutbFULL | ReqFULLW | ReqFULLR)begin
        $display("FIFIO FULL problem ...... " );
        $stop;
      end
    end
    
    //variable that counts the requested Bytes for each command
-   int    lengthCount = 0;
+   int                              lengthCountR     = 0 ;
+   int                              lengthCountW     = 0 ;
+   wire [BRAM_COL_WIDTH - 1 : 0]    NextLengthCountR     ;
+   wire [BRAM_COL_WIDTH - 1 : 0]    NextLengthCountW     ;
    
-   //When all FIFOs are non-Empty the functionality of read and write transactions has been checked so Dequeue Transaction-FIFOs
-   assign Dequeue     = !RspInbEmpty & !DataInbEmpty & !DataOutbEmpty & !ReqEmptyW & !ReqEmptyR ;
+   assign NextLengthCountR = (lengthCountR == 0) ? ((SigCommand.Length <(CHI_DATA_WIDTH - SigCommand.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) ? (SigCommand.Length) : (CHI_DATA_WIDTH - SigCommand.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) : ((lengthCountR + CHI_DATA_WIDTH < SigCommand.Length) ? (lengthCountR + CHI_DATA_WIDTH) : (SigCommand.Length)) ;
+   assign NextLengthCountW = (lengthCountW == 0) ? ((SigCommand.Length <(CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) ? (SigCommand.Length) : (CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) : ((lengthCountW + CHI_DATA_WIDTH < SigCommand.Length) ? (lengthCountW + CHI_DATA_WIDTH) : (SigCommand.Length)) ;
+   //When Read Req and DataInb FIFOs are non-Empty the functionality of read transactions ha been checked so Dequeue these FIFOs
+   assign DequeueR        = !DataInbEmpty & !ReqEmptyR & !RspInbEmpty & !DataOutbEmpty & !ReqEmptyW & ((NextLengthCountR == SigCommand.Length & NextLengthCountW == SigCommand.Length) | (NextLengthCountR != SigCommand.Length));
+   //When Write Req , RspInb and DataOutb FIFOs are non-Empty the functionality of write transactions ha been checked so Dequeue these FIFOs
+   assign DequeueW        = !RspInbEmpty & !DataOutbEmpty & !ReqEmptyW & !DataInbEmpty & !ReqEmptyR & ((NextLengthCountR == SigCommand.Length & NextLengthCountW == SigCommand.Length) | (NextLengthCountW != SigCommand.Length)) ;
    //When all of bytes of the command has been transfered and Dequeue Transaction-FIFOs then dequeue Command as well
-   assign DequeueCmnd = ((lengthCount + CHI_DATA_WIDTH >= SigCommand.Length) & Dequeue) ? 1 : 0 ;
+   assign DequeueCmnd     = ((NextLengthCountR == SigCommand.Length & NextLengthCountW == SigCommand.Length) & DequeueR & DequeueW);
    
    // When all FIFOs are Non-Empty check if CHI-Transaction has been executed correctly 
    always_ff@(posedge Clk)begin
      // when a phase is over or Reset then reset vector that stores correct Transactions
-     if(RST | (DMA.CHI_Conv.SigSizeEmpty & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
+     if(RST | (DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty & PhaseReqOver))begin
        CorrectTransfer <= '{default:0} ;
        CTpointer       <= 0            ;            
      end
      else begin
-       if(Dequeue)begin
+       if(DequeueR | DequeueW)begin
           //The Transactions are correct when Read is ReadOnce, the Read Address is the correct one , Response to Read is CompData ,
           //TxnID of response is the same with Request,Write transaction is WriteUniqueuePtl , it has the correct Address,
           //the Response for Write Request is DBIDResp or CompDBIDResp,TxnID of Write is tha same with Response,the outbound Data Rsp
-          //is NonCopyBackWrData, its TxnID is the same with the DBID of the previous Response and BE = '1 except of last transaction 
-          //of command where it can be any value. In every other case print Error message
-          if((SigTXREQFLITR.Opcode == `ReadOnce & (SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCount)))
+          //is NonCopyBackWrData, its TxnID is the same with the DBID of the previous Response and BE is correct
+          if((SigTXREQFLITR.Opcode == `ReadOnce & ((SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCountR) & lengthCountR!=0) | (SigTXREQFLITR.Addr == ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) & lengthCountR == 0)))
           &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
           // if correct opcode and Addr of a Write Req and correct opcode TxnID of a DBID Rsp and correct Data Out Rsp opcode ,TxnID and BE then print correct
-          &((SigTXREQFLITW.Opcode == `WriteUniquePtl & (SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCount)))
+          &((SigTXREQFLITW.Opcode == `WriteUniquePtl & ((SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCountW) & lengthCountW!=0) | (SigTXREQFLITW.Addr == ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) & lengthCountW == 0)))
           &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
           &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
-            if(SigTXDATFLIT.BE != ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)))begin
-             // wrong Data Out BE
-              $display("\n--Error :: BE is : %d and it should be :%d , TxnID : %d",SigTXDATFLIT.BE , ~({CHI_DATA_WIDTH{1'b1}} << (SigCommand.Length - lengthCount)),SigTXDATFLIT.TxnID);
-              $stop;
-            end
-            else begin
-              // Correct
+            if((NextLengthCountW == SigCommand.Length & (((SigCommand.Length < CHI_DATA_WIDTH) & (CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) > SigCommand.Length) & (SigTXDATFLIT.BE == (({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) & ~({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + SigCommand.Length))))
+            | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}<<(NextLengthCountW - lengthCountW)))) 
+            | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}>>(NextLengthCountW - lengthCountW)))begin
+             // Correct
               if(DequeueCmnd & SigCommand.LastDescTrans)begin
                 CorrectTransfer[CTpointer] <= SigCommand.DescAddr;
                 CTpointer                  <= CTpointer + 1      ;
               end
+            end
+            else begin
+              // wrong Data Out BE
+              $display("\n--Error :: BE is : %d , TxnID : %d",SigTXDATFLIT.BE ,SigTXDATFLIT.TxnID);
+              $stop;              
             end
           // if Wrong Read Opcode print Error
           else if(SigTXREQFLITR.Opcode != `ReadOnce)begin
@@ -526,8 +537,8 @@ module TestFULLSystem#(
             $stop;
           end
           // if Wrong Read Addr print Error
-          else if(SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCount))begin
-            $display("\n--ERROR :: Requested ReadAddr is : %d , but it should be : %d , TxnID : %d",SigTXREQFLITR.Addr ,(SigCommand.SrcAddr + lengthCount),SigTXREQFLITR.TxnID);
+          else if((SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCountR) | lengthCountR==0) & (SigTXREQFLITR.Addr != ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountR == 0))begin
+            $display("\n--ERROR :: Requested ReadAddr is : %d , TxnID : %d",SigTXREQFLITR.Addr ,SigTXREQFLITR.TxnID);
             $stop;
           end
           // if Wrong Data Rsp Opcode print Error
@@ -546,8 +557,8 @@ module TestFULLSystem#(
             $stop;
           end
           // Wrong Write Addr
-          else if(SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCount))begin
-            $display("\n--ERROR :: Requested WriteAddr is : %d , but it should be : %d",SigTXREQFLITW.Addr ,SigCommand.DstAddr + lengthCount);
+          else if((SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCountW) | lengthCountW == 0) & (SigTXREQFLITW.Addr != ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountW == 0))begin
+            $display("\n--ERROR :: Requested WriteAddr is : %d ,TxnID : %d",SigTXREQFLITW.Addr ,SigTXREQFLITW.TxnID);
             $stop;
           end
           // Wrong DBID Rsp Opcode
@@ -571,12 +582,19 @@ module TestFULLSystem#(
             $stop;
           end
           
-          // update command Requested Bytes
-          if(lengthCount + CHI_DATA_WIDTH < SigCommand.Length)begin
-            lengthCount <= lengthCount + CHI_DATA_WIDTH ;
+          // update command read Requested Bytes
+          if(lengthCountR + NextLengthCountR < SigCommand.Length)begin
+            lengthCountR <= lengthCountR + NextLengthCountR ;
           end
-          else begin
-            lengthCount <= 0 ;
+          else if((lengthCountR + NextLengthCountR == SigCommand.Length) &(lengthCountW + NextLengthCountW == SigCommand.Length)) begin
+            lengthCountR <= 0 ;
+          end
+          // update command write Requested Bytes
+          if(lengthCountW + NextLengthCountW < SigCommand.Length)begin
+            lengthCountW <= lengthCountW + NextLengthCountW ;
+          end
+          else if((lengthCountR + NextLengthCountR == SigCommand.Length) & (lengthCountW + NextLengthCountW == SigCommand.Length)) begin
+            lengthCountR <= 0 ;
           end
        end
      end
@@ -630,7 +648,7 @@ module TestFULLSystem#(
      end
      
      // If All CHI_Transactions have been finished and all BRAM Status have been updated in each Phase
-     if(PhaseReqOver & DMA.CHI_Conv.myCompleter.Empty & DMA.CHI_Conv.SigSizeEmpty)begin
+     if(PhaseReqOver & DMA.CHI_Conv.myCompleter.Empty & DMA.BS.EmptyCom)begin
        $display("------------------------PHASE : %d------------------------",PhaseIn);
        // -------Check if state of BRAM is correct-------
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin

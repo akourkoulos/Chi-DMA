@@ -124,14 +124,14 @@ module PseudoCPU#(
       if(phase == 1)begin
         IncrRandBRAMpointer  = 1 ;
         if(insertedTrans < P1_NUM_OF_TRANS) begin
-          weA              = {BRAM_NUM_COL{1'b1}}    ;
-          addrA            = DescAddr                ;
-          dinA.SrcAddr     = CHI_DATA_WIDTH          ;
-          dinA.DstAddr     = CHI_DATA_WIDTH * 100000 ;
-          dinA.BytesToSend = CHI_DATA_WIDTH - 1      ;
-          dinA.SentBytes   = 0                       ;
-          dinA.Status      = `StatusActive           ;
-          IncrDescAddr     = 1                       ;
+          weA              = {BRAM_NUM_COL{1'b1}}        ;
+          addrA            = DescAddr                    ;
+          dinA.SrcAddr     = CHI_DATA_WIDTH + 1          ;
+          dinA.DstAddr     = CHI_DATA_WIDTH * 100000     ;
+          dinA.BytesToSend = CHI_DATA_WIDTH - 1          ;
+          dinA.SentBytes   = 0                           ;
+          dinA.Status      = `StatusActive               ;
+          IncrDescAddr     = 1                           ;
         end
         else begin 
           weA           = 0 ;
@@ -146,14 +146,14 @@ module PseudoCPU#(
       else if(phase == 2)begin
         IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P2_NUM_OF_TRANS) begin
-          weA               = {BRAM_NUM_COL{1'b1}}     ;
-          addrA             = DescAddr                 ;
-          dinA.SrcAddr      = CHI_DATA_WIDTH * 2       ;
-          dinA.DstAddr      = CHI_DATA_WIDTH * 200000  ;
-          dinA.BytesToSend  = CHI_DATA_WIDTH * 100 + 2 ;
-          dinA.SentBytes    = 0                        ;
-          dinA.Status       = `StatusActive            ;
-          IncrDescAddr      = 1                        ;
+          weA               = {BRAM_NUM_COL{1'b1}}                                      ;
+          addrA             = DescAddr                                                  ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH * 2 + $urandom_range(0,CHI_DATA_WIDTH)      ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 200000 + $urandom_range(0,CHI_DATA_WIDTH) ;
+          dinA.BytesToSend  = CHI_DATA_WIDTH * 100 + 2                                   ;
+          dinA.SentBytes    = 0                                                          ;
+          dinA.Status       = `StatusActive                                              ;
+          IncrDescAddr      = 1                                                          ;
         end
         else begin 
           weA           = 0 ;
@@ -168,14 +168,14 @@ module PseudoCPU#(
       else if(phase == 3)begin
         IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P3_NUM_OF_TRANS) begin
-          weA               = {BRAM_NUM_COL{1'b1}}                                                             ;
-          addrA             = DescAddr                                                                         ;
-          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans                             ;
-          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans                                     ;
-          dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) : 60  ;
-          dinA.SentBytes    = 0                                                                                ;
-          dinA.Status       = `StatusActive                                                                    ;
-          IncrDescAddr      = 1                                                                                ;
+          weA               = {BRAM_NUM_COL{1'b1}}                                                                     ;
+          addrA             = DescAddr                                                                                 ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH) ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)         ;
+          dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) : 60          ;
+          dinA.SentBytes    = 0                                                                                        ;
+          dinA.Status       = `StatusActive                                                                            ;
+          IncrDescAddr      = 1                                                                                        ;
         end
         else begin 
           weA           = 0 ;
@@ -190,14 +190,14 @@ module PseudoCPU#(
       else if(phase == 4)begin
         IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P4_NUM_OF_TRANS) begin
-          weA               = {BRAM_NUM_COL{1'b1}}                                    ;
-          addrA             = DescAddr                                                ;
-          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
-          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
-          dinA.BytesToSend  = CHI_DATA_WIDTH * 50 + 2 * insertedTrans                 ;
-          dinA.SentBytes    = 0                                                       ;
-          dinA.Status       = `StatusActive                                           ;
-          IncrDescAddr      = 1                                                       ;
+          weA               = {BRAM_NUM_COL{1'b1}}                                                                        ;
+          addrA             = DescAddr                                                                                    ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)  ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         + $urandom_range(0,CHI_DATA_WIDTH)  ;
+          dinA.BytesToSend  = CHI_DATA_WIDTH * 50 + 2 * insertedTrans                                                     ;
+          dinA.SentBytes    = 0                                                                                           ;
+          dinA.Status       = `StatusActive                                                                               ;
+          IncrDescAddr      = 1                                                                                           ;
         end
         else begin 
           weA           = 0 ;
@@ -213,24 +213,24 @@ module PseudoCPU#(
         IncrRandBRAMpointer   = 1 ;
         if(insertedTrans < P5_NUM_OF_TRANS) begin
           if(VLarge)begin // insert large Trans
-            weA               = {BRAM_NUM_COL{1'b1}}                                    ;
-            addrA             = DescAddr                                                ;
-            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  ;
-            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         ;
-            dinA.BytesToSend  = CHI_DATA_WIDTH * 25 + 2 * insertedTrans                 ;
-            dinA.SentBytes    = 0                                                       ;
-            dinA.Status       = `StatusActive                                           ;
-            IncrDescAddr      = 1                                                       ;
+            weA               = {BRAM_NUM_COL{1'b1}}                                                                        ;
+            addrA             = DescAddr                                                                                    ;
+            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)  ;
+            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 20000 * insertedTrans         + $urandom_range(0,CHI_DATA_WIDTH)  ;
+            dinA.BytesToSend  = CHI_DATA_WIDTH * 25 + 2 * insertedTrans                                                     ;
+            dinA.SentBytes    = 0                                                                                           ;
+            dinA.Status       = `StatusActive                                                                               ;
+            IncrDescAddr      = 1                                                                                           ;
           end
           else if(VSmall)begin // insert small Trans
-            weA               = {BRAM_NUM_COL{1'b1}}                                  ;
-            addrA             = DescAddr                                              ;
-            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  ;
-            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans          ;
-            dinA.BytesToSend  = CHI_DATA_WIDTH - insertedTrans                        ;
-            dinA.SentBytes    = 0                                                     ;
-            dinA.Status       = `StatusActive                                         ;
-            IncrDescAddr      = 1                                                     ;
+            weA               = {BRAM_NUM_COL{1'b1}}                                                                       ;
+            addrA             = DescAddr                                                                                   ;
+            dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans + $urandom_range(0,CHI_DATA_WIDTH)    ;
+            dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans         + $urandom_range(0,CHI_DATA_WIDTH)    ;
+            dinA.BytesToSend  = CHI_DATA_WIDTH - insertedTrans                                                             ;
+            dinA.SentBytes    = 0                                                                                          ;
+            dinA.Status       = `StatusActive                                                                              ;
+            IncrDescAddr      = 1                                                                                          ;
           end
           else begin 
             weA           = 0 ;
@@ -273,16 +273,16 @@ module PseudoCPU#(
             begin
             // if Ready FIFO Arbiter and there is an empty Descriptor schedule transaction
               if(BRAMdoutA.Status == `StatusIdle)begin 
-                addrA                 = RandBRAMpointer                                                                      ;
-                weA                   = {BRAM_NUM_COL{1'b1}}                                                                 ;  
-                dinA                  = '{default : 0}                                                                       ;
-                dinA.SrcAddr          = $urandom_range(0,2**(BRAM_COL_WIDTH-6-1)) * CHI_DATA_WIDTH                           ; // 6 = log2(CHI_DATA_WIDTH)  so maxSrcAddr = 2^(BRAM_COL_WIDTH-1), SrcAddr is aligned
-                dinA.DstAddr          = $urandom_range(2**(BRAM_COL_WIDTH-6-1)+1,(2**(BRAM_COL_WIDTH-6))-1) * CHI_DATA_WIDTH ; // minDstAddr = 2^(BRAM_COL_WIDTH-1) + 1, maxDsyAddr = 2^(BRAM_COL_WIDTH) - 1,  DstAddr is aligned
-                dinA.BytesToSend      = $urandom_range(1,MAX_BytesToSend)                                                    ;
-                dinA.SentBytes        = 0                                                                                    ;
-                dinA.Status           = `StatusActive                                                                        ;
-                IncrRandBRAMpointer   = 1                                                                                    ;
-                NextRandBRAMpointer   = $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)                                             ;
+                addrA                 = RandBRAMpointer                                                                                                         ;
+                weA                   = {BRAM_NUM_COL{1'b1}}                                                                                                    ;  
+                dinA                  = '{default : 0}                                                                                                          ;
+                dinA.SrcAddr          = $urandom_range(0,2**(BRAM_COL_WIDTH-6-1)) * CHI_DATA_WIDTH                           + $urandom_range(0,CHI_DATA_WIDTH) ; // 6 = log2(CHI_DATA_WIDTH)  so maxSrcAddr = 2^(BRAM_COL_WIDTH-1), SrcAddr is aligned
+                dinA.DstAddr          = $urandom_range(2**(BRAM_COL_WIDTH-6-1)+1,(2**(BRAM_COL_WIDTH-6))-1) * CHI_DATA_WIDTH + $urandom_range(0,CHI_DATA_WIDTH) ; // minDstAddr = 2^(BRAM_COL_WIDTH-1) + 1, maxDsyAddr = 2^(BRAM_COL_WIDTH) - 1,  DstAddr is aligned
+                dinA.BytesToSend      = $urandom_range(1,MAX_BytesToSend)                                                                                       ;
+                dinA.SentBytes        = 0                                                                                                                       ;
+                dinA.Status           = `StatusActive                                                                                                           ;
+                IncrRandBRAMpointer   = 1                                                                                                                       ;
+                NextRandBRAMpointer   = $urandom_range(1,2**BRAM_ADDR_WIDTH - 1)                                                                                ;
               end 
               // if this is no empty Descriptor Read the Next one
               else begin  

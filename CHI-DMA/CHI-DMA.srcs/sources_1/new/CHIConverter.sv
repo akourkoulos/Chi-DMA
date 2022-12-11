@@ -59,33 +59,32 @@ module CHIConverter#(
   parameter SrcID               = 1                                        //??
 //--------------------------------------------------------------------------
 )(
-    input                                                           Clk               ,
-    input                                                           RST               ,
-    input          Data_packet                                      DataBRAM          , // From BRAM
-    input                                                           IssueValid        ,
-    input                                                           ReadyBRAM         , // From Arbiter_BRAM
-    input          CHI_Command                                      Command           , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
-    input                                                           LastDescTrans     , // From BS
-    input                               [BRAM_ADDR_WIDTH - 1 : 0]   DescAddr          ,
-    input                               [CHI_DATA_WIDTH  - 1 : 0]   BE                , 
-    input                               [CHI_DATA_WIDTH*8- 1 : 0]   ShiftedData       ,
-    input                               [`RspErrWidth    - 1 : 0]   DataErr           ,
-    input                                                           EmptyBS           ,
-    input                                                           FULLCmndBS        ,
-    ReqChannel                                                      ReqChan           , // Request ChannelS
-    RspOutbChannel                                                  RspOutbChan       , // Response outbound Chanel
-    DatOutbChannel                                                  DatOutbChan       , // Data outbound Chanel
-    RspInbChannel                                                   RspInbChan        , // Response inbound Chanel
-    input          DataFlit                                         RXDATFLITV        , // Data inbound Chanel
-    input                                                           RXDATFLIT         , 
-    output                                                          CmdFIFOFULL       , // For Scheduler
-    output                                                          ValidBRAM         , // For Arbiter_BRAM
-    output                               [BRAM_ADDR_WIDTH - 1 : 0]  AddrBRAM          , // For BRAM
-    output         Data_packet                                      DescStatus        ,
-    output                               [BRAM_NUM_COL    - 1 : 0]  WEBRAM            ,
-    output                                                          EnqueueBS         , // For BS
-    output         CHI_Command                                      CommandBS         ,
-    output                                                          DequeueBS
+    input                                                                       Clk               ,
+    input                                                                       RST               ,
+    input                      Data_packet                                      DataBRAM          , // From BRAM
+    input                                                                       IssueValid        ,
+    input                                                                       ReadyBRAM         , // From Arbiter_BRAM
+    input                      CHI_Command                                      Command           , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
+    input                                                                       LastDescTrans     , // From BS
+    input                                           [BRAM_ADDR_WIDTH - 1 : 0]   DescAddr          ,
+    input                                           [CHI_DATA_WIDTH  - 1 : 0]   BE                , 
+    input                                           [CHI_DATA_WIDTH*8- 1 : 0]   ShiftedData       ,
+    input                                           [`RspErrWidth    - 1 : 0]   DataErr           ,
+    input                                                                       EmptyBS           ,
+    input                                                                       FULLCmndBS        ,
+    ReqChannel     .OUTBOUND                                                    ReqChan           , // Request ChannelS
+    RspOutbChannel .OUTBOUND                                                    RspOutbChan       , // Response outbound Chanel
+    DatOutbChannel .OUTBOUND                                                    DatOutbChan       , // Data outbound Chanel
+    RspInbChannel  .INBOUND                                                     RspInbChan        , // Response inbound Chanel
+    input                                                                       RXDATFLITV        , // Data inbound Chanel
+    output                                                                      CmdFIFOFULL       , // For Scheduler
+    output                                                                      ValidBRAM         , // For Arbiter_BRAM
+    output                                           [BRAM_ADDR_WIDTH - 1 : 0]  AddrBRAM          , // For BRAM
+    output                     Data_packet                                      DescStatus        ,
+    output                                           [BRAM_NUM_COL    - 1 : 0]  WEBRAM            ,
+    output                                                                      EnqueueBS         , // For BS
+    output                     CHI_Command                                      CommandBS         ,
+    output                                                                      DequeueBS
     );                         
     
    // Command FIFO signals
@@ -466,6 +465,12 @@ module CHIConverter#(
                                        DataCheck  : 0                               ,
                                        Poison     : 0                                 } ;
     // ****************** End Data Sender ******************
-   assign RspOutbChan.TXRSPFLITV = 0 ; //usless
-   assign RspOutbChan.TXRSPFLIT  = 0 ;
+   
+   //useless
+   assign RspOutbChan.TXRSPFLITV    = 0 ; 
+   assign RspOutbChan.TXRSPFLITPEND = 0 ;
+   assign RspOutbChan.TXRSPFLIT     = 0 ;
+   assign ReqChan    .TXREQFLITPEND = 0 ;
+   assign DatOutbChan.TXDATFLITPEND = 0 ;
+   
  endmodule
