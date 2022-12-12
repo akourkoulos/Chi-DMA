@@ -46,7 +46,7 @@ module ReqFlitFIFO#(
       always_ff @ (posedge Clk) begin
         if(RST)begin 
             state <= 0 ;
-            for (int i = 0 ; i < FIFO_LENGTH ; i++) MyQueue[i] <= 'd0 ;
+            for (int i = 0 ; i < FIFO_LENGTH ; i++) MyQueue[i] <= '{default : 0} ;
         end
         else begin  
           if(Enqueue == 1 & (Dequeue == 0 | Empty) & !FULL) begin  // Enqueue case
@@ -55,13 +55,13 @@ module ReqFlitFIFO#(
           end
           else if(Enqueue == 0 & Dequeue == 1 & !Empty) begin      // Dequeue case
             for(int j = 0 ; j < FIFO_LENGTH - 1 ; j++) MyQueue[j] <= MyQueue[j+1];
-            MyQueue[FIFO_LENGTH - 1] <= 0         ;
-            state                    <= state - 1 ;
+            MyQueue[FIFO_LENGTH - 1] <= '{default : 0}  ;
+            state                    <= state - 1       ;
           end
           else if ( Enqueue == 1 & Dequeue == 1 & !Empty ) begin   // Enqueue and Dequeue case
             for(int j=0 ; j < FIFO_LENGTH - 1 ; j++) MyQueue[j] <= MyQueue[j+1];
-            MyQueue[FIFO_LENGTH - 1] <= 0   ;
-            MyQueue[state - 1]       <= Inp ;
+            MyQueue[FIFO_LENGTH - 1] <= '{default : 0}   ;
+            MyQueue[state - 1]       <= Inp              ;
           end            
         end
      end

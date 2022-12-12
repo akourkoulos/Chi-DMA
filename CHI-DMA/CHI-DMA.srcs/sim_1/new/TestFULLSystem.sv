@@ -537,8 +537,8 @@ module TestFULLSystem#(
             $stop;
           end
           // if Wrong Read Addr print Error
-          else if((SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCountR) | lengthCountR==0) & (SigTXREQFLITR.Addr != ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountR == 0))begin
-            $display("\n--ERROR :: Requested ReadAddr is : %d , TxnID : %d",SigTXREQFLITR.Addr ,SigTXREQFLITR.TxnID);
+          else if((SigTXREQFLITR.Addr != (SigCommand.SrcAddr + lengthCountR) | lengthCountR==0) & (SigTXREQFLITR.Addr != ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountR != 0))begin
+            $display("\n--ERROR :: Requested ReadAddr is : %d but it should be %d , TxnID : %d",SigTXREQFLITR.Addr ,(lengthCountR!=0 ) ? (SigCommand.SrcAddr + lengthCountR) : ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) ,SigTXREQFLITR.TxnID);
             $stop;
           end
           // if Wrong Data Rsp Opcode print Error
@@ -557,8 +557,8 @@ module TestFULLSystem#(
             $stop;
           end
           // Wrong Write Addr
-          else if((SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCountW) | lengthCountW == 0) & (SigTXREQFLITW.Addr != ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountW == 0))begin
-            $display("\n--ERROR :: Requested WriteAddr is : %d ,TxnID : %d",SigTXREQFLITW.Addr ,SigTXREQFLITW.TxnID);
+          else if((SigTXREQFLITW.Addr != (SigCommand.DstAddr + lengthCountW) | lengthCountW == 0) & (SigTXREQFLITW.Addr != ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) | lengthCountW != 0))begin
+            $display("\n--ERROR :: Requested WriteAddr is : %d but it should be %d ,TxnID : %d",SigTXREQFLITW.Addr,(lengthCountW!=0 ) ? (SigCommand.DstAddr + lengthCountW) : ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}})  ,SigTXREQFLITW.TxnID);
             $stop;
           end
           // Wrong DBID Rsp Opcode
@@ -583,18 +583,18 @@ module TestFULLSystem#(
           end
           
           // update command read Requested Bytes
-          if(lengthCountR + NextLengthCountR < SigCommand.Length)begin
-            lengthCountR <= lengthCountR + NextLengthCountR ;
+          if(NextLengthCountR < SigCommand.Length)begin
+            lengthCountR <= NextLengthCountR ;
           end
-          else if((lengthCountR + NextLengthCountR == SigCommand.Length) &(lengthCountW + NextLengthCountW == SigCommand.Length)) begin
+          else if((NextLengthCountR == SigCommand.Length) &(NextLengthCountW == SigCommand.Length)) begin
             lengthCountR <= 0 ;
           end
           // update command write Requested Bytes
-          if(lengthCountW + NextLengthCountW < SigCommand.Length)begin
-            lengthCountW <= lengthCountW + NextLengthCountW ;
+          if(NextLengthCountW < SigCommand.Length)begin
+            lengthCountW <= NextLengthCountW ;
           end
-          else if((lengthCountR + NextLengthCountR == SigCommand.Length) & (lengthCountW + NextLengthCountW == SigCommand.Length)) begin
-            lengthCountR <= 0 ;
+          else if((NextLengthCountR == SigCommand.Length) & (NextLengthCountW == SigCommand.Length)) begin
+            lengthCountW <= 0 ;
           end
        end
      end
@@ -604,21 +604,20 @@ module TestFULLSystem#(
    //When a Request happens check if there is the same TxnId inside Read or Write Req FIFO
    //and the corresponding response has not been arrived . If there is a double use TxnID
    //print an Error message
-   always_ff@(posedge Clk)begin
+   always@(negedge Clk)begin
+     #(period/2);
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
-       automatic int i = 0 ;
-       while(i < 2*Test_FIFO_Length & (myRFIFOReq.MyQueue[i] != 0 | myWFIFOReq.MyQueue[i] != 0))begin
-         // if there is a Request with the same TxnID in ReadReqFIFO and the corresponding DataRsp hasnt arrived the print error
-         if(ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i].TxnID & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
-           $display("\n--ERROR :: TXNID : %d is already used for ReadReq ", ReqChan.TXREQFLIT.TxnID);
+       for(int i = 0 ; i < 2*Test_FIFO_Length & (myRFIFOReq.MyQueue[i] != 0 | myWFIFOReq.MyQueue[i] != 0) ; i++ )begin
+         // if there is a Request with the same TxnID in ReadReqFIFO and the corresponding DataRsp hasnt arrived the print error. (MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] is TxnID of i element )
+         if(ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
+           $display("\n--ERROR :: TXNID : %d is already used for ReadReq : %p ", ReqChan.TXREQFLIT.TxnID,myRFIFOReq.MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7]);
            $stop;
          end
-         // if there is a Request with the same TxnID in WriteReqFIFO and the corresponding DBIDRsp hasnt arrived the print error
-         else if(ReqChan.TXREQFLIT.TxnID == myWFIFOReq.MyQueue[i].TxnID & myWFIFOReq.MyQueue[i] != 0 & myInbDBIDFIFO.MyQueue[i] == 0)begin
-           $display("\n--ERROR :: TXNID : %d is already used for WriteReq", ReqChan.TXREQFLIT.TxnID);
+         // if there is a Request with the same TxnID in WriteReqFIFO and the corresponding DBIDRsp hasnt arrived the print error. (MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] is TxnID of i element )
+         else if(ReqChan.TXREQFLIT.TxnID == myWFIFOReq.MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] & myWFIFOReq.MyQueue[i] != 0 & myInbDBIDFIFO.MyQueue[i] == 0)begin
+           $display("\n--ERROR :: TXNID : %d is already used for WriteReq : %p", ReqChan.TXREQFLIT.TxnID,myWFIFOReq.MyQueue[i]);
            $stop;
          end
-         i++;
        end
      end
    end
