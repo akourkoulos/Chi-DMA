@@ -32,14 +32,17 @@ module PseudoCPU#(
   parameter CHI_DATA_WIDTH    = 64                          ,
   parameter MAX_BytesToSend   = 5000                        ,
   parameter DELAY_WIDTH       = 7                           , // width of counter used for delay
-  parameter PHASE_WIDTH       = 3                           , // width of register that keeps the phase
-  parameter LastPhase         = 6                           , // Number of Last Phase
+  parameter PHASE_WIDTH       = 4                           , // width of register that keeps the phase
+  parameter LastPhase         = 9                           , // Number of Last Phase
   parameter P1_NUM_OF_TRANS   = 1                           , // Number of inserted transfers for each phase
   parameter P2_NUM_OF_TRANS   = 1                           ,  
-  parameter P3_NUM_OF_TRANS   = 30                          ,  
-  parameter P4_NUM_OF_TRANS   = 5                           ,  
-  parameter P5_NUM_OF_TRANS   = 25                          ,  
-  parameter P6_NUM_OF_TRANS   = 150                            
+  parameter P3_NUM_OF_TRANS   = 1                           ,  
+  parameter P4_NUM_OF_TRANS   = 1                           ,  
+  parameter P5_NUM_OF_TRANS   = 30                          ,  
+  parameter P6_NUM_OF_TRANS   = 30                          ,  
+  parameter P7_NUM_OF_TRANS   = 5                           ,  
+  parameter P8_NUM_OF_TRANS   = 25                          ,  
+  parameter P9_NUM_OF_TRANS   = 150                            
 )(
     input                                                   RST                  ,
     input                                                   Clk                  ,    
@@ -120,7 +123,7 @@ module PseudoCPU#(
     
     always_comb begin
  //----------------------- 1st Phase ----------------------------
-    // insert in DMA a small transaction
+    // insert in DMA a small Transfer
       if(phase == 1)begin
         IncrRandBRAMpointer  = 1 ;
         if(insertedTrans < P1_NUM_OF_TRANS) begin
@@ -141,13 +144,57 @@ module PseudoCPU#(
         end
       end
  //-----------------------END 1st Phase -------------------------
- //----------------------- 2nd Phase ----------------------------
-      //insert in DMA a large transaction
+ //----------------------- 2st Phase ----------------------------
+    // insert in DMA a small misaligned Transfer (2Reads - 1 Write)
       else if(phase == 2)begin
-        IncrRandBRAMpointer   = 1 ;
+        IncrRandBRAMpointer  = 0 ;
         if(insertedTrans < P2_NUM_OF_TRANS) begin
-          weA               = {BRAM_NUM_COL{1'b1}}                                      ;
-          addrA             = DescAddr                                                  ;
+          weA              = {BRAM_NUM_COL{1'b1}}        ;
+          addrA            = DescAddr                    ;
+          dinA.SrcAddr     = CHI_DATA_WIDTH + 10         ;
+          dinA.DstAddr     = CHI_DATA_WIDTH * 100000 + 1 ;
+          dinA.BytesToSend = CHI_DATA_WIDTH - 2          ;
+          dinA.SentBytes   = 0                           ;
+          dinA.Status      = `StatusActive               ;
+          IncrDescAddr     = 1                           ;
+        end
+        else begin 
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
+        end
+      end
+ //-----------------------END 2st Phase -------------------------
+ //----------------------- 3st Phase ----------------------------
+    // insert in DMA a small misaligned (1Read - 2 Writes) Transfer
+      else if(phase == 3)begin
+        IncrRandBRAMpointer  = 0 ;
+        if(insertedTrans < P3_NUM_OF_TRANS) begin
+          weA              = {BRAM_NUM_COL{1'b1}}         ;
+          addrA            = DescAddr                     ;
+          dinA.SrcAddr     = CHI_DATA_WIDTH + 3           ;
+          dinA.DstAddr     = CHI_DATA_WIDTH * 100000 + 10 ;
+          dinA.BytesToSend = CHI_DATA_WIDTH - 9           ;
+          dinA.SentBytes   = 0                            ;
+          dinA.Status      = `StatusActive                ;
+          IncrDescAddr     = 1                            ;
+        end
+        else begin 
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
+        end
+      end
+ //-----------------------END 3st Phase -------------------------
+ //----------------------- 4nd Phase ----------------------------
+      //insert in DMA a large Transfer
+      else if(phase == 4)begin
+        IncrRandBRAMpointer   = 0 ;
+        if(insertedTrans < P4_NUM_OF_TRANS) begin
+          weA               = {BRAM_NUM_COL{1'b1}}                                       ;
+          addrA             = DescAddr                                                   ;
           dinA.SrcAddr      = CHI_DATA_WIDTH * 2 + $urandom_range(0,CHI_DATA_WIDTH)      ;
           dinA.DstAddr      = CHI_DATA_WIDTH * 200000 + $urandom_range(0,CHI_DATA_WIDTH) ;
           dinA.BytesToSend  = CHI_DATA_WIDTH * 100 + 2                                   ;
@@ -162,20 +209,20 @@ module PseudoCPU#(
           IncrDescAddr  = 0 ;
         end
       end
- //-----------------------END 2nd Phase -------------------------
- //----------------------- 3rd Phase ----------------------------
-      // insert in DMA many small transactions
-      else if(phase == 3)begin
-        IncrRandBRAMpointer   = 1 ;
-        if(insertedTrans < P3_NUM_OF_TRANS) begin
-          weA               = {BRAM_NUM_COL{1'b1}}                                                                     ;
-          addrA             = DescAddr                                                                                 ;
-          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH) ;
-          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)         ;
-          dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) : 60          ;
-          dinA.SentBytes    = 0                                                                                        ;
-          dinA.Status       = `StatusActive                                                                            ;
-          IncrDescAddr      = 1                                                                                        ;
+ //-----------------------END 4nd Phase -------------------------
+ //----------------------- 5rd Phase ----------------------------
+      // insert in DMA many small (single chi-Transaction) Transfers
+      else if(phase == 5)begin
+        IncrRandBRAMpointer   = 0;
+        if(insertedTrans < P5_NUM_OF_TRANS) begin
+          weA               = {BRAM_NUM_COL{1'b1}}                                                                                          ;
+          addrA             = DescAddr                                                                                                      ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans + $urandom_range(0,CHI_DATA_WIDTH - 30)                  ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + CHI_DATA_WIDTH * 10 * insertedTrans         + $urandom_range(0,CHI_DATA_WIDTH - 30) ;
+          dinA.BytesToSend  = ((30 - insertedTrans) > 0) ? (30 - insertedTrans) :  $urandom_range(1,30)                                     ;
+          dinA.SentBytes    = 0                                                                                                             ;
+          dinA.Status       = `StatusActive                                                                                                 ;
+          IncrDescAddr      = 1                                                                                                             ;
         end
         else begin 
           weA           = 0 ;
@@ -184,12 +231,34 @@ module PseudoCPU#(
           IncrDescAddr  = 0 ;
         end      
       end
- //-----------------------END 3rd Phase -------------------------
- //----------------------- 4th Phase ----------------------------
-      // insert in DMA a few large transactions
-      else if(phase == 4)begin
-        IncrRandBRAMpointer   = 1 ;
-        if(insertedTrans < P4_NUM_OF_TRANS) begin
+ //-----------------------END 5rd Phase -------------------------
+  //----------------------- 6rd Phase ----------------------------
+      // insert in DMA many small misaligned (1 or 2 chi-transaction) Transfers
+      else if(phase == 6)begin
+        IncrRandBRAMpointer   = 0 ;
+        if(insertedTrans < P6_NUM_OF_TRANS) begin
+          weA               = {BRAM_NUM_COL{1'b1}}                                                                                            ;
+          addrA             = DescAddr                                                                                                        ;
+          dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)                        ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)                                ;
+          dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) :  $urandom_range(1,CHI_DATA_WIDTH)  ;
+          dinA.SentBytes    = 0                                                                                                               ;
+          dinA.Status       = `StatusActive                                                                                                   ;
+          IncrDescAddr      = 1                                                                                                               ;
+        end
+        else begin 
+          weA           = 0 ;
+          addrA         = 0 ;
+          dinA          = 0 ;
+          IncrDescAddr  = 0 ;
+        end      
+      end
+ //-----------------------END 6rd Phase -------------------------
+ //----------------------- 7th Phase ----------------------------
+      // insert in DMA a few large Transfer
+      else if(phase == 7)begin
+        IncrRandBRAMpointer   = 0 ;
+        if(insertedTrans < P7_NUM_OF_TRANS) begin
           weA               = {BRAM_NUM_COL{1'b1}}                                                                        ;
           addrA             = DescAddr                                                                                    ;
           dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 2000 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)  ;
@@ -206,12 +275,12 @@ module PseudoCPU#(
           IncrDescAddr  = 0 ;
         end   
       end 
- //-----------------------END 4th Phase -------------------------
- //----------------------- 5th Phase ----------------------------
-        // insert in DMA a both small and large transactions with delay
-      else if(phase == 5)begin
-        IncrRandBRAMpointer   = 1 ;
-        if(insertedTrans < P5_NUM_OF_TRANS) begin
+ //-----------------------END 7th Phase -------------------------
+ //----------------------- 8th Phase ----------------------------
+        // insert in DMA a both small and large Transfer with delay
+      else if(phase == 8)begin
+        IncrRandBRAMpointer   = 0;
+        if(insertedTrans < P8_NUM_OF_TRANS) begin
           if(VLarge)begin // insert large Trans
             weA               = {BRAM_NUM_COL{1'b1}}                                                                        ;
             addrA             = DescAddr                                                                                    ;
@@ -246,7 +315,7 @@ module PseudoCPU#(
           IncrDescAddr  = 0 ;
         end     
       end
- //-----------------------END 5th Phase -------------------------
+ //-----------------------END 8th Phase -------------------------
  //----------------------- Last Phase ----------------------------
       //6th Phase : insert NUM_OF_TRANS Random transaction in available Descriptor every random time
       else if(phase == LastPhase)begin
@@ -302,7 +371,7 @@ module PseudoCPU#(
           end
         endcase   
       end
- //-----------------------END Last Phase -------------------------
+   //-----------------------END Last Phase -------------------------
       else begin
         weA                     = 0              ;  
         addrA                   = 0              ;
@@ -313,7 +382,6 @@ module PseudoCPU#(
       end
     end
     
-    
  //********************** Last Phase's blocks **********************
     // There is a new transaction every random delays
     always@(negedge Clk) begin
@@ -323,7 +391,7 @@ module PseudoCPU#(
         #(period)           ; 
       end
       else begin
-        if(numOfSchedTrans != P6_NUM_OF_TRANS & phase == LastPhase )begin
+        if(numOfSchedTrans != P9_NUM_OF_TRANS & phase == LastPhase )begin
           NewTrans        = 1                   ;
           numOfSchedTrans = numOfSchedTrans + 1 ;
           #(period*2)                           ; 

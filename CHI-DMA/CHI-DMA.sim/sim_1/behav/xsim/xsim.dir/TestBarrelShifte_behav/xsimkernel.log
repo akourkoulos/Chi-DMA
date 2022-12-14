@@ -1,7 +1,7 @@
-Running: xsim.dir/TestBarrelShifte_behav/xsimk.exe -simmode gui -wdb TestBarrelShifte_behav.wdb -simrunnum 0 -socket 62058
+Running: xsim.dir/TestBarrelShifte_behav/xsimk.exe -simmode gui -wdb TestBarrelShifte_behav.wdb -simrunnum 0 -socket 57279
 Design successfully loaded
-Design Loading Memory Usage: 12144 KB (Peak: 12144 KB)
-Design Loading CPU Usage: 77 ms
+Design Loading Memory Usage: 12148 KB (Peak: 12148 KB)
+Design Loading CPU Usage: 92 ms
 Simulation completed
-Simulation Memory Usage: 42476 KB (Peak: 42476 KB)
-Simulation CPU Usage: 1964 ms
+Simulation Memory Usage: 42304 KB (Peak: 42304 KB)
+Simulation CPU Usage: 16988 ms

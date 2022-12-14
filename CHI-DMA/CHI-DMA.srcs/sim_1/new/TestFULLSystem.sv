@@ -48,12 +48,15 @@ module TestFULLSystem#(
   parameter MAX_BytesToSend     = 5000 ,
   parameter P1_NUM_OF_TRANS     = 1    , // Number of inserted transfers for each phase
   parameter P2_NUM_OF_TRANS     = 1    ,  
-  parameter P3_NUM_OF_TRANS     = 250  ,  
-  parameter P4_NUM_OF_TRANS     = 15   ,  
-  parameter P5_NUM_OF_TRANS     = 45   ,  
-  parameter P6_NUM_OF_TRANS     = 450  ,   
-  parameter LastPhase           = 6    ,// Number of Last Phase
-  parameter PHASE_WIDTH         = 3    , // width of register that keeps the phase
+  parameter P3_NUM_OF_TRANS     = 1    ,  
+  parameter P4_NUM_OF_TRANS     = 1    ,  
+  parameter P5_NUM_OF_TRANS     = 250  ,
+  parameter P6_NUM_OF_TRANS     = 250  ,  
+  parameter P7_NUM_OF_TRANS     = 15   ,  
+  parameter P8_NUM_OF_TRANS     = 45   ,  
+  parameter P9_NUM_OF_TRANS     = 450  ,   
+  parameter LastPhase           = 9    ,// Number of Last Phase
+  parameter PHASE_WIDTH         = 4    , // width of register that keeps the phase
   parameter Test_FIFO_Length    = 120 
 //--------------------------------------------------------------------------
 );
@@ -65,7 +68,7 @@ module TestFULLSystem#(
   wire         [BRAM_ADDR_WIDTH - 1 : 0]  addrA          ;
   Data_packet                             dinA           ;
   Data_packet                             BRAMdoutA      ; 
-  reg           [PHASE_WIDTH    - 1 : 0]  PhaseIn        ;
+  reg          [PHASE_WIDTH     - 1 : 0]  PhaseIn        ;
   reg                                     NewPhase       ;
   ReqChannel                              ReqChan    ()  ;
   RspOutbChannel                          RspOutbChan()  ;
@@ -91,14 +94,18 @@ module TestFULLSystem#(
     
     
    PseudoCPU #(
-   .P1_NUM_OF_TRANS    (P1_NUM_OF_TRANS  ),
-   .P2_NUM_OF_TRANS    (P2_NUM_OF_TRANS  ),
-   .P3_NUM_OF_TRANS    (P3_NUM_OF_TRANS  ),
-   .P4_NUM_OF_TRANS    (P4_NUM_OF_TRANS  ),
-   .P5_NUM_OF_TRANS    (P5_NUM_OF_TRANS  ),
-   .P6_NUM_OF_TRANS    (P6_NUM_OF_TRANS  ),
-   .LastPhase          (LastPhase        ),
-   .MAX_BytesToSend    (MAX_BytesToSend  )
+   .P1_NUM_OF_TRANS    (P1_NUM_OF_TRANS ),
+   .P2_NUM_OF_TRANS    (P2_NUM_OF_TRANS ),
+   .P3_NUM_OF_TRANS    (P3_NUM_OF_TRANS ),
+   .P4_NUM_OF_TRANS    (P4_NUM_OF_TRANS ),
+   .P5_NUM_OF_TRANS    (P5_NUM_OF_TRANS ),
+   .P6_NUM_OF_TRANS    (P6_NUM_OF_TRANS ),
+   .P7_NUM_OF_TRANS    (P7_NUM_OF_TRANS ),
+   .P8_NUM_OF_TRANS    (P8_NUM_OF_TRANS ),
+   .P9_NUM_OF_TRANS    (P9_NUM_OF_TRANS ),
+   .LastPhase          (LastPhase       ),
+   .PHASE_WIDTH        (PHASE_WIDTH     ),
+   .MAX_BytesToSend    (MAX_BytesToSend )
    )myCPU(
      .RST          (RST          ) ,
      .Clk          (Clk          ) ,
@@ -132,7 +139,7 @@ module TestFULLSystem#(
    int                           CSpointer       = 0                        ;
    wire                          PhaseReqOver                               ;
    
-   assign PhaseReqOver = ((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS));
+   assign PhaseReqOver = ((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) | (PhaseIn  == 7 & CTpointer == P7_NUM_OF_TRANS) | (PhaseIn  == 8 & CTpointer == P8_NUM_OF_TRANS) | (PhaseIn  == 9 & CSpointer == P9_NUM_OF_TRANS));
    
    always
    begin
@@ -168,7 +175,7 @@ module TestFULLSystem#(
          NewPhase = 0 ;   
          #(period)    ;    
        end
-       // When Phase 1 is over (all of its transaction has finished and FIFOs of Converter and Completer are empty ) go to the Phase 2 : one big Transfer
+       // When Phase 1 is over(all of its transaction has finished and FIFOs of Converter and Completer are empty )  go to Phase 2 : one small missaligned transfers 2 Read - 1 Write
        else if((PhaseIn  == 1 & CTpointer == P1_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 2 ;
@@ -177,7 +184,7 @@ module TestFULLSystem#(
          NewPhase = 0 ;   
          #(period)    ;    
        end
-       // When Phase 2 is over go to Phase 3 : many of small (single CHI-transaction) transfers
+       // When Phase 2 is over go to Phase 3 : one small missaligned transfers 1 Read - 2 Write
        else if((PhaseIn  == 2 & CTpointer == P2_NUM_OF_TRANS) & DMA.BS.EmptyCom& DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 3 ;
@@ -186,37 +193,64 @@ module TestFULLSystem#(
          NewPhase = 0 ;   
          #(period)    ;    
        end
-       // When Phase 3 is over go to Phase 4 : many of Large transfers
-       else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+       // When Phase 3 is over go to the Phase 4 : one big Transfer
+       else if((PhaseIn  == 3 & CTpointer == P3_NUM_OF_TRANS) & DMA.BS.EmptyCom& DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
          PhaseIn  = 4 ;
+         NewPhase = 1 ;     
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 4 is over go to Phase 5 : many of small (single CHI-transaction) transfers
+       else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.BS.EmptyCom& DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 5 ;
+         NewPhase = 1 ;     
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 5 is over go to Phase 6 : many of small (1 or 2 CHI-transaction) transfers
+       else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 6 ;
          NewPhase = 1 ;    
          #(period*2)  ;   
          NewPhase = 0 ;   
          #(period)    ;    
        end
-       // When Phase 4 is over go to Phase 5 : combination of large and small Transfers that they are comming with random delay
-       else if((PhaseIn  == 4 & CTpointer == P4_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+       // When Phase 6 is over go to Phase 7 : many of Large transfers
+       else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
-         PhaseIn  = 5 ;
+         PhaseIn  = 7 ;
+         NewPhase = 1 ;    
+         #(period*2)  ;   
+         NewPhase = 0 ;   
+         #(period)    ;    
+       end
+       // When Phase 7 is over go to Phase 8 : combination of large and small Transfers that they are comming with random delay
+       else if((PhaseIn  == 7 & CTpointer == P7_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+         #period;
+         PhaseIn  = 8 ;
          NewPhase = 1 ;   
          #(period*2)  ;   
          NewPhase = 0 ;   
          #(period)    ;    
        end
-       // When Phase 5 is over go to Phase 6 (LastPhase) : a lot of Transfers with random size random Addresses (Descriptor and Memory) which are inserted in random time
-       else if((PhaseIn  == 5 & CTpointer == P5_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+       // When Phase 7 is over go to Phase 8 (LastPhase) : a lot of Transfers with random size random Addresses (Descriptor and Memory) which are inserted in random time
+       else if((PhaseIn  == 8 & CTpointer == P8_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
-         PhaseIn  = 6 ;
+         PhaseIn  = 9 ;
          NewPhase = 1 ;   
          #(period*2)  ;   
          NewPhase = 0 ;   
          #(period)    ;    
        end
        // All phases are finished
-       else if((PhaseIn  == 6 & CTpointer == P6_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
+       else if((PhaseIn  == 9 & CTpointer == P9_NUM_OF_TRANS) & DMA.BS.EmptyCom & DMA.CHI_Conv.myCompleter.Empty)begin
          #period;
-         PhaseIn  = 6 ;
+         PhaseIn  = 9 ;
          NewPhase = 0 ;   
          #(period*2)  ;  
          NewPhase = 0 ;   
@@ -513,14 +547,16 @@ module TestFULLSystem#(
           //is NonCopyBackWrData, its TxnID is the same with the DBID of the previous Response and BE is correct
           if((SigTXREQFLITR.Opcode == `ReadOnce & ((SigTXREQFLITR.Addr == (SigCommand.SrcAddr + lengthCountR) & lengthCountR!=0) | (SigTXREQFLITR.Addr == ({SigCommand.SrcAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) & lengthCountR == 0)))
           &(SigRXDATFLIT.Opcode == `CompData & (SigTXREQFLITR.TxnID == (SigRXDATFLIT.TxnID)))
-          // if correct opcode and Addr of a Write Req and correct opcode TxnID of a DBID Rsp and correct Data Out Rsp opcode ,TxnID and BE then print correct
+          // if correct opcode and Addr of a Write Req and correct opcode ,TxnID of a DBID Rsp and correct Data Out Rsp opcode ,TxnID and BE then print correct
           &((SigTXREQFLITW.Opcode == `WriteUniquePtl & ((SigTXREQFLITW.Addr == (SigCommand.DstAddr + lengthCountW) & lengthCountW!=0) | (SigTXREQFLITW.Addr == ({SigCommand.DstAddr[BRAM_COL_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}}) & lengthCountW == 0)))
           &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
           &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
+            // correct BE
             if((NextLengthCountW == SigCommand.Length & (((SigCommand.Length < CHI_DATA_WIDTH) & (CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) > SigCommand.Length) & (SigTXDATFLIT.BE == (({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) & ~({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + SigCommand.Length))))
             | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}<<(NextLengthCountW - lengthCountW)))) 
             | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}>>(NextLengthCountW - lengthCountW)))begin
              // Correct
+             // if lastDescTrans update CorrectTransfer vector
               if(DequeueCmnd & SigCommand.LastDescTrans)begin
                 CorrectTransfer[CTpointer] <= SigCommand.DescAddr;
                 CTpointer                  <= CTpointer + 1      ;
@@ -641,7 +677,7 @@ module TestFULLSystem#(
            $stop;
          end
        end
-       if(((PhaseIn  == 1 & CSpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CSpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CSpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CSpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CSpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CSpointer == P6_NUM_OF_TRANS)))begin
+       if(((PhaseIn  == 1 & CSpointer == P1_NUM_OF_TRANS) | (PhaseIn  == 2 & CSpointer == P2_NUM_OF_TRANS) | (PhaseIn  == 3 & CSpointer == P3_NUM_OF_TRANS) | (PhaseIn  == 4 & CSpointer == P4_NUM_OF_TRANS) |(PhaseIn  == 5 & CSpointer == P5_NUM_OF_TRANS) | (PhaseIn  == 6 & CSpointer == P6_NUM_OF_TRANS) | (PhaseIn  == 7 & CSpointer == P7_NUM_OF_TRANS) | (PhaseIn  == 8 & CSpointer == P8_NUM_OF_TRANS) | (PhaseIn  == 9 & CSpointer == P9_NUM_OF_TRANS)))begin
          $display("All Descriptors are Fully scheduled ");
        end
      end

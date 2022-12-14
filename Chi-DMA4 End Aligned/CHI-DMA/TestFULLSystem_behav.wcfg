@@ -15,13 +15,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="31584000fs"></ZoomStartTime>
-      <ZoomEndTime time="33932001fs"></ZoomEndTime>
-      <Cursor1Time time="69600000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="308640001fs"></ZoomEndTime>
+      <Cursor1Time time="20736280fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="124"></ValueColumnWidth>
+      <ValueColumnWidth column_width="271"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="15" />
    <wvobject fp_name="/TestFULLSystem/Clk" type="logic">
@@ -37,8 +37,8 @@
       <obj_property name="ObjectShortName">NewTrans</obj_property>
    </wvobject>
    <wvobject fp_name="/TestFULLSystem/PhaseIn" type="array">
-      <obj_property name="ElementShortName">PhaseIn[2:0]</obj_property>
-      <obj_property name="ObjectShortName">PhaseIn[2:0]</obj_property>
+      <obj_property name="ElementShortName">PhaseIn[3:0]</obj_property>
+      <obj_property name="ObjectShortName">PhaseIn[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/TestFULLSystem/NewPhase" type="logic">
       <obj_property name="ElementShortName">NewPhase</obj_property>
@@ -59,6 +59,7 @@
    <wvobject fp_name="/TestFULLSystem/dinA" type="array">
       <obj_property name="ElementShortName">dinA</obj_property>
       <obj_property name="ObjectShortName">dinA</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/TestFULLSystem/BRAMdoutA" type="array">
       <obj_property name="ElementShortName">BRAMdoutA</obj_property>
@@ -176,6 +177,22 @@
          <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
          <obj_property name="CustomSignalColor">#FFD700</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="divider" fp_name="divider163">
+         <obj_property name="label">DMA_Descriptor</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DMA/BS/state" type="array">
+         <obj_property name="ElementShortName">state[31:0]</obj_property>
+         <obj_property name="ObjectShortName">state[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DMA/CHI_Conv/myCompleter/ReadyBRAM" type="logic">
+         <obj_property name="ElementShortName">ReadyBRAM</obj_property>
+         <obj_property name="ObjectShortName">ReadyBRAM</obj_property>
+      </wvobject>
+      <wvobject fp_name="/TestFULLSystem/DMA/CHI_Conv/myCompleter/ValidBRAM" type="logic">
+         <obj_property name="ElementShortName">ValidBRAM</obj_property>
+         <obj_property name="ObjectShortName">ValidBRAM</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

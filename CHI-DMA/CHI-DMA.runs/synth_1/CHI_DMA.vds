@@ -2,26 +2,25 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Sat Dec 10 17:20:53 2022
-# Process ID: 5640
+# Start of session at: Wed Dec 14 10:59:50 2022
+# Process ID: 7848
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
 # Command line: vivado.exe -log CHI_DMA.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHI_DMA.tcl
 # Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.vds
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
 source CHI_DMA.tcl -notrace
-create_project: Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 412.695 ; gain = 109.383
 Command: synth_design -top CHI_DMA -part xc7vx485tffg1157-1 -mode out_of_context
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
-INFO: [Common 17-86] Your Synthesis license expires in 7 day(s)
+INFO: [Common 17-86] Your Synthesis license expires in 3 day(s)
 INFO: [Common 17-1540] The version limit for your license is '2022.11' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
 INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 10596 
+INFO: Helper process launched with PID 1348 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1107.715 ; gain = 237.281
+Starting RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 1108.848 ; gain = 236.984
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'CHI_DMA' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
 INFO: [Synth 8-6157] synthesizing module 'ReqChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:134]
@@ -111,47 +110,7 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized3' [C:/Users/Aggelo
 	Parameter FIFO_WIDTH bound to: 514 - type: integer 
 	Parameter FIFO_LENGTH bound to: 32 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized3' (7#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:24]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATLCRDV' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:219]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLITPEND in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLITV in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[QoS] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[TgtID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[SrcID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[TxnID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[HomeNID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[Opcode] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[RespErr] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[Resp] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[DataSource] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[DBID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[CCID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[DataID] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[TraceTag] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[BE] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[Data] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[DataCheck] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATFLIT[Poison] in module/entity BarrelShifter does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:45]
 INFO: [Synth 8-6155] done synthesizing module 'BarrelShifter' (8#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:28]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLITPEND' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLITV' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-6104] Input port 'DatInbChan\.RXDATFLIT' has an internal driver [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:218]
-WARNING: [Synth 8-3848] Net DatInbChan\.RXDATLCRDV in module/entity CHI_DMA does not have driver. [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:45]
 INFO: [Synth 8-6155] done synthesizing module 'CHI_DMA' (9#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
 WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RXDATFLITPEND
 WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RXDATFLIT[QoS][3]
@@ -255,7 +214,7 @@ WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RX
 WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RXDATFLIT[BE][21]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:53 ; elapsed = 00:00:54 . Memory (MB): peak = 1352.836 ; gain = 482.402
+Finished RTL Elaboration : Time (s): cpu = 00:00:40 ; elapsed = 00:00:42 . Memory (MB): peak = 1353.734 ; gain = 481.871
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -268,12 +227,12 @@ Report Check Netlist:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:01:01 ; elapsed = 00:01:04 . Memory (MB): peak = 1370.703 ; gain = 500.270
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:47 ; elapsed = 00:00:50 . Memory (MB): peak = 1373.582 ; gain = 501.719
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:01:01 ; elapsed = 00:01:04 . Memory (MB): peak = 1370.703 ; gain = 500.270
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:47 ; elapsed = 00:00:50 . Memory (MB): peak = 1373.582 ; gain = 501.719
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1370.703 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1375.645 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
@@ -282,26 +241,26 @@ Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/c
 Finished Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1629.707 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1617.039 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1651.297 ; gain = 21.590
+Constraint Validation Runtime : Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1638.766 ; gain = 21.727
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:01:50 ; elapsed = 00:01:52 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished Constraint Validation : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7vx485tffg1157-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:01:50 ; elapsed = 00:01:52 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:50 ; elapsed = 00:01:52 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Scheduler'
@@ -315,7 +274,7 @@ INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To p
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:416]
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:411]
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:212]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:202]
 INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:207]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'BarrelShifter'
 INFO: [Synth 8-3971] The signal "bytewrite_tdp_ram_rf:/ram_block_reg" was recognized as a true dual port RAM template.
@@ -343,7 +302,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'BarrelShifter'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:04:48 ; elapsed = 00:05:00 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:04:29 ; elapsed = 00:04:35 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -361,7 +320,7 @@ Report RTL Partitions:
 |9     |FIFO__parameterized3__GB2 |           1|     15575|
 |10    |FIFO__parameterized3__GB3 |           1|     18690|
 |11    |FIFO__parameterized3__GB4 |           1|     24920|
-|12    |BarrelShifter__GC0        |           1|     20724|
+|12    |BarrelShifter__GC0        |           1|     19498|
 |13    |CHI_DMA__GC0              |           1|      6239|
 +------+--------------------------+------------+----------+
 ---------------------------------------------------------------------------------
@@ -370,11 +329,12 @@ Start RTL Component Statistics
 Detailed RTL Component Info : 
 +---Adders : 
 	   3 Input     44 Bit       Adders := 2     
-	   2 Input     32 Bit       Adders := 8     
-	   3 Input     32 Bit       Adders := 9     
+	   2 Input     32 Bit       Adders := 6     
+	   3 Input     32 Bit       Adders := 6     
 	   2 Input      9 Bit       Adders := 4     
-	   5 Input      9 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 4     
+	   3 Input      9 Bit       Adders := 1     
+	   2 Input      7 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 6     
 	   2 Input      4 Bit       Adders := 3     
 +---Registers : 
 	              514 Bit    Registers := 32    
@@ -501,10 +461,11 @@ Detailed RTL Component Info :
 Module BarrelShifter 
 Detailed RTL Component Info : 
 +---Adders : 
-	   3 Input     32 Bit       Adders := 6     
-	   2 Input     32 Bit       Adders := 3     
-	   5 Input      9 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 1     
+	   3 Input     32 Bit       Adders := 3     
+	   2 Input     32 Bit       Adders := 1     
+	   3 Input      9 Bit       Adders := 1     
+	   2 Input      7 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 3     
 +---Registers : 
 	              512 Bit    Registers := 1     
 	               32 Bit    Registers := 2     
@@ -693,7 +654,7 @@ INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[40]' (FDRE) to 'WriteRe
 INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[41]' (FDRE) to 'WriteReqBytes_reg[42]'
 INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[42]' (FDRE) to 'WriteReqBytes_reg[43]'
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:06:55 ; elapsed = 00:08:07 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:06:53 ; elapsed = 00:08:13 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -726,14 +687,14 @@ Report RTL Partitions:
 |9     |FIFO__parameterized3__GB2 |           1|      5195|
 |10    |FIFO__parameterized3__GB3 |           1|      6228|
 |11    |FIFO__parameterized3__GB4 |           1|      8281|
-|12    |BarrelShifter__GC0        |           1|      9828|
+|12    |BarrelShifter__GC0        |           1|      8774|
 |13    |CHI_DMA__GC0              |           1|       804|
 +------+--------------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:07:33 ; elapsed = 00:08:46 . Memory (MB): peak = 1651.297 ; gain = 780.863
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:07:37 ; elapsed = 00:08:59 . Memory (MB): peak = 1638.766 ; gain = 766.902
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
@@ -761,31 +722,31 @@ INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][92]'
 INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][93]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][94]'
 INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][94]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][95]'
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\CHI_Conv/CommandFIFO /\MyQueue_reg[31][95] )
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][73]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][74]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][74]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][75]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][75]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][76]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][76]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][77]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][77]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][78]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][78]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][79]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][79]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][80]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][80]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][81]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][81]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][82]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][82]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][83]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][83]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][84]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][84]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][85]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][85]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][86]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][86]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][87]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][87]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][88]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][88]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][89]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][89]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][90]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][90]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][91]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][91]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][92]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][92]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][93]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][93]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][94]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOSrcAddr/MyQueue_reg[31][94]' (FDRE) to 'BS/FIFOSrcAddr/MyQueue_reg[31][95]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\BS/FIFOSrcAddr /\MyQueue_reg[31][95] )
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][73]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][74]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][74]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][75]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][75]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][76]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][76]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][77]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][77]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][78]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][78]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][79]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][79]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][80]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][80]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][81]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][81]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][82]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][82]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][83]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][83]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][84]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][84]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][85]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][85]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][86]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][86]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][87]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][87]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][88]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][88]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][89]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][89]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][90]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][90]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][91]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][91]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][92]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][92]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][93]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][93]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][94]'
+INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][94]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][95]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\BS/FIFOCmnd /\MyQueue_reg[31][95] )
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:13:36 ; elapsed = 00:14:52 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Timing Optimization : Time (s): cpu = 00:12:44 ; elapsed = 00:14:13 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -815,8 +776,8 @@ Report RTL Partitions:
 |7     |FIFO__parameterized3__GB2 |           1|      5195|
 |8     |FIFO__parameterized3__GB4 |           1|      8281|
 |9     |CHI_DMA__GC0              |           1|       446|
-|10    |FIFO__parameterized0__1   |           1|     10935|
-|11    |CHI_DMA_GT0               |           1|     37061|
+|10    |FIFO__parameterized0__1   |           1|      4383|
+|11    |CHI_DMA_GT0               |           1|     36060|
 +------+--------------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start Technology Mapping
@@ -835,7 +796,7 @@ INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_5 (imp
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:14:29 ; elapsed = 00:16:01 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Technology Mapping : Time (s): cpu = 00:13:33 ; elapsed = 00:15:11 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -851,8 +812,8 @@ Report RTL Partitions:
 |7     |FIFO__parameterized3__GB2 |           1|      5157|
 |8     |FIFO__parameterized3__GB4 |           1|      8244|
 |9     |CHI_DMA__GC0              |           1|       256|
-|10    |FIFO__parameterized0__1   |           1|      5586|
-|11    |CHI_DMA_GT0               |           1|     22448|
+|10    |FIFO__parameterized0__1   |           1|      2258|
+|11    |CHI_DMA_GT0               |           1|     22356|
 +------+--------------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -866,9 +827,6 @@ Finished Flattening Before IO Insertion
 ---------------------------------------------------------------------------------
 Start Final Netlist Cleanup
 ---------------------------------------------------------------------------------
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin \DatInbChan\.RXDATLCRDV  with 1st driver pin 'i_36674/O' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:93]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin \DatInbChan\.RXDATLCRDV  with 2nd driver pin 'GND' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:93]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net \DatInbChan\.RXDATLCRDV  is connected to at least one constant driver which has been preserved, other driver is ignored [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:93]
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
@@ -886,13 +844,13 @@ INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_7 (impleme
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:15:48 ; elapsed = 00:17:23 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished IO Insertion : Time (s): cpu = 00:14:36 ; elapsed = 00:16:19 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:15:50 ; elapsed = 00:17:25 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Renaming Generated Instances : Time (s): cpu = 00:14:37 ; elapsed = 00:16:20 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -911,25 +869,25 @@ Report Check Netlist:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:16:27 ; elapsed = 00:18:02 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:15:01 ; elapsed = 00:16:45 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:16:28 ; elapsed = 00:18:03 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Renaming Generated Ports : Time (s): cpu = 00:15:02 ; elapsed = 00:16:46 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:17:30 ; elapsed = 00:19:05 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Handling Custom Attributes : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:17:30 ; elapsed = 00:19:06 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Renaming Generated Nets : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -945,59 +903,60 @@ Report Cell Usage:
 +------+---------+------+
 |      |Cell     |Count |
 +------+---------+------+
-|1     |CARRY4   |   244|
-|2     |LUT1     |   184|
-|3     |LUT2     |  1076|
-|4     |LUT3     |  7712|
-|5     |LUT4     |   919|
-|6     |LUT5     | 12508|
-|7     |LUT6     | 18868|
-|8     |RAMB36E1 |     8|
-|9     |FDRE     | 33820|
-|10    |FDSE     |     3|
+|1     |CARRY4   |   228|
+|2     |LUT1     |   152|
+|3     |LUT2     |   990|
+|4     |LUT3     |  7930|
+|5     |LUT4     |   859|
+|6     |LUT5     | 10854|
+|7     |LUT6     | 18776|
+|8     |MUXF7    |     1|
+|9     |RAMB36E1 |     8|
+|10    |FDRE     | 32162|
+|11    |FDSE     |     3|
 +------+---------+------+
 
 Report Instance Areas: 
 +------+-------------------+-----------------------+------+
 |      |Instance           |Module                 |Cells |
 +------+-------------------+-----------------------+------+
-|1     |top                |                       | 75342|
+|1     |top                |                       | 71963|
 |2     |  AddrPointerFIFO  |FIFO                   | 23867|
-|3     |  BS               |BarrelShifter          | 42585|
-|4     |    FIFOData       |FIFO__parameterized3   | 35497|
-|5     |    FIFOSrcAddr    |FIFO__parameterized0_0 |  6475|
-|6     |  CHI_Conv         |CHIConverter           |  8412|
+|3     |  BS               |BarrelShifter          | 39240|
+|4     |    FIFOCmnd       |FIFO__parameterized0_0 |  3415|
+|5     |    FIFOData       |FIFO__parameterized3   | 35200|
+|6     |  CHI_Conv         |CHIConverter           |  8384|
 |7     |    CommandFIFO    |FIFO__parameterized0   |  6212|
-|8     |    FIFODBID       |FIFO__parameterized1   |   844|
+|8     |    FIFODBID       |FIFO__parameterized1   |   816|
 |9     |    myCompleter    |Completer              |  1180|
 |10    |      FIFODescAddr |FIFO__parameterized2   |  1179|
 |11    |  myBRAM           |bytewrite_tdp_ram_rf   |   115|
 |12    |  mySched          |Scheduler              |   248|
 +------+-------------------+-----------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:17:30 ; elapsed = 00:19:06 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Finished Writing Synthesis Report : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 3 critical warnings and 578 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:15:48 ; elapsed = 00:18:29 . Memory (MB): peak = 2137.051 ; gain = 986.023
-Synthesis Optimization Complete : Time (s): cpu = 00:17:31 ; elapsed = 00:19:09 . Memory (MB): peak = 2137.051 ; gain = 1266.617
+Synthesis finished with 0 errors, 0 critical warnings and 578 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:14:43 ; elapsed = 00:17:26 . Memory (MB): peak = 2226.914 ; gain = 1089.867
+Synthesis Optimization Complete : Time (s): cpu = 00:16:21 ; elapsed = 00:18:13 . Memory (MB): peak = 2226.914 ; gain = 1355.051
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2137.051 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 252 Unisim elements for replacement
-INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+Netlist sorting complete. Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2226.914 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 237 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 2 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.051 . Memory (MB): peak = 2137.051 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.059 . Memory (MB): peak = 2226.914 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-165 Infos, 241 Warnings, 3 Critical Warnings and 0 Errors encountered.
+165 Infos, 201 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:18:36 ; elapsed = 00:20:19 . Memory (MB): peak = 2137.051 ; gain = 1724.355
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.054 . Memory (MB): peak = 2137.051 ; gain = 0.000
+synth_design: Time (s): cpu = 00:17:23 ; elapsed = 00:19:19 . Memory (MB): peak = 2226.914 ; gain = 1813.723
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.059 . Memory (MB): peak = 2226.914 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:19 ; elapsed = 00:00:14 . Memory (MB): peak = 2137.051 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:18 ; elapsed = 00:00:13 . Memory (MB): peak = 2226.914 ; gain = 0.000
 INFO: [runtcl-4] Executing : report_utilization -file CHI_DMA_utilization_synth.rpt -pb CHI_DMA_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sat Dec 10 17:41:40 2022...
+INFO: [Common 17-206] Exiting Vivado at Wed Dec 14 11:19:31 2022...
