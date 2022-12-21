@@ -41,14 +41,14 @@ module BarrelShifter#(
     input                                                        Clk           ,
     input                  CHI_Command                           CommandIn     , // CHI-Command (SrcAddr,DstAddr,Length,DescAddr,LastDescTrans)
     input                                                        EnqueueIn     ,
-    input                                                        DequeueBS     ,
+    input                                                        ValidDataBS   ,
     DatInbChannel.INBOUND                                        DatInbChan    , // Data inbound Chanel
     output                 reg        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ,
     output                 reg        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ,
     output                            [`RspErrWidth     - 1 : 0] DataError     ,
     output                            [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ,
     output                                                       LastDescTrans ,
-    output                 reg                                   EmptyBS       ,
+    output                 reg                                   ReadyDataBS   ,
     output                                                       FULLCmndBS
     );
     
@@ -127,19 +127,28 @@ module BarrelShifter#(
     //----------- Manage Read-Write Req Bytes counters -----------
     assign NextSrcAddr  = Command.SrcAddr + CountReadBytes  ;
     assign NextDstAddr  = Command.DstAddr + CountWriteBytes ;
-    assign NextReadCnt  = (CHI_DATA_WIDTH - NextSrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountReadBytes ) < Command.Length ? (CHI_DATA_WIDTH - NextSrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountReadBytes ) : Command.Length ;
-    assign NextWriteCnt = (CHI_DATA_WIDTH - NextDstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountWriteBytes) < Command.Length ? (CHI_DATA_WIDTH - NextDstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountWriteBytes) : Command.Length ;
+    assign NextReadCnt  = (CountReadBytes  == 0) ? ((Command.Length < (CHI_DATA_WIDTH - Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) ? (Command.Length) : (CHI_DATA_WIDTH - Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) : ((CountReadBytes + CHI_DATA_WIDTH < Command.Length) ? (CountReadBytes + CHI_DATA_WIDTH) : (Command.Length)) ;
+    //assign NextReadCnt  = (CHI_DATA_WIDTH - NextSrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountReadBytes ) < Command.Length ? (CHI_DATA_WIDTH - NextSrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountReadBytes ) : Command.Length ;
+    assign NextWriteCnt = (CountWriteBytes == 0) ? ((Command.Length < (CHI_DATA_WIDTH - Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) ? (Command.Length) : (CHI_DATA_WIDTH - Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) : ((CountWriteBytes + CHI_DATA_WIDTH < Command.Length) ? (CountWriteBytes + CHI_DATA_WIDTH) : (Command.Length)) ;
+    //assign NextWriteCnt = (CHI_DATA_WIDTH - NextDstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountWriteBytes) < Command.Length ? (CHI_DATA_WIDTH - NextDstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + CountWriteBytes) : Command.Length ;
     always_ff@(posedge Clk)begin
       if(RST)begin
         CountWriteBytes <= 0 ;
         CountReadBytes  <= 0 ;
       end
       else begin
-        if(CntReadWE == 1 | DeqFIFO == 1)begin
-          CountReadBytes <= (DeqFIFO) ? 0 : NextReadCnt ;
+        if(DeqFIFO == 1)begin
+          CountReadBytes <= 0         ;
         end
-        if(CntWriteWE == 1 | DeqFIFO == 1)begin
-          CountWriteBytes <= (DeqFIFO) ? 0 : NextWriteCnt ;
+        else if(CntReadWE == 1)begin
+        CountReadBytes <= NextReadCnt ;
+        end      
+          
+        if( DeqFIFO == 1)begin
+          CountWriteBytes <= 0            ;
+        end
+        else if(CntWriteWE == 1)begin
+          CountWriteBytes <= NextWriteCnt ;
         end
       end      
     end
@@ -148,15 +157,18 @@ module BarrelShifter#(
     //////////////////////Enable the corect Bytes to be written////////////////////// 
     always_comb begin
       if(NextWriteCnt == Command.Length)begin // if last trans
-        if((Command.Length < CHI_DATA_WIDTH) &  (CHI_DATA_WIDTH - Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] > Command.Length))begin // if address range of Data that should be written is internal of CHI_DATA_WIDTH
+        if((CHI_DATA_WIDTH - Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] >= Command.Length))begin // if address range of Data that should be written is internal of CHI_DATA_WIDTH
           BEOut = ({CHI_DATA_WIDTH{1'b1}} << Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) & ~({CHI_DATA_WIDTH{1'b1}} << (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + Command.Length)); 
         end
         else begin
-          BEOut = ~({CHI_DATA_WIDTH{1'b1}} << (NextWriteCnt - CountWriteBytes)) ;  // Enable the least significant bits 
+          BEOut = ~({CHI_DATA_WIDTH{1'b1}} << Command.Length - CountWriteBytes) ;  // Enable the least significant bits 
         end
       end
       else begin
-         BEOut = ~({CHI_DATA_WIDTH{1'b1}} >> (NextWriteCnt - CountWriteBytes)) ; // enable the most significant or all bytes 
+        if(CountWriteBytes == 0)
+          BEOut = ({CHI_DATA_WIDTH{1'b1}} << Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) ; // enable the most significant or all bytes 
+        else
+          BEOut = {CHI_DATA_WIDTH{1'b1}} ;
       end
     end
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -228,24 +240,26 @@ module BarrelShifter#(
      case(state)
        StartState :
          begin                           
-           if(!EmptyFIFO & (NextReadCnt < Command.Length) & ((NextWriteCnt < Command.Length & DequeueBS & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] > Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) | (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] < Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])))  // When Data should be shifted left or right and not last Chunk's Read then in the next state 2 Read Data should be merged to create the Write Data word
+           if(!EmptyFIFO & (NextReadCnt < Command.Length) & ((Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] < Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])))  // When Data should be shifted right and not last Chunk's Read then in the next state 2 Read Data should be merged to create the Write Data word (doesnt wait for CHI-COnv to dequeu BS)
              next_state = MergeReadDataState ;
-           else if(!EmptyFIFO & (NextWriteCnt < Command.Length) & (NextReadCnt == Command.Length) & DequeueBS & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] > Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0]))  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
+           else if(!EmptyFIFO & (NextReadCnt < Command.Length) & ((NextWriteCnt < Command.Length & ValidDataBS & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] > Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0]))))  // When Data should be shifted left and not last Chunk's Read then in the next state 2 Read Data should be merged to create the Write Data word
+             next_state = MergeReadDataState ;
+           else if(!EmptyFIFO & (NextWriteCnt < Command.Length) & (NextReadCnt == Command.Length) & ValidDataBS)  // When it is the last Read Trans but not the last Write and Data must be shifted then should be an extra write  
              next_state = ExtraWriteState ;
-           else                       // When Data needs no shift or it is the last Read/Write trans or CHI-Conv dont need the data yet(!DequeueBS)
+           else                       // When Data needs no shift or it is the last Read/Write trans or CHI-Conv dont need the data yet(!ValidDataBS)
              next_state = StartState ; 
          end
        MergeReadDataState :
          begin
-           if( NextReadCnt == Command.Length &  NextWriteCnt == Command.Length & !EmptyFIFO & DequeueBS)        //  When last Read becomes the last Write return to StartState
+           if(NextReadCnt == Command.Length &  NextWriteCnt == Command.Length & !EmptyFIFO & ValidDataBS)        //  When last Read becomes the last Write return to StartState
              next_state = StartState ;
-           else if (NextReadCnt == Command.Length &  NextWriteCnt < Command.Length & !EmptyFIFO & DequeueBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
+           else if (NextReadCnt == Command.Length &  NextWriteCnt < Command.Length & !EmptyFIFO & ValidDataBS)  //  When last Read completes a non-last Write then it should complete the last Write as well so an extra write should be done 
              next_state = ExtraWriteState ;
            else                                  // When next Write Trans needs alsa to merge data   
              next_state = MergeReadDataState ;            
          end
        ExtraWriteState : 
-         if(NextReadCnt == Command.Length &  NextWriteCnt == Command.Length & !EmptyFIFO & DequeueBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (DequeueBS)
+         if(!EmptyFIFO & ValidDataBS)  //  When last Read and last Write return to StartState and CHI-Conv needs the data (ValidDataBS)
            next_state = StartState ;
          else
            next_state = ExtraWriteState ;
@@ -259,7 +273,7 @@ module BarrelShifter#(
        StartState :
          begin                      
            if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is empty and do nothing
-             EmptyBS        = 1 ;
+             ReadyDataBS    = 0 ;
              CntReadWE      = 0 ;
              CntWriteWE     = 0 ;
              DataOut        = 0 ;
@@ -270,7 +284,7 @@ module BarrelShifter#(
            else begin
            // When Data must be shifted right and its not last Read then no enough data for a write  
              if((Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] < Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) & (NextReadCnt < Command.Length))begin  
-               EmptyBS        = 1 ; // Barrel Shifter is empty because there are not enough data for a Write
+               ReadyDataBS    = 0 ; // Barrel Shifter is empty because there are not enough data for a Write
                CntReadWE      = 1 ; // Update Read Counter
                CntWriteWE     = 0 ; // Dont update Write Counter because there are not enough data for a Write
                DataOut        = 0 ; // Output Data
@@ -278,41 +292,52 @@ module BarrelShifter#(
                DeqFIFO        = 0 ; // Dont Dequeue FIFOs (SrcAddr,DstAddr,Legnth)
                DeqData        = 1 ; // Dequeue Data FIFO because there are Data that have been read
              end
-             // When last Read but not last Write and data must be shifted left then give first data for write (read must become 2 writes) 
-             else if((NextReadCnt == Command.Length) & (NextWriteCnt < Command.Length) & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] > Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0]))begin 
-               EmptyBS        = 0           ;
+             // when not last Read and Write and no shift or left shift of data is needed then give shiftedData for Write
+             else if(ValidDataBS & (((NextReadCnt < Command.Length)  & (NextWriteCnt < Command.Length)  & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] >= Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0]))))begin
+               ReadyDataBS    = 1                                                                ;
+               CntReadWE      = 1                                                                ;
+               CntWriteWE     = 1                                                                ;
+               DataOut        = ShiftedData                                                      ;
+               PrvShftdDataWE = 1                                                                ;
+               DeqFIFO        = 0                                                                ;
+               DeqData        = 1                                                                ;  
+             end
+             // When last Read but not last Write so data must be shifted left then give first shifted data for write (read must become 2 writes) 
+             else if(ValidDataBS & (NextReadCnt == Command.Length) & (NextWriteCnt < Command.Length))begin 
+               ReadyDataBS    = 1           ;
                CntReadWE      = 0           ; // Dont Update Read Counter because it is the last Read but not last write
-               CntWriteWE     = DequeueBS   ; // Update Write Counter
+               CntWriteWE     = 1           ; // Update Write Counter
                DataOut        = ShiftedData ; 
-               PrvShftdDataWE = DequeueBS   ; 
+               PrvShftdDataWE = 1           ; 
                DeqFIFO        = 0           ;
                DeqData        = 0           ;
              end
-             // when last Read-Write or no shift or left shift of data is needed then give Data for Write
-             else if(((NextReadCnt == Command.Length) & (NextWriteCnt == Command.Length)) | ((NextReadCnt < Command.Length)  & (NextWriteCnt < Command.Length)  & (Command.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] >= Command.SrcAddr[ADDR_WIDTH_OF_DATA - 1 : 0])))begin
-               EmptyBS        = 0                                                                             ;
-               CntReadWE      = DequeueBS                                                                     ;
-               CntWriteWE     = DequeueBS                                                                     ;
-               DataOut        = ShiftedData                                                                   ;
-               PrvShftdDataWE = DequeueBS                                                                     ;
-               DeqFIFO        = (DequeueBS & NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) ;
-               DeqData        = DequeueBS                                                                     ;             
+             // when last Read and Writethen give shifted Data for Write
+             else if(ValidDataBS & (((NextReadCnt == Command.Length) & (NextWriteCnt == Command.Length))))begin
+               ReadyDataBS    = 1                                                                ;
+               CntReadWE      = 1                                                                ;
+               CntWriteWE     = 1                                                                ;
+               DataOut        = ShiftedData                                                      ;
+               PrvShftdDataWE = 1                                                                ;
+               DeqFIFO        = 1                                                                ;
+               DeqData        = 1                                                                ;  
              end
-             else begin // it should never go to else 
-               EmptyBS        = 1 ;
-               CntReadWE      = 0 ;
-               CntWriteWE     = 0 ;
-               DataOut        = 0 ;
-               PrvShftdDataWE = 0 ;
-               DeqFIFO        = 0 ;
-               DeqData        = 0 ;
+             // if ValidDataBS == 0 and not shift right
+             else begin  
+               ReadyDataBS    = 0           ;
+               CntReadWE      = 0           ;
+               CntWriteWE     = 0           ;
+               DataOut        = ShiftedData ;
+               PrvShftdDataWE = 0           ;
+               DeqFIFO        = 0           ;
+               DeqData        = 0           ;
              end              
            end
          end
        MergeReadDataState : 
          begin        
            if(EmptyFIFO)begin     // if one of FIFOs is empty then BS is emptt and do nothing
-             EmptyBS        = 1 ;
+             ReadyDataBS    = 0 ;
              CntReadWE      = 0 ;
              CntWriteWE     = 0 ;
              DataOut        = 0 ;
@@ -321,41 +346,52 @@ module BarrelShifter#(
              DeqData        = 0 ;
            end
            else begin
-           // If both of Read and Write are last trans then create the right DataOut and dequeue FIFO else just create the right DataOut
-             if((NextReadCnt == Command.Length & NextWriteCnt == Command.Length ) | (NextReadCnt < Command.Length & NextWriteCnt < Command.Length))begin  
-               EmptyBS        = 0                                                                                                                    ;
-               CntReadWE      = DequeueBS                                                                                                            ;
-               CntWriteWE     = DequeueBS                                                                                                            ;
-               PrvShftdDataWE = DequeueBS                                                                                                            ;
-               DeqFIFO        = (DequeueBS & NextReadCnt == Command.Length & NextWriteCnt == Command.Length )                                        ;
-               DeqData        = DequeueBS                                                                                                            ;    
+           // If both of Read and Write are last trans then create the right DataOut and dequeue FIFO and go to Start State
+             if(ValidDataBS & ((NextReadCnt == Command.Length & NextWriteCnt == Command.Length)))begin  
+               ReadyDataBS    = 1                                                                                                                    ;
+               CntReadWE      = 1                                                                                                                    ;
+               CntWriteWE     = 1                                                                                                                    ;
+               PrvShftdDataWE = 1                                                                                                                    ;
+               DeqFIFO        = 1                                                                                                                    ;
+               DeqData        = 1                                                                                                                    ;    
                DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              end
              // If it is the last Read but not the last Write create the right DataOut and next cycle do an extra write
-             else if(NextReadCnt == Command.Length & NextWriteCnt < Command.Length)begin  
-               EmptyBS        = 0                                                                                                                    ;
+             else if(ValidDataBS & NextReadCnt == Command.Length & NextWriteCnt < Command.Length)begin  
+               ReadyDataBS    = 1                                                                                                                    ;
                CntReadWE      = 0                                                                                                                    ;
-               CntWriteWE     = DequeueBS                                                                                                            ;
-               PrvShftdDataWE = DequeueBS                                                                                                            ;
+               CntWriteWE     = 1                                                                                                                    ;
+               PrvShftdDataWE = 1                                                                                                                    ;
                DeqFIFO        = 0                                                                                                                    ;
                DeqData        = 0                                                                                                                    ;  
                DataOut        = (ShiftedData &( ~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
-             end                                                                                                                                             
-             else begin // it should never go to else
-               EmptyBS        = 0 ;
-               CntReadWE      = 0 ;
-               CntWriteWE     = 0 ;
-               PrvShftdDataWE = 0 ;
-               DeqFIFO        = 0 ;
-               DeqData        = 0 ;  
-               DataOut        = 0 ; 
+             end        
+           // If both of Read and Write are not last trans then create the right DataOut and state to MergeReadDataState
+             else if(ValidDataBS & ((NextReadCnt < Command.Length & NextWriteCnt < Command.Length)))begin  
+               ReadyDataBS    = 1                                                                                                                    ;
+               CntReadWE      = 1                                                                                                                    ;
+               CntWriteWE     = 1                                                                                                                    ;
+               PrvShftdDataWE = 1                                                                                                                    ;
+               DeqFIFO        = 0                                                                                                                    ;
+               DeqData        = 1                                                                                                                    ;    
+               DataOut        = (ShiftedData & (~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
+             end 
+             // if Dequeue BS == 0                                                                                                                                     
+             else begin 
+               ReadyDataBS    = 0                                                                                                                    ;
+               CntReadWE      = 0                                                                                                                    ;
+               CntWriteWE     = 0                                                                                                                    ;
+               PrvShftdDataWE = 0                                                                                                                    ;
+               DeqFIFO        = 0                                                                                                                    ;
+               DeqData        = 0                                                                                                                    ;  
+               DataOut        = (ShiftedData &( ~({(CHI_DATA_WIDTH*8){1'b1}} >> shift))) | (PrevShiftedData & ({(CHI_DATA_WIDTH*8){1'b1}} >> shift)) ; // = {ShiftedData[CHI_DATA_WIDTH-1:CHI_DATA_WIDTH-shift],PrevShiftedData[CHI_DATA_WIDTH-shift-1:0]}
              
              end
            end
          end
        ExtraWriteState : 
           if(EmptyFIFO)begin     // if one of FIFOs are empty then BS is empty and do nothing
-             EmptyBS        = 1 ;
+             ReadyDataBS    = 0 ;
              CntReadWE      = 0 ;
              CntWriteWE     = 0 ;
              PrvShftdDataWE = 0 ;
@@ -363,18 +399,27 @@ module BarrelShifter#(
              DeqData        = 0 ;  
              DataOut        = 0 ; 
            end
-           else begin
-             EmptyBS        = 0               ;
-             CntReadWE      = DequeueBS       ;
-             CntWriteWE     = DequeueBS       ;
+           else if(ValidDataBS) begin
+             ReadyDataBS    = 1               ;
+             CntReadWE      = 1               ;
+             CntWriteWE     = 1               ;
              PrvShftdDataWE = 0               ;
-             DeqFIFO        = DequeueBS       ;
-             DeqData        = DequeueBS       ;
+             DeqFIFO        = 1               ;
+             DeqData        = 1               ;
+             DataOut        = PrevShiftedData ; 
+           end
+           else begin
+             ReadyDataBS    = 0               ;
+             CntReadWE      = 0               ;
+             CntWriteWE     = 0               ;
+             PrvShftdDataWE = 0               ;
+             DeqFIFO        = 0               ;
+             DeqData        = 0               ;
              DataOut        = PrevShiftedData ; 
            end
        default :
          begin                
-           EmptyBS        = 1 ;
+           ReadyDataBS    = 0 ;
            CntReadWE      = 0 ;
            CntWriteWE     = 0 ;
            PrvShftdDataWE = 0 ;

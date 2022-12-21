@@ -39,22 +39,22 @@ module Scheduler#(
   parameter CHI_DATA_WIDTH    = 64 , // CHI bus width
   parameter Chunk             = 5   // number of CHI-Words 
 )(
-    input  logic                              RST               ,
-    input  logic                              Clk               ,
+    input                                     RST               ,
+    input                                     Clk               ,
     input  Data_packet                        DescDataIn        , //sig from BRAM
-    input  logic                              ReadyBRAM         , //sig from BRAM's Arbiter
-    input  logic                              ReadyFIFO         , //sig from FIFO's Arbiter
-    input  logic      [BRAM_ADDR_WIDTH  -1:0] FIFO_Addr         , //sig from FIFO
-    input  logic                              Empty             , 
-    input  logic                              CmdFIFOFULL       , //sig from chi-converter
+    input                                     ReadyBRAM         , //sig from BRAM's Arbiter
+    input                                     ReadyFIFO         , //sig from FIFO's Arbiter
+    input             [BRAM_ADDR_WIDTH  -1:0] FIFO_Addr         , //sig from FIFO
+    input                                     Empty             , 
+    input                                     CmdFIFOFULL       , //sig from chi-converter
     output Data_packet                        DescDataOut       , //sig for BRAM
     output wire       [BRAM_NUM_COL     -1:0] WE                , 
     output wire       [BRAM_ADDR_WIDTH  -1:0] BRAMAddrOut       , 
-    output logic                              ValidBRAM         , //sig for BRAM's Arbiter
-    output logic                              Dequeue           , //sig for FIFO
-    output logic                              ValidFIFO         , //sig for FIFO 's Arbiter
+    output reg                                ValidBRAM         , //sig for BRAM's Arbiter
+    output reg                                Dequeue           , //sig for FIFO
+    output reg                                ValidFIFO         , //sig for FIFO 's Arbiter
     output wire       [BRAM_ADDR_WIDTH  -1:0] DescAddrPointer   , 
-    output logic                              IssueValid        , //sig for chi-converter
+    output reg                                IssueValid        , //sig for chi-converter
     output CHI_Command                        Command          
     );
     

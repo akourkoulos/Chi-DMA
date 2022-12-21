@@ -22,48 +22,60 @@
 
 
 module FIFO#(
-  FIFO_WIDTH  = 32,
-  FIFO_LENGTH = 8
+  parameter FIFO_WIDTH  = 32,
+  parameter FIFO_LENGTH = 8   // must be a power of 2
 )(
     input  wire                              RST     ,
     input  wire                              Clk     ,
     input  wire  [FIFO_WIDTH - 1 : 0]        Inp     ,
     input  wire                              Enqueue ,
     input  wire                              Dequeue ,
-    output wire  [FIFO_WIDTH - 1 : 0]        Outp    ,
+    output reg   [FIFO_WIDTH - 1 : 0]        Outp    ,
     output wire                              FULL    ,
     output wire                              Empty
     );
     
-     reg [FIFO_WIDTH - 1 : 0] MyQueue [FIFO_LENGTH - 1 : 0];
+     reg  [$clog2(FIFO_LENGTH)       : 0] wraddr                        ; // write pointer
+     reg  [$clog2(FIFO_LENGTH)       : 0] rdaddr                        ; // read pointer
+
+     reg  [FIFO_WIDTH            - 1 : 0] MyQueue [FIFO_LENGTH - 1 : 0] ; // FIFO 
      
-     int state;
-     
-     assign Empty = (state == 0           ) ? 1 : 0 ;
-     assign FULL  = (state == FIFO_LENGTH ) ? 1 : 0 ;
-     
-     assign Outp  =  MyQueue[0] ;
-     
-      always_ff @ (posedge Clk) begin
-        if(RST)begin 
-            state <= 0 ;
-            for (int i = 0 ; i < FIFO_LENGTH ; i++) MyQueue[i] <= 'd0 ;
-        end
-        else begin  
-          if(Enqueue == 1 & (Dequeue == 0 | Empty) & !FULL) begin  // Enqueue case
-            MyQueue[state] <= Inp       ;
-            state          <= state + 1 ;
-          end
-          else if(Enqueue == 0 & Dequeue == 1 & !Empty) begin      // Dequeue case
-            for(int j = 0 ; j < FIFO_LENGTH - 1 ; j++) MyQueue[j] <= MyQueue[j+1];
-            MyQueue[FIFO_LENGTH - 1] <= 0         ;
-            state                    <= state - 1 ;
-          end
-          else if ( Enqueue == 1 & Dequeue == 1 & !Empty ) begin   // Enqueue and Dequeue case
-            for(int j=0 ; j < FIFO_LENGTH - 1 ; j++) MyQueue[j] <= MyQueue[j+1];
-            MyQueue[FIFO_LENGTH - 1] <= 0   ;
-            MyQueue[state - 1]       <= Inp ;
-          end            
-        end
+     // update Read pointer
+     always_ff @(posedge Clk) begin
+       if(RST)
+         rdaddr <= 0;
+       else begin
+         if (Dequeue & !Empty)
+          rdaddr <= rdaddr + 1 ; // increase read pointer when dequeue and not Empty
+       end
      end
-endmodule
+     // update Write pointer
+     always_ff@(posedge Clk)begin
+       if(RST)
+         wraddr <= 0;
+       else begin
+         if (Enqueue & !FULL)
+           wraddr <= wraddr + 1 ; // increase write pointer when enqueue and not FULL
+         else if(Enqueue & Dequeue & FULL)
+           wraddr <= wraddr + 1 ; // increase write pointer when enqueue and Dequeue and FULL
+       end
+     end
+     // insert Data in FIFO when enqueue and not FULL
+     always_ff@(posedge Clk)begin
+       if(RST)
+         MyQueue <= '{default : 0} ;
+       else begin
+         if ((Enqueue & !FULL) | (Enqueue & Dequeue & FULL))
+          MyQueue[wraddr[$clog2(FIFO_LENGTH) - 1 : 0]] <=  Inp ;
+       end
+     end
+     // Data out
+     assign Outp = MyQueue[rdaddr[$clog2(FIFO_LENGTH) - 1 : 0]] ;
+     // FIFO FULL
+     assign FULL = (wraddr[$clog2(FIFO_LENGTH) - 1 : 0] == rdaddr[$clog2(FIFO_LENGTH) - 1 : 0]) & 
+                        (wraddr[$clog2(FIFO_LENGTH)] != rdaddr[$clog2(FIFO_LENGTH)]);
+     // FIFO EMpty
+     assign Empty = (wraddr[$clog2(FIFO_LENGTH) - 1 : 0] == rdaddr[$clog2(FIFO_LENGTH) - 1 : 0]) & 
+                         (wraddr[$clog2(FIFO_LENGTH)] == rdaddr[$clog2(FIFO_LENGTH)]);
+    
+     endmodule

@@ -67,10 +67,10 @@ module TestFIFO#(
         Inp      = 0  ;
         Enqueue  = 1  ;
         Dequeue  = 1  ;
-        
+        #period;
         #(period*2);     // wait for period  
         RST      = 0  ;
-        Inp      = 0  ;
+        Inp      = 7  ;
         Enqueue  = 1  ;
         Dequeue  = 0  ;
         
@@ -131,6 +131,12 @@ module TestFIFO#(
         RST      = 0  ;
         Inp      = 'd6;
         Enqueue  = 0  ;
+        Dequeue  = 1  ;
+        
+        #(period*2);     // wait for period        
+        RST      = 0  ;
+        Inp      = 'd6;
+        Enqueue  = 1  ;
         Dequeue  = 1  ;
         
         #(period*2);     // wait for period        

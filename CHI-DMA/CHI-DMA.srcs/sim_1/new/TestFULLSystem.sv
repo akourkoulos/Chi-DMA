@@ -44,6 +44,7 @@ module TestFULLSystem#(
   parameter BRAM_COL_WIDTH      = 32   , // As the Data_packet field width
   parameter BRAM_ADDR_WIDTH     = 10   , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
   parameter CHI_DATA_WIDTH      = 64   ,
+  parameter MEM_ADDR_WIDTH      = 44   , 
   parameter ADDR_WIDTH_OF_DATA  = 6    , // log2(CHI_DATA_WIDTH)  
   parameter MAX_BytesToSend     = 5000 ,
   parameter P1_NUM_OF_TRANS     = 1    , // Number of inserted transfers for each phase
@@ -57,7 +58,7 @@ module TestFULLSystem#(
   parameter P9_NUM_OF_TRANS     = 450  ,   
   parameter LastPhase           = 9    ,// Number of Last Phase
   parameter PHASE_WIDTH         = 4    , // width of register that keeps the phase
-  parameter Test_FIFO_Length    = 120 
+  parameter Test_FIFO_Length    = 128 
 //--------------------------------------------------------------------------
 );
 
@@ -552,7 +553,7 @@ module TestFULLSystem#(
           &(((SigRXRSPFLIT.Opcode == `DBIDResp) | (SigRXRSPFLIT.Opcode == `CompDBIDResp)) & (SigRXRSPFLIT.TxnID == (SigTXREQFLITW.TxnID)))
           &((SigTXDATFLIT.Opcode == `NonCopyBackWrData) & (SigRXRSPFLIT.DBID == SigTXDATFLIT.TxnID))))
             // correct BE
-            if((NextLengthCountW == SigCommand.Length & (((SigCommand.Length < CHI_DATA_WIDTH) & (CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) > SigCommand.Length) & (SigTXDATFLIT.BE == (({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) & ~({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + SigCommand.Length))))
+            if((NextLengthCountW == SigCommand.Length & (((SigCommand.Length < CHI_DATA_WIDTH) & (CHI_DATA_WIDTH - SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0]) >= SigCommand.Length) & (SigTXDATFLIT.BE == (({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0])) & ~({CHI_DATA_WIDTH{1'b1}}<<(SigCommand.DstAddr[ADDR_WIDTH_OF_DATA - 1 : 0] + SigCommand.Length))))
             | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}<<(NextLengthCountW - lengthCountW)))) 
             | SigTXDATFLIT.BE == ~({CHI_DATA_WIDTH{1'b1}}>>(NextLengthCountW - lengthCountW)))begin
              // Correct
@@ -643,7 +644,7 @@ module TestFULLSystem#(
    always@(negedge Clk)begin
      #(period/2);
      if(myRFIFOReq.Enqueue | myWFIFOReq.Enqueue) begin
-       for(int i = 0 ; i < 2*Test_FIFO_Length & (myRFIFOReq.MyQueue[i] != 0 | myWFIFOReq.MyQueue[i] != 0) ; i++ )begin
+       for(int i = 0 ; i < 2*Test_FIFO_Length ; i++ )begin
          // if there is a Request with the same TxnID in ReadReqFIFO and the corresponding DataRsp hasnt arrived the print error. (MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] is TxnID of i element )
          if(ReqChan.TXREQFLIT.TxnID == myRFIFOReq.MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7] & myRFIFOReq.MyQueue[i] != 0 & myInbDataFIFO.MyQueue[i] == 0)begin
            $display("\n--ERROR :: TXNID : %d is already used for ReadReq : %p ", ReqChan.TXREQFLIT.TxnID,myRFIFOReq.MyQueue[i][REQ_FLIT_WIDTH - 19 : REQ_FLIT_WIDTH - 19 - 7]);
@@ -660,6 +661,29 @@ module TestFULLSystem#(
    
    //########################## End of CHI functionality Checking ##########################
    
+   //********************************* check if Data of finished transfer has sent correctly *********************************
+   always_ff@(posedge Clk) begin
+     if(DequeueCmnd & SigCommand.LastDescTrans)begin
+       for(int i = 0 ; i < TestVectorBRAM[2][SigCommand.DescAddr] * 8 ; i ++)begin
+         automatic int errorf = 0;
+         if(!(Simp_CHI_RSP.myDDR[(TestVectorBRAM[0][SigCommand.DescAddr] * 8) + i] == Simp_CHI_RSP.myDDR[(TestVectorBRAM[1][SigCommand.DescAddr] * 8) + i]))
+           errorf = 1 ;
+       
+         if(errorf == 0 & i == TestVectorBRAM[2][SigCommand.DescAddr] - 1)begin
+           $display("Correct Data Transfer for Desc %d",SigCommand.DescAddr);
+           $display("DataSrc : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[0][SigCommand.DescAddr] * 8)));
+           $display("DataDst : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[1][SigCommand.DescAddr] * 8)));
+         end
+         else if(i == TestVectorBRAM[2][SigCommand.DescAddr] - 1)begin
+           $display("--Error :: Data for Desc %d havent transfered correctly",SigCommand.DescAddr) ;
+           $display("DataSrc : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[0][SigCommand.DescAddr] * 8)));
+           $display("DataDst : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[1][SigCommand.DescAddr] * 8)));
+           $stop ;
+         end
+       end
+     end
+   end
+   //*************************************************************************************************************************
    
    //********************************* DISPLAY THE CORRECT TRANS *********************************
    // When All Transactions has Finished Print the correct ones   
@@ -673,7 +697,7 @@ module TestFULLSystem#(
        for(int i = 0 ; i < 2**BRAM_ADDR_WIDTH ; i++)begin
         //if for some reason a Descriptor is written but BTS != SB or lastDescAddr == 0 (not Fully sheduled)
          if((TestVectorBRAM[3][i] != TestVectorBRAM[2][i] | TestVectorBRAM[4][i] == 0) & TestVectorBRAM[2][i] != 0 )begin
-           $display("Desc : %d is not fully scheduled BTS : %d , SB : %D , LastDescTrans : %d", i,TestVectorBRAM[2][i],TestVectorBRAM[3][i],TestVectorBRAM[4][i]);
+           $display("Desc : %d is not fully scheduled BTS : %d , SB : %d , LastDescTrans : %d", i,TestVectorBRAM[2][i],TestVectorBRAM[3][i],TestVectorBRAM[4][i]);
            $stop;
          end
        end
@@ -715,4 +739,6 @@ module TestFULLSystem#(
      end
    end
 //***********************************************************************************************
+
+
 endmodule

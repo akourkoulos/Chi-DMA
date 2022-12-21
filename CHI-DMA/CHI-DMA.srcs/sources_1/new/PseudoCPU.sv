@@ -240,7 +240,7 @@ module PseudoCPU#(
           weA               = {BRAM_NUM_COL{1'b1}}                                                                                            ;
           addrA             = DescAddr                                                                                                        ;
           dinA.SrcAddr      = CHI_DATA_WIDTH + CHI_DATA_WIDTH * 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)                        ;
-          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)                                ;
+          dinA.DstAddr      = CHI_DATA_WIDTH * 100000 + CHI_DATA_WIDTH * 10 * insertedTrans  + $urandom_range(0,CHI_DATA_WIDTH)               ;
           dinA.BytesToSend  = ((CHI_DATA_WIDTH - insertedTrans) > 0) ?  (CHI_DATA_WIDTH - insertedTrans) :  $urandom_range(1,CHI_DATA_WIDTH)  ;
           dinA.SentBytes    = 0                                                                                                               ;
           dinA.Status       = `StatusActive                                                                                                   ;

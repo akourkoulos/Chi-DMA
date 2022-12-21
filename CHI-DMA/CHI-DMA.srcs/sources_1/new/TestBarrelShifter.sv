@@ -25,7 +25,7 @@
 module TestBarrelShifte#(
 //--------------------------------------------------------------------------
   parameter CHI_DATA_WIDTH      = 64                    , // Bytes
-  parameter ADDR_WIDTH_OF_DATA  = 7                     , // log2(CHI_DATA_WIDTH) + 1 
+  parameter ADDR_WIDTH_OF_DATA  = $clog2(CHI_DATA_WIDTH), // log2(CHI_DATA_WIDTH)  
   parameter SHIFT_WIDTH         = 9                     , // log2(CHI_DATA_WIDTH*8)
   parameter BRAM_COL_WIDTH      = 32                    ,
   parameter BRAM_ADDR_WIDTH     = 10                    ,
@@ -36,19 +36,19 @@ module TestBarrelShifte#(
   parameter NUM_OF_REPETITIONS  = 900
 //--------------------------------------------------------------------------
 );
-     reg                                                 RST          ;
-     reg                                                 Clk          ;
-     CHI_Command                                         CommandIn    ;
-     reg                                                 EnqueueIn    ;
-     reg                                                 DequeueBS    ;
-     DatInbChannel                                       DatInbChan() ;// Data inbound Chanel
-     wire                     [CHI_DATA_WIDTH   - 1 : 0] BEOut        ;
-     wire                     [CHI_DATA_WIDTH*8 - 1 : 0] DataOut      ;
-     wire                     [`RspErrWidth     - 1 : 0] DataError    ;
-     wire                     [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr     ;
-     wire                                                LastDescTrans;
-     wire                                                EmptyBS      ;
-     wire                                                FULLCmndBS   ;
+     reg                                                 RST           ;
+     reg                                                 Clk           ;
+     CHI_Command                                         CommandIn     ;
+     reg                                                 EnqueueIn     ;
+     reg                                                 ValidDataBS   ;
+     DatInbChannel                                       DatInbChan()  ;// Data inbound Chanel
+     wire                     [CHI_DATA_WIDTH   - 1 : 0] BEOut         ;
+     wire                     [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ;
+     wire                     [`RspErrWidth     - 1 : 0] DataError     ;
+     wire                     [BRAM_ADDR_WIDTH  - 1 : 0] DescAddr      ;
+     wire                                                LastDescTrans ;
+     wire                                                ReadyDataBS   ;
+     wire                                                FULLCmndBS    ;
      
     localparam period           = 20   ;   // duration for each bit = 20 * timescale = 20 * 1 ns  = 20ns  
     
@@ -57,14 +57,14 @@ module TestBarrelShifte#(
      .  Clk             (  Clk                      ),
      .  CommandIn       (  CommandIn                ),
      .  EnqueueIn       (  EnqueueIn                ),
-     .  DequeueBS       (  DequeueBS                ),
+     .  ValidDataBS     (  ValidDataBS              ),
      .  DatInbChan      (  DatInbChan     . INBOUND ),
      .  BEOut           (  BEOut                    ),
      .  DataOut         (  DataOut                  ),
      .  DataError       (  DataError                ),
      .  DescAddr        (  DescAddr                 ),
      .  LastDescTrans   (  LastDescTrans            ),
-     .  EmptyBS         (  EmptyBS                  ),
+     .  ReadyDataBS     (  ReadyDataBS              ),
      .  FULLCmndBS      (  FULLCmndBS               )
     );                
     //count Credits
@@ -126,12 +126,8 @@ module TestBarrelShifte#(
       end
     end
     
-    // Dequeue a write from BS when it is non-Empty
-    always begin
-      DequeueBS = !EmptyBS;
-      #period;
-    end
-    
+    // always ask for Data from BS
+    assign ValidDataBS = 1 ;
     
     // manage inputs
     initial
@@ -261,7 +257,7 @@ module TestBarrelShifte#(
             EnqueueCounter                <= EnqueueCounter + 1                                                    ;
           end
           
-          if(DequeueBS & !EmptyBS) begin
+          if(ValidDataBS & ReadyDataBS) begin
           // add extra write Data in TestVector 
             TestVector[4][WriteCounter] <= TestVector[4][WriteCounter] | (DataOut << DataPointerW*CHI_DATA_WIDTH*8) ;
             if(!UUT.DeqFIFO)
@@ -272,7 +268,7 @@ module TestBarrelShifte#(
             end         
           end
           
-          if(UUT.DeqData != 0)begin
+          if(UUT.DeqData)begin
           // add extra read Data in TestVector 
             TestVector[3][ReadCounter]<= TestVector[3][ReadCounter] | (UUT.DataFIFO.Data << DataPointerR*CHI_DATA_WIDTH*8) ;
             if(!UUT.DeqFIFO)
@@ -295,23 +291,23 @@ module TestBarrelShifte#(
         #period;
         for(int i = 0 ; i < NUM_OF_REPETITIONS ; i++)  begin // for every command in BS check
           automatic int errflag = 0 ;
-          for(int j = 0 ; j < CHI_DATA_WIDTH*8*Chunk ; j ++)begin
-          // Ckeck if Read data have been re-positioned with the right way to create WriteData
-            if(TestVector[4][i][j + ((TestVector[2][i][SHIFT_WIDTH - 1 : 0]%64)*8)] != TestVector[3][i][j + ((TestVector[1][i][SHIFT_WIDTH - 1 : 0]%64)*8)] & j < 8*TestVector[0][i])
+          for(int j = 0 ; j < 8*TestVector[0][i] ; j ++)begin
+          // Ckeck if Read data have been re-positioned with the right way to create WriteData ( TestVector[2][i][ADDR_WIDTH_OF_DATA - 1 : 0] = SrcAddr % 64)
+            if(TestVector[4][i][j + ((TestVector[2][i][ADDR_WIDTH_OF_DATA - 1 : 0])*8)] != TestVector[3][i][j + ((TestVector[1][i][ADDR_WIDTH_OF_DATA - 1 : 0])*8)]) 
             // if there is e problem Display it
             begin
-            errflag = 1 ;
-            $display("--ERROR :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Length -> %d :: Bit %d of Data does not match",i,TestVector[1][i][BRAM_COL_WIDTH - 1 : 0]%64 ,TestVector[2][i][BRAM_COL_WIDTH - 1 : 0]%64,TestVector[0][i][BRAM_COL_WIDTH - 1 : 0],j);
-            $display("DataSrc : %h",TestVector[3][i]);
-            $display("DataDst : %h",TestVector[4][i]);
-            $stop;
-            break;
+              errflag = 1 ;
+              $display("--ERROR :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Length -> %d :: Bit %d of Data addr does not match ",i,((TestVector[1][i][ADDR_WIDTH_OF_DATA - 1 : 0])) ,TestVector[2][i][ADDR_WIDTH_OF_DATA - 1 : 0],TestVector[0][i][BRAM_COL_WIDTH - 1 : 0],j);
+              $display("DataSrc : %h",TestVector[3][i]);
+              $display("DataDst : %h",TestVector[4][i]);
+              $stop;
+              break;
             end
           end
           if(errflag == 0)begin
-          $display("Correct :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Length -> %d ",i,TestVector[1][i][BRAM_COL_WIDTH - 1 : 0]%64 ,TestVector[2][i][BRAM_COL_WIDTH - 1 : 0]%64,TestVector[0][i][BRAM_COL_WIDTH - 1 : 0]);
-          $display("DataSrc : %h",TestVector[3][i]);
-          $display("DataDst : %h",TestVector[4][i]);
+            $display("Correct :: Repetition: %d , SrcAddr -> %d , DstAddr -> %d , Length -> %d ",i,TestVector[1][i][BRAM_COL_WIDTH - 1 : 0]%64 ,TestVector[2][i][BRAM_COL_WIDTH - 1 : 0]%64,TestVector[0][i][BRAM_COL_WIDTH - 1 : 0]);
+            $display("DataSrc : %h",TestVector[3][i]);
+            $display("DataDst : %h",TestVector[4][i]);
           end
         end
       end         

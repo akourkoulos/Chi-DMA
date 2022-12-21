@@ -278,7 +278,7 @@ module PseudoCPU#(
                 dinA                  = '{default : 0}                                                                       ;
                 dinA.SrcAddr          = $urandom_range(0,2**(BRAM_COL_WIDTH-6-1)) * CHI_DATA_WIDTH                           ; // 6 = log2(CHI_DATA_WIDTH)  so maxSrcAddr = 2^(BRAM_COL_WIDTH-1), SrcAddr is aligned
                 dinA.DstAddr          = $urandom_range(2**(BRAM_COL_WIDTH-6-1)+1,(2**(BRAM_COL_WIDTH-6))-1) * CHI_DATA_WIDTH ; // minDstAddr = 2^(BRAM_COL_WIDTH-1) + 1, maxDsyAddr = 2^(BRAM_COL_WIDTH) - 1,  DstAddr is aligned
-                dinA.BytesToSend      = $urandom_range(1,MAX_BytesToSend)                                                    ;
+                dinA.BytesToSend      = 1000                                                    ;
                 dinA.SentBytes        = 0                                                                                    ;
                 dinA.Status           = `StatusActive                                                                        ;
                 IncrRandBRAMpointer   = 1                                                                                    ;

@@ -76,10 +76,10 @@ module CHI_DMA#(
     // BS signals                                                                                                                                        
     CHI_Command                            CommandBS     ;
     wire                                   EnqueueIn     ;
-    wire                                   DequeueBS     ;
+    wire                                   ValidDataBS   ;
     wire        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ;
     wire        [CHI_DATA_WIDTH*8 - 1 : 0] DataOutBS     ;
-    wire                                   EmptyBS       ;
+    wire                                   ReadyDataBS   ;
     wire                                   FULLCmndBS    ;
     wire        [`RspErrWidth     - 1 : 0] DataError     ;
     wire                                   LastDescTrans ;
@@ -192,7 +192,7 @@ module CHI_DMA#(
      .BE                 (BEOut                       ) ,                                       
      .ShiftedData        (DataOutBS                   ) ,                                       
      .DataErr            (DataError                   ) ,
-     .EmptyBS            (EmptyBS                     ) ,
+     .ReadyDataBS        (ReadyDataBS                 ) ,
      .FULLCmndBS         (FULLCmndBS                  ) ,//--------from BS-------- 
      .ReqChan            (ReqChan                     ) ,//-----channels--------
      .RspOutbChan        (RspOutbChan                 ) ,
@@ -206,7 +206,7 @@ module CHI_DMA#(
      .WEBRAM             (BRAMweCHIC                  ) ,//----end Arbiter BRAM----
      .EnqueueBS          (EnqueueIn                   ) ,//-------for BS-------
      .CommandBS          (CommandBS                   ) ,
-     .DequeueBS          (DequeueBS                   )  //-------end BS-------
+     .ValidDataBS        (ValidDataBS                 )  //-------end BS-------
     );
     // Barrel Shifter
     BarrelShifter BS     (
@@ -214,14 +214,14 @@ module CHI_DMA#(
      .  Clk              ( Clk           ),
      .  CommandIn        ( CommandBS     ),//-- from CHI-Conv --
      .  EnqueueIn        ( EnqueueIn     ),
-     .  DequeueBS        ( DequeueBS     ),//-------------------
+     .  ValidDataBS      ( ValidDataBS   ),//-------------------
      .  DatInbChan       ( DatInbChan    ), // Inb Data Chan
      .  BEOut            ( BEOut         ),//-- fror CHI-Conv --
      .  DataOut          ( DataOutBS     ),
      .  DataError        ( DataError     ),
      .  DescAddr         ( DescAddrBS    ),
      .  LastDescTrans    ( LastDescTrans ),
-     .  EmptyBS          ( EmptyBS       ),
+     .  ReadyDataBS      ( ReadyDataBS   ),
      .  FULLCmndBS       ( FULLCmndBS    ) //-------------------
     );      
 endmodule

@@ -13,13 +13,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="836623333fs"></ZoomStartTime>
-      <ZoomEndTime time="1047001120fs"></ZoomEndTime>
-      <Cursor1Time time="1123240000fs"></Cursor1Time>
+      <ZoomStartTime time="1913750fs"></ZoomStartTime>
+      <ZoomEndTime time="2413251fs"></ZoomEndTime>
+      <Cursor1Time time="2147750fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="238"></NameColumnWidth>
-      <ValueColumnWidth column_width="304"></ValueColumnWidth>
+      <ValueColumnWidth column_width="299"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="16" />
    <wvobject fp_name="/TestBarrelShifte/UUT/RST" type="logic">
@@ -30,6 +30,10 @@
       <obj_property name="ElementShortName">Clk</obj_property>
       <obj_property name="ObjectShortName">Clk</obj_property>
    </wvobject>
+   <wvobject type="divider" fp_name="divider552">
+      <obj_property name="label">BS</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
    <wvobject fp_name="group184" type="group">
       <obj_property name="label">Input</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -37,15 +41,21 @@
       <wvobject fp_name="/TestBarrelShifte/UUT/EnqueueIn" type="logic">
          <obj_property name="ElementShortName">EnqueueIn</obj_property>
          <obj_property name="ObjectShortName">EnqueueIn</obj_property>
+         <obj_property name="CustomSignalColor">#E0FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/TestBarrelShifte/UUT/DequeueBS" type="logic">
+      <wvobject fp_name="/TestBarrelShifte/DequeueBS" type="logic">
          <obj_property name="ElementShortName">DequeueBS</obj_property>
          <obj_property name="ObjectShortName">DequeueBS</obj_property>
+         <obj_property name="CustomSignalColor">#E0FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/CommandIn" type="array">
          <obj_property name="ElementShortName">CommandIn</obj_property>
          <obj_property name="ObjectShortName">CommandIn</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#E0FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group185" type="group">
@@ -55,64 +65,123 @@
       <wvobject fp_name="/TestBarrelShifte/UUT/DataOut" type="array">
          <obj_property name="ElementShortName">DataOut[511:0]</obj_property>
          <obj_property name="ObjectShortName">DataOut[511:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/EmptyBS" type="logic">
          <obj_property name="ElementShortName">EmptyBS</obj_property>
          <obj_property name="ObjectShortName">EmptyBS</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/FULLCmndBS" type="logic">
          <obj_property name="ElementShortName">FULLCmndBS</obj_property>
          <obj_property name="ObjectShortName">FULLCmndBS</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/BEOut" type="array">
          <obj_property name="ElementShortName">BEOut[63:0]</obj_property>
          <obj_property name="ObjectShortName">BEOut[63:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/DataError" type="array">
          <obj_property name="ElementShortName">DataError[1:0]</obj_property>
          <obj_property name="ObjectShortName">DataError[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/DescAddr" type="array">
          <obj_property name="ElementShortName">DescAddr[9:0]</obj_property>
          <obj_property name="ObjectShortName">DescAddr[9:0]</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/UUT/LastDescTrans" type="logic">
          <obj_property name="ElementShortName">LastDescTrans</obj_property>
          <obj_property name="ObjectShortName">LastDescTrans</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group247" type="group">
       <obj_property name="label">Data inb channel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/TestBarrelShifte/DatInbChan/RXDATFLITPEND" type="logic">
          <obj_property name="ElementShortName">RXDATFLITPEND</obj_property>
          <obj_property name="ObjectShortName">RXDATFLITPEND</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/DatInbChan/RXDATFLITV" type="logic">
          <obj_property name="ElementShortName">RXDATFLITV</obj_property>
          <obj_property name="ObjectShortName">RXDATFLITV</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/DatInbChan/RXDATFLIT" type="array">
          <obj_property name="ElementShortName">RXDATFLIT</obj_property>
          <obj_property name="ObjectShortName">RXDATFLIT</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/TestBarrelShifte/DatInbChan/RXDATLCRDV" type="logic">
          <obj_property name="ElementShortName">RXDATLCRDV</obj_property>
          <obj_property name="ObjectShortName">RXDATLCRDV</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="/TestBarrelShifte/UUT/shift" type="array">
       <obj_property name="ElementShortName">shift[8:0]</obj_property>
       <obj_property name="ObjectShortName">shift[8:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/TestBarrelShifte/UUT/ShiftedData" type="array">
       <obj_property name="ElementShortName">ShiftedData[511:0]</obj_property>
       <obj_property name="ObjectShortName">ShiftedData[511:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/TestBarrelShifte/UUT/PrevShiftedData" type="array">
       <obj_property name="ElementShortName">PrevShiftedData[511:0]</obj_property>
       <obj_property name="ObjectShortName">PrevShiftedData[511:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#F0E68C</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#F0E68C</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/CountWriteBytes" type="array">
+      <obj_property name="ElementShortName">CountWriteBytes[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CountWriteBytes[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/NextWriteCnt" type="array">
+      <obj_property name="ElementShortName">NextWriteCnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NextWriteCnt[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/CountReadBytes" type="array">
+      <obj_property name="ElementShortName">CountReadBytes[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CountReadBytes[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TestBarrelShifte/UUT/NextReadCnt" type="array">
+      <obj_property name="ElementShortName">NextReadCnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NextReadCnt[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="group281" type="group">
       <obj_property name="label">FIFOs</obj_property>
@@ -144,57 +213,54 @@
             <obj_property name="CustomSignalColor">#FF00FF</obj_property>
             <obj_property name="UseCustomSignalColor">true</obj_property>
          </wvobject>
-         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/state" type="array">
-            <obj_property name="ElementShortName">state[31:0]</obj_property>
-            <obj_property name="ObjectShortName">state[31:0]</obj_property>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/FULL" type="logic">
+            <obj_property name="ElementShortName">FULL</obj_property>
+            <obj_property name="ObjectShortName">FULL</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/Empty" type="logic">
+            <obj_property name="ElementShortName">Empty</obj_property>
+            <obj_property name="ObjectShortName">Empty</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOData/counter" type="array">
+            <obj_property name="ElementShortName">counter[5:0]</obj_property>
+            <obj_property name="ObjectShortName">counter[5:0]</obj_property>
             <obj_property name="CustomSignalColor">#FF00FF</obj_property>
             <obj_property name="UseCustomSignalColor">true</obj_property>
          </wvobject>
       </wvobject>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/state" type="array">
-      <obj_property name="ElementShortName">state[31:0]</obj_property>
-      <obj_property name="ObjectShortName">state[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/next_state" type="array">
-      <obj_property name="ElementShortName">next_state[31:0]</obj_property>
-      <obj_property name="ObjectShortName">next_state[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/CountWriteBytes" type="array">
-      <obj_property name="ElementShortName">CountWriteBytes[31:0]</obj_property>
-      <obj_property name="ObjectShortName">CountWriteBytes[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/NextWriteCnt" type="array">
-      <obj_property name="ElementShortName">NextWriteCnt[31:0]</obj_property>
-      <obj_property name="ObjectShortName">NextWriteCnt[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/CountReadBytes" type="array">
-      <obj_property name="ElementShortName">CountReadBytes[31:0]</obj_property>
-      <obj_property name="ObjectShortName">CountReadBytes[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TestBarrelShifte/UUT/NextReadCnt" type="array">
-      <obj_property name="ElementShortName">NextReadCnt[31:0]</obj_property>
-      <obj_property name="ObjectShortName">NextReadCnt[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="group715" type="group">
-      <obj_property name="label">Crds</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/TestBarrelShifte/UUT/BEOut" type="array">
-         <obj_property name="ElementShortName">BEOut[63:0]</obj_property>
-         <obj_property name="ObjectShortName">BEOut[63:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestBarrelShifte/UUT/GivenDataCrd" type="array">
-         <obj_property name="ElementShortName">GivenDataCrd[5:0]</obj_property>
-         <obj_property name="ObjectShortName">GivenDataCrd[5:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/TestBarrelShifte/UUT/DataCrdInbound" type="array">
-         <obj_property name="ElementShortName">DataCrdInbound[14:0]</obj_property>
-         <obj_property name="ObjectShortName">DataCrdInbound[14:0]</obj_property>
+      <wvobject fp_name="group557" type="group">
+         <obj_property name="label">CmndFIFO</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOCmnd/MyQueue" type="array">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">MyQueue[31:0][106:0]</obj_property>
+            <obj_property name="ObjectShortName">MyQueue[31:0][106:0]</obj_property>
+            <obj_property name="label">cmndFIFO</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOCmnd/FULL" type="logic">
+            <obj_property name="ElementShortName">FULL</obj_property>
+            <obj_property name="ObjectShortName">FULL</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOCmnd/Empty" type="logic">
+            <obj_property name="ElementShortName">Empty</obj_property>
+            <obj_property name="ObjectShortName">Empty</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
+         <wvobject fp_name="/TestBarrelShifte/UUT/FIFOCmnd/counter" type="array">
+            <obj_property name="ElementShortName">counter[5:0]</obj_property>
+            <obj_property name="ObjectShortName">counter[5:0]</obj_property>
+            <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+            <obj_property name="UseCustomSignalColor">true</obj_property>
+         </wvobject>
       </wvobject>
    </wvobject>
 </wave_config>

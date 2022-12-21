@@ -124,8 +124,10 @@ module TestCompleter#(
              CompDataPack.LastDescTrans   = $urandom()                         ;
              CompDataPack.DBIDRespErr     = $urandom_range(2)                  ;
              CompDataPack.DataRespErr     = $urandom_range(2)                  ;
-             ValidUpdate                  = 1                                  ;
-             i = i + 1                                                         ;
+             if(CompDataPack.DBIDRespErr != 0 | CompDataPack.LastDescTrans != 0 | CompDataPack.DataRespErr!= 0)begin
+               ValidUpdate                = 1                                  ;
+               i = i + 1                                                       ;
+             end
              #(period*2);
              RST                          = 0 ;
              CompDataPack.LastDescTrans   = 0 ;
@@ -177,7 +179,7 @@ module TestCompleter#(
            else if(ValidUpdate & CompDataPack.LastDescTrans == 0 & CompDataPack.DBIDRespErr == 0 & CompDataPack.DataRespErr == 0)begin
              RepetPointer <= RepetPointer + 1 ;
            end
-           else if(UUT.Dequeue )begin
+           else if(UUT.Dequeue)begin
              RepetPointer <= RepetPointer + 1 ;
            end
            // When all CompDataPacket In are finished check corectness of module

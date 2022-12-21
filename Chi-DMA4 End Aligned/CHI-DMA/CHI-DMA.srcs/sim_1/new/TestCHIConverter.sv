@@ -47,7 +47,7 @@ module TestCHIConverter#(
   parameter CHI_DATA_WIDTH     = 64  , //Bytes
   parameter Chunk              = 5   ,
   parameter NUM_OF_REPETITIONS = 500 ,
-  parameter FIFO_Length        = 120
+  parameter FIFO_Length        = 128
 //----------------------------------------------------------------------
 );
 

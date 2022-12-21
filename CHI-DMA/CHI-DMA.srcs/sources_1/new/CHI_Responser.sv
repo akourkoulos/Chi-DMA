@@ -41,9 +41,11 @@
 
 module CHI_Responser#(
 //--------------------------------------------------------------------------
-  parameter FIFO_Length        = 120 ,
-  parameter BRAM_COL_WIDTH     = 32  ,           
-  parameter CHI_DATA_WIDTH     = 64                        
+  parameter FIFO_Length         = 120                      ,
+  parameter BRAM_COL_WIDTH      = 32                       , 
+  parameter MEM_ADDR_WIDTH      = 44                       , 
+  parameter CHI_DATA_WIDTH      = 64                       ,
+  parameter ADDR_WIDTH_OF_DATA  = $clog2(CHI_DATA_WIDTH)     // log2(CHI_DATA_WIDTH)  
 //--------------------------------------------------------------------------
 )(
     input            Clk               ,
@@ -57,23 +59,26 @@ module CHI_Responser#(
     
     localparam period = 20;
     
+    reg     [2**MEM_ADDR_WIDTH  + 2 : 0] myDDR                  ;
+    reg     [2**MEM_ADDR_WIDTH  + 2 : 0] ShiftedDDR             ;
     //Crds signals
-    reg     [`CrdRegWidth      - 1 : 0] CountDataCrdsInb  = 0  ; 
-    reg     [`CrdRegWidth      - 1 : 0] CountRspCrdsInb   = 0  ;
-    reg     [`CrdRegWidth      - 1 : 0] CountReqCrdsOutb  = 0  ; 
-    reg     [`CrdRegWidth      - 1 : 0] CountDataCrdsOutb = 0  ;
-    reg     [`CrdRegWidth      - 1 : 0] CountRspCrdsOutb  = 0  ;
-    int                                 GivenReqCrds           ;// use in order not to give more crds than fifo length
+    reg     [`CrdRegWidth       - 1 : 0] CountDataCrdsInb  = 0  ; 
+    reg     [`CrdRegWidth       - 1 : 0] CountRspCrdsInb   = 0  ;
+    reg     [`CrdRegWidth       - 1 : 0] CountReqCrdsOutb  = 0  ; 
+    reg     [`CrdRegWidth       - 1 : 0] CountDataCrdsOutb = 0  ;
+    reg     [`CrdRegWidth       - 1 : 0] CountRspCrdsOutb  = 0  ;
+    int                                  GivenReqCrds           ;// use in order not to give more crds than fifo length
     //FIFO signals
-    reg                                 SigDeqReqR             ;
-    reg                                 SigReqEmptyR           ;
-    reg                                 SigDeqReqW             ;
-    reg                                 SigReqEmptyW           ;
-    ReqFlit                             SigTXREQFLITR          ;
-    ReqFlit                             SigTXREQFLITW          ;
+    reg                                  SigDeqReqR             ;
+    reg                                  SigReqEmptyR           ;
+    reg                                  SigDeqReqW             ;
+    reg                                  SigReqEmptyW           ;
+    ReqFlit                              SigTXREQFLITR          ;
+    ReqFlit                              SigTXREQFLITW          ;
+    reg     [MEM_ADDR_WIDTH     - 1 : 0] SigAddr                ; 
     
-    reg     [BRAM_COL_WIDTH    - 1 : 0] SrcAddrReg             ; // reg to see if NextReadReqAddr is contiouse with the last transaction(so DataRsp must come faster)
-    reg     [`DBIDRespWidth    - 1 : 0] DBID_Count    = 0      ; // NextDBID field for DBID RSP
+    reg     [BRAM_COL_WIDTH     - 1 : 0] SrcAddrReg             ; // reg to see if NextReadReqAddr is contiouse with the last transaction(so DataRsp must come faster)
+    reg     [`DBIDRespWidth     - 1 : 0] DBID_Count    = 0      ; // NextDBID field for DBID RSP
     
    // Read Req FIFO (keeps all the uncomplete read Requests)
    FIFO #(     
@@ -107,6 +112,16 @@ module CHI_Responser#(
        .Empty    ( SigReqEmptyW                                                     ) 
        );
        
+    //initialize DDR
+    genvar i ;
+    generate 
+    for(i = 0 ; i < 2**(MEM_ADDR_WIDTH) ; i++)
+      always_ff@(posedge Clk)  
+        if(RST)
+          begin
+            myDDR[(i+1)*8 - 1:i*8] <= $urandom();
+      end 
+    endgenerate;
        
     //Count Converter's inbound Crds
     always_ff@(posedge Clk) begin
@@ -214,6 +229,9 @@ module CHI_Responser#(
           #(2*period*$urandom_range(40) + 4*period);  // random delay if addresses arent continuous
         end
           DatInbChan.RXDATFLITV = 1;
+          // used to take hte correct bytes from DDR for read Rsponse
+          assign ShiftedDDR = myDDR >> ({SigTXREQFLITR.Addr[MEM_ADDR_WIDTH - 1 : ADDR_WIDTH_OF_DATA],{ADDR_WIDTH_OF_DATA{1'b0}}} * 8);
+          // Data FLIT
           DatInbChan.RXDATFLIT = '{default     : 0                                            ,                       
                                     QoS        : 0                                            ,
                                     TgtID      : 1                                            ,
@@ -228,8 +246,8 @@ module CHI_Responser#(
                                     CCID       : 0                                            , 
                                     DataID     : 0                                            ,
                                     TraceTag   : 0                                            ,
-                                    BE         : {64{1'b1}}                                   ,
-                                    Data       : 2**$urandom_range(0,512) - $urandom()        ,  //512 width of data
+                                    BE         : {CHI_DATA_WIDTH{1'b1}}                       ,
+                                    Data       : ShiftedDDR[CHI_DATA_WIDTH * 8 : 0]           , //512 width of data
                                     DataCheck  : 0                                            ,
                                     Poison     : 0                                        
                                     }; 

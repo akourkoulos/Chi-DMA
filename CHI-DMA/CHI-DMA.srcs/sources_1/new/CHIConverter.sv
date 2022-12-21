@@ -44,20 +44,24 @@ import CompleterPkg::*;
 
 module CHIConverter#(    
 //--------------------------------------------------------------------------
-  parameter BRAM_ADDR_WIDTH     = 10                                     ,
-  parameter BRAM_NUM_COL        = 8                                      , //As the Data_packet fields
-  parameter BRAM_COL_WIDTH      = 32                                     ,
-  parameter MEM_ADDR_WIDTH      = 44                                     , 
-  parameter CMD_FIFO_LENGTH     = 32                                     ,
-  parameter DATA_FIFO_LENGTH    = 32                                     ,
-  parameter SIZE_WIDTH          = BRAM_ADDR_WIDTH + 7 + 1                , //DescAddr*BRAM_ADDR_WIDTH + Size*(log2(CHI_DATA_WIDTH) + 1) + LastDescTrans*1 
-  parameter COUNTER_WIDTH       = 6                                      , //log2(DATA_FIFO_LENGTH) + 1
-  parameter CHI_DATA_WIDTH      = 64                                     , //Bytes
-  parameter ADDR_WIDTH_OF_DATA  = 6                                      , // log2(CHI_DATA_WIDTH)  
-  parameter QoS                 = 8                                      , //??
-  parameter TgtID               = 2                                      , //??
-  parameter SrcID               = 1                                        //??
-//--------------------------------------------------------------------------
+//-----------------------------BRAM-Parameters------------------------------  
+  parameter BRAM_ADDR_WIDTH    = 10                                     ,
+  parameter BRAM_NUM_COL       = 8                                      , //As the Data_packet fields
+  parameter BRAM_COL_WIDTH     = 32                                     ,
+//-----------------------------FIFOs-Parameters--------------------------- 
+  parameter CMD_FIFO_LENGTH    = 32                                     ,
+  parameter DATA_FIFO_LENGTH   = 32                                     ,
+  parameter SIZE_WIDTH         = BRAM_ADDR_WIDTH + 7 + 1                , //DescAddr*BRAM_ADDR_WIDTH + Size*(log2(CHI_DATA_WIDTH) + 1) + LastDescTrans*1 
+  parameter COUNTER_WIDTH      = $clog2(DATA_FIFO_LENGTH) + 1           , //log2(DATA_FIFO_LENGTH) + 1 , Width of counter that counts free space of Data-DBID FIFO
+//-----------------------------CHI-Parameters----------------------------- 
+  parameter MEM_ADDR_WIDTH     = 44                                     , 
+  parameter CHI_DATA_WIDTH     = 64                                     , //Bytes
+  parameter ADDR_WIDTH_OF_DATA = $clog2(CHI_DATA_WIDTH)                 , // log2(CHI_DATA_WIDTH)  
+  parameter QoS                = 8                                      , //??
+  parameter TgtID              = 2                                      , //??
+  parameter SrcID              = 1                                        //??
+//--------------------------------------------------------------------------  
+
 )(
     input                                                                       Clk               ,
     input                                                                       RST               ,
@@ -70,7 +74,7 @@ module CHIConverter#(
     input                                           [CHI_DATA_WIDTH  - 1 : 0]   BE                , 
     input                                           [CHI_DATA_WIDTH*8- 1 : 0]   ShiftedData       ,
     input                                           [`RspErrWidth    - 1 : 0]   DataErr           ,
-    input                                                                       EmptyBS           ,
+    input                                                                       ReadyDataBS       ,
     input                                                                       FULLCmndBS        ,
     ReqChannel     .OUTBOUND                                                    ReqChan           , // Request ChannelS
     RspOutbChannel .OUTBOUND                                                    RspOutbChan       , // Response outbound Chanel
@@ -84,7 +88,7 @@ module CHIConverter#(
     output                                           [BRAM_NUM_COL    - 1 : 0]  WEBRAM            ,
     output                                                                      EnqueueBS         , // For BS
     output                     CHI_Command                                      CommandBS         ,
-    output                                                                      DequeueBS
+    output                                                                      ValidDataBS
     );                         
     
    // Command FIFO signals
@@ -171,30 +175,34 @@ module CHIConverter#(
        );     
        
    // Completer (Status Updater)
-   Completer_Packet CompDataPack ;
+   Completer_Packet CompDataPack     ;
+   wire             EnqueueCompleter ;
    assign CompDataPack = '{ default         : 0                   ,
                             LastDescTrans   : LastDescTrans       ,
                             DescAddr        : DescAddr            ,
                             DBIDRespErr     : SigDBIDPack.RespErr ,
                             DataRespErr     : DataErr               };
-   Completer #(     
+    
+    assign EnqueueCompleter = SigDeqDBID & (LastDescTrans | SigDBIDPack.RespErr != 0 | DataErr != 0) ; 
+     
+      Completer #(     
        .BRAM_ADDR_WIDTH ( BRAM_ADDR_WIDTH                      ) ,            
        .BRAM_NUM_COL    ( BRAM_NUM_COL                         ) ,        
        .FIFO_Length     ( DATA_FIFO_LENGTH                     ) , 
        .FIFO_WIDTH      ( BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1 )   // FIFO_WIDTH is DescAdd + RespErrorWidth + LastDescTrans     
        )
        myCompleter   (     
-       .RST          ( RST           ) ,      
-       .Clk          ( Clk           ) ,      
-       .CompDataPack ( CompDataPack  ) , 
-       .ValidUpdate  ( SigDeqDBID    ) ,
-       .DescData     ( DataBRAM      ) , 
-       .ReadyBRAM    ( ReadyBRAM     ) ,
-       .ValidBRAM    ( ValidBRAM     ) ,
-       .AddrOut      ( AddrBRAM      ) ,
-       .DataOut      ( DescStatus    ) ,
-       .WE           ( WEBRAM        ) ,
-       .FULL         ( FULLCmplter   )
+       .RST          ( RST              ) ,      
+       .Clk          ( Clk              ) ,      
+       .CompDataPack ( CompDataPack     ) , 
+       .ValidUpdate  ( EnqueueCompleter ) ,
+       .DescData     ( DataBRAM         ) , 
+       .ReadyBRAM    ( ReadyBRAM        ) ,
+       .ValidBRAM    ( ValidBRAM        ) ,
+       .AddrOut      ( AddrBRAM         ) ,
+       .DataOut      ( DescStatus       ) ,
+       .WE           ( WEBRAM           ) ,
+       .FULL         ( FULLCmplter      )
        );
     
    // $$$$$$$$$$$$$$$$$$TxnID producer$$$$$$$$$$$$$$$$$$
@@ -440,11 +448,11 @@ module CHIConverter#(
    
     // ****************** Data Sender ******************
    // Enable valid of CHI-DATA chanel 
-   assign DatOutbChan.TXDATFLITV = (!EmptyBS & !SigDBIDEmpty & !FULLCmplter & DataCrdOutbound != 0) ? 1 : 0 ;
+   assign DatOutbChan.TXDATFLITV = (ReadyDataBS & ValidDataBS) ;
    // Dequeue FIFOs for DATA transfer 
    assign SigDeqDBID = DatOutbChan.TXDATFLITV ;
    // Dequeue BarrelShifter first sifted Data 
-   assign DequeueBS  = SigDeqDBID ;
+   assign ValidDataBS  = !SigDBIDEmpty & !FULLCmplter & DataCrdOutbound != 0 ;
    // Create Request Write flit 
    assign DatOutbChan.TXDATFLIT    = '{default    : 0                               ,                       
                                        QoS        : QoS                             ,

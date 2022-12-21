@@ -28,7 +28,7 @@ import CompleterPkg::*;
 module Completer#( 
   parameter BRAM_ADDR_WIDTH   = 10                                   ,
   parameter BRAM_NUM_COL      = 8                                    ,  // As the Data_packet fields
-  parameter FIFO_Length       = 32                                   ,
+  parameter FIFO_Length       = 8                                    ,
   parameter FIFO_WIDTH        = BRAM_ADDR_WIDTH + `RspErrWidth*2 + 1    // Width is DescAdd + RespErrorWidth*2 + LastDescTrans
 )(
     input                                                RST          ,
@@ -52,9 +52,6 @@ module Completer#(
     wire              Empty      ;
     Completer_Packet  FIFODATA   ;
     
-    
-    assign Enqueue =  ValidUpdate & (CompDataPack.LastDescTrans | CompDataPack.DBIDRespErr != `NoError |  CompDataPack.DataRespErr != `NoError ) ;
-    
     // Address FIFO 
        FIFO #(     
        FIFO_WIDTH   ,   //FIFO_WIDTH       
@@ -64,7 +61,7 @@ module Completer#(
        .RST         ( RST          ) ,      
        .Clk         ( Clk          ) ,      
        .Inp         ( CompDataPack ) , 
-       .Enqueue     ( Enqueue      ) , 
+       .Enqueue     ( ValidUpdate  ) , 
        .Dequeue     ( Dequeue      ) , 
        .Outp        ( FIFODATA     ) , 
        .FULL        ( FULL         ) , 

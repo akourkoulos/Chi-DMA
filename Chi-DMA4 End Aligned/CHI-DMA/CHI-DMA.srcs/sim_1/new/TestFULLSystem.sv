@@ -53,7 +53,7 @@ module TestFULLSystem#(
   parameter P6_NUM_OF_TRANS   = 450  ,   
   parameter LastPhase         = 6    ,// Number of Last Phase
   parameter PHASE_WIDTH       = 3    , // width of register that keeps the phase
-  parameter Test_FIFO_Length  = 120 
+  parameter Test_FIFO_Length  = 128 
 //--------------------------------------------------------------------------
 );
 

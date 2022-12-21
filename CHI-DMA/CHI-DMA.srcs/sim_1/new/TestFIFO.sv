@@ -24,7 +24,7 @@
 
 module TestFIFO#(
   FIFO_WIDTH  = 16,
-  FIFO_LENGTH = 4
+  FIFO_LENGTH = 6
 );
     reg                               RST     ;
     reg                               Clk     ;
@@ -67,7 +67,7 @@ module TestFIFO#(
         Inp      = 0  ;
         Enqueue  = 1  ;
         Dequeue  = 1  ;
-        
+        #period ;
         #(period*2);     // wait for period  
         RST      = 0  ;
         Inp      = 0  ;
@@ -138,6 +138,7 @@ module TestFIFO#(
         Inp      = 'd6;
         Enqueue  = 1  ;
         Dequeue  = 1  ;
+        #(period*2);     // wait for period        
         $stop ;
         end 
 endmodule

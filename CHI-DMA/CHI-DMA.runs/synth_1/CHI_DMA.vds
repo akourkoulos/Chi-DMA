@@ -2,25 +2,25 @@
 # Vivado v2019.2 (64-bit)
 # SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
 # IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
-# Start of session at: Wed Dec 14 10:59:50 2022
-# Process ID: 7848
+# Start of session at: Tue Dec 20 17:54:03 2022
+# Process ID: 11824
 # Current directory: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1
 # Command line: vivado.exe -log CHI_DMA.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source CHI_DMA.tcl
 # Log file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.vds
 # Journal file: C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
 source CHI_DMA.tcl -notrace
-Command: synth_design -top CHI_DMA -part xc7vx485tffg1157-1 -mode out_of_context
+create_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 412.895 ; gain = 111.688
+Command: synth_design -top CHI_DMA -part xcvu37p-fsvh2892-2L-e -mode out_of_context
 Starting synth_design
-Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t'
-INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t'
-INFO: [Common 17-86] Your Synthesis license expires in 3 day(s)
-INFO: [Common 17-1540] The version limit for your license is '2022.11' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
-INFO: [Device 21-403] Loading part xc7vx485tffg1157-1
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu37p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu37p'
+INFO: [Common 17-86] Your Synthesis license expires in 29 day(s)
+INFO: [Device 21-403] Loading part xcvu37p-fsvh2892-2L-e
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 1348 
+INFO: Helper process launched with PID 8568 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 1108.848 ; gain = 236.984
+Starting RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1982.934 ; gain = 213.863
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'CHI_DMA' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHI_DMA.sv:25]
 INFO: [Synth 8-6157] synthesizing module 'ReqChannel' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/my_package.sv:134]
@@ -67,11 +67,11 @@ INFO: [Synth 8-6157] synthesizing module 'CHIConverter' [C:/Users/Aggelos/Deskto
 	Parameter BRAM_ADDR_WIDTH bound to: 10 - type: integer 
 	Parameter BRAM_NUM_COL bound to: 8 - type: integer 
 	Parameter BRAM_COL_WIDTH bound to: 32 - type: integer 
-	Parameter MEM_ADDR_WIDTH bound to: 44 - type: integer 
 	Parameter CMD_FIFO_LENGTH bound to: 32 - type: integer 
 	Parameter DATA_FIFO_LENGTH bound to: 32 - type: integer 
 	Parameter SIZE_WIDTH bound to: 18 - type: integer 
 	Parameter COUNTER_WIDTH bound to: 6 - type: integer 
+	Parameter MEM_ADDR_WIDTH bound to: 44 - type: integer 
 	Parameter CHI_DATA_WIDTH bound to: 64 - type: integer 
 	Parameter ADDR_WIDTH_OF_DATA bound to: 6 - type: integer 
 	Parameter QoS bound to: 8 - type: integer 
@@ -95,7 +95,7 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO__parameterized2' [C:/Users/Aggelo
 	Parameter FIFO_LENGTH bound to: 32 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO__parameterized2' (5#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:24]
 INFO: [Synth 8-6155] done synthesizing module 'Completer' (6#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/Completer.sv:28]
-WARNING: [Synth 8-6014] Unused sequential element RspCrdOutbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:395]
+WARNING: [Synth 8-6014] Unused sequential element RspCrdOutbound_reg was removed.  [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:403]
 INFO: [Synth 8-6155] done synthesizing module 'CHIConverter' (7#1) [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:45]
 INFO: [Synth 8-6157] synthesizing module 'BarrelShifter' [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:28]
 	Parameter CHI_DATA_WIDTH bound to: 64 - type: integer 
@@ -214,7 +214,7 @@ WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RX
 WARNING: [Synth 8-3331] design BarrelShifter has unconnected port DatInbChan\.RXDATFLIT[BE][21]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:40 ; elapsed = 00:00:42 . Memory (MB): peak = 1353.734 ; gain = 481.871
+Finished RTL Elaboration : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 2109.211 ; gain = 340.141
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -227,55 +227,57 @@ Report Check Netlist:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:47 ; elapsed = 00:00:50 . Memory (MB): peak = 1373.582 ; gain = 501.719
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:19 ; elapsed = 00:00:21 . Memory (MB): peak = 2129.066 ; gain = 359.996
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:47 ; elapsed = 00:00:50 . Memory (MB): peak = 1373.582 ; gain = 501.719
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:19 ; elapsed = 00:00:21 . Memory (MB): peak = 2129.066 ; gain = 359.996
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1375.645 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 2129.066 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
 Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc]
+create_clock: Time (s): cpu = 00:00:19 ; elapsed = 00:00:21 . Memory (MB): peak = 2336.340 ; gain = 15.883
 Finished Parsing XDC File [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/constrs_1/new/Constr.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1617.039 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.024 . Memory (MB): peak = 2336.340 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1638.766 ; gain = 21.727
+Constraint Validation Runtime : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 2349.656 ; gain = 13.316
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished Constraint Validation : Time (s): cpu = 00:01:24 ; elapsed = 00:01:30 . Memory (MB): peak = 2349.656 ; gain = 580.586
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
-Loading part: xc7vx485tffg1157-1
+Loading part: xcvu37p-fsvh2892-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:24 ; elapsed = 00:01:30 . Memory (MB): peak = 2349.656 ; gain = 580.586
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:56 ; elapsed = 00:01:56 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:24 ; elapsed = 00:01:30 . Memory (MB): peak = 2349.656 ; gain = 580.586
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:87]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Scheduler'
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:87]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:87]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:87]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Completer'
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:209]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:401]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:222]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:416]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:411]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:53]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:202]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:207]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:217]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:409]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:230]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:424]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/CHIConverter.sv:419]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/FIFO_Addr.sv:87]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:214]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.srcs/sources_1/new/BarrelShifter.sv:219]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'BarrelShifter'
 INFO: [Synth 8-3971] The signal "bytewrite_tdp_ram_rf:/ram_block_reg" was recognized as a true dual port RAM template.
 ---------------------------------------------------------------------------------------------------
@@ -302,39 +304,36 @@ INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'BarrelShifter'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:04:29 ; elapsed = 00:04:35 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:58 ; elapsed = 00:02:23 . Memory (MB): peak = 2349.656 ; gain = 580.586
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
-+------+--------------------------+------------+----------+
-|      |RTL Partition             |Replication |Instances |
-+------+--------------------------+------------+----------+
-|1     |FIFO__GB0                 |           1|     45783|
-|2     |FIFO__GB1                 |           1|     28989|
-|3     |FIFO__GB2                 |           1|     28981|
-|4     |FIFO__GB3                 |           1|     30899|
-|5     |FIFO__parameterized0      |           2|     26154|
-|6     |CHIConverter__GC0         |           1|     13572|
-|7     |FIFO__parameterized3__GB0 |           1|     44863|
-|8     |FIFO__parameterized3__GB1 |           1|     12460|
-|9     |FIFO__parameterized3__GB2 |           1|     15575|
-|10    |FIFO__parameterized3__GB3 |           1|     18690|
-|11    |FIFO__parameterized3__GB4 |           1|     24920|
-|12    |BarrelShifter__GC0        |           1|     19498|
-|13    |CHI_DMA__GC0              |           1|      6239|
-+------+--------------------------+------------+----------+
++------+-------------------+------------+----------+
+|      |RTL Partition      |Replication |Instances |
++------+-------------------+------------+----------+
+|1     |FIFO__GB0          |           1|     34182|
+|2     |FIFO__GB1          |           1|      9906|
+|3     |BarrelShifter__GB0 |           1|     35148|
+|4     |BarrelShifter__GB1 |           1|      4138|
+|5     |BarrelShifter__GB2 |           1|     20158|
+|6     |CHI_DMA__GC0       |           1|     18662|
++------+-------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
 	   3 Input     44 Bit       Adders := 2     
-	   2 Input     32 Bit       Adders := 6     
-	   3 Input     32 Bit       Adders := 6     
-	   2 Input      9 Bit       Adders := 4     
+	   2 Input     32 Bit       Adders := 8     
+	   3 Input     32 Bit       Adders := 4     
+	   2 Input     15 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 2     
 	   3 Input      9 Bit       Adders := 1     
-	   2 Input      7 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 6     
+	   2 Input      9 Bit       Adders := 4     
+	   2 Input      7 Bit       Adders := 2     
+	   2 Input      6 Bit       Adders := 9     
+	   2 Input      5 Bit       Adders := 10    
 	   2 Input      4 Bit       Adders := 3     
 +---Registers : 
 	              514 Bit    Registers := 32    
@@ -343,38 +342,36 @@ Detailed RTL Component Info :
 	              107 Bit    Registers := 64    
 	               44 Bit    Registers := 2     
 	               32 Bit    Registers := 2     
-	               15 Bit    Registers := 32    
-	               10 Bit    Registers := 1057  
+	               15 Bit    Registers := 33    
+	               11 Bit    Registers := 1     
+	               10 Bit    Registers := 1059  
 	                9 Bit    Registers := 4     
-	                6 Bit    Registers := 2     
+	                6 Bit    Registers := 7     
+	                5 Bit    Registers := 10    
 	                4 Bit    Registers := 3     
 	                1 Bit    Registers := 2     
 +---RAMs : 
 	             256K Bit         RAMs := 1     
 +---Muxes : 
-	   2 Input    514 Bit        Muxes := 96    
 	   2 Input    512 Bit        Muxes := 10    
-	   5 Input    512 Bit        Muxes := 1     
 	   3 Input    512 Bit        Muxes := 1     
 	   2 Input    256 Bit        Muxes := 28    
-	   2 Input    107 Bit        Muxes := 192   
 	   2 Input     64 Bit        Muxes := 2     
 	   5 Input     44 Bit        Muxes := 2     
 	   2 Input     44 Bit        Muxes := 4     
-	   2 Input     32 Bit        Muxes := 21    
-	   2 Input     15 Bit        Muxes := 96    
-	   2 Input     10 Bit        Muxes := 3173  
+	   2 Input     32 Bit        Muxes := 33    
+	   2 Input     10 Bit        Muxes := 5     
 	   2 Input      9 Bit        Muxes := 2     
 	   2 Input      8 Bit        Muxes := 4     
 	   3 Input      5 Bit        Muxes := 2     
 	   2 Input      5 Bit        Muxes := 2     
 	   3 Input      4 Bit        Muxes := 1     
 	   3 Input      3 Bit        Muxes := 3     
-	   2 Input      3 Bit        Muxes := 5     
+	   2 Input      3 Bit        Muxes := 6     
+	   2 Input      2 Bit        Muxes := 12    
 	   3 Input      2 Bit        Muxes := 3     
-	   2 Input      2 Bit        Muxes := 11    
-	   3 Input      1 Bit        Muxes := 1188  
-	   2 Input      1 Bit        Muxes := 54    
+	   2 Input      1 Bit        Muxes := 237   
+	   3 Input      1 Bit        Muxes := 9     
 	   5 Input      1 Bit        Muxes := 1     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
@@ -385,36 +382,126 @@ Start RTL Hierarchical Component Statistics
 Hierarchical RTL Component report 
 Module FIFO 
 Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 2     
 +---Registers : 
-	               10 Bit    Registers := 1024  
+	               11 Bit    Registers := 1     
+	               10 Bit    Registers := 1026  
 +---Muxes : 
-	   2 Input     10 Bit        Muxes := 3072  
-	   3 Input      1 Bit        Muxes := 1023  
-	   2 Input      1 Bit        Muxes := 4     
-Module FIFO__parameterized0 
+	   2 Input      1 Bit        Muxes := 16    
+Module FIFO__parameterized3 
 Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
++---Registers : 
+	              514 Bit    Registers := 32    
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 38    
+Module FIFO__parameterized0__1 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
 +---Registers : 
 	              107 Bit    Registers := 32    
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
 +---Muxes : 
-	   2 Input    107 Bit        Muxes := 96    
-	   2 Input      1 Bit        Muxes := 4     
-	   3 Input      1 Bit        Muxes := 31    
+	   2 Input      1 Bit        Muxes := 38    
+Module BarrelShifter 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 3     
+	   3 Input     32 Bit       Adders := 1     
+	   2 Input     15 Bit       Adders := 1     
+	   3 Input      9 Bit       Adders := 1     
+	   2 Input      7 Bit       Adders := 2     
+	   2 Input      6 Bit       Adders := 1     
++---Registers : 
+	              512 Bit    Registers := 1     
+	               32 Bit    Registers := 2     
+	               15 Bit    Registers := 1     
+	                6 Bit    Registers := 1     
++---Muxes : 
+	   2 Input    512 Bit        Muxes := 10    
+	   3 Input    512 Bit        Muxes := 1     
+	   2 Input     64 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 14    
+	   3 Input      3 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 6     
+	   2 Input      2 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 11    
+	   3 Input      1 Bit        Muxes := 4     
+Module bytewrite_tdp_ram_rf 
+Detailed RTL Component Info : 
++---Registers : 
+	              256 Bit    Registers := 2     
++---RAMs : 
+	             256K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input    256 Bit        Muxes := 28    
+	   2 Input     32 Bit        Muxes := 2     
+Module Arbiter 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input     10 Bit        Muxes := 2     
+Module Scheduler 
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input     32 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 3     
++---Registers : 
+	               10 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input     10 Bit        Muxes := 1     
+	   3 Input      5 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 5     
+	   3 Input      1 Bit        Muxes := 5     
+Module ArbiterBRAM 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 16    
+	   2 Input     10 Bit        Muxes := 2     
+	   2 Input      8 Bit        Muxes := 2     
+Module FIFO__parameterized0 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
++---Registers : 
+	              107 Bit    Registers := 32    
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 38    
 Module FIFO__parameterized1 
 Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
 +---Registers : 
 	               10 Bit    Registers := 32    
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
 +---Muxes : 
-	   2 Input     10 Bit        Muxes := 96    
-	   2 Input      1 Bit        Muxes := 4     
-	   3 Input      1 Bit        Muxes := 31    
+	   2 Input      1 Bit        Muxes := 38    
 Module FIFO__parameterized2 
 Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
 +---Registers : 
 	               15 Bit    Registers := 32    
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
 +---Muxes : 
-	   2 Input     15 Bit        Muxes := 96    
-	   2 Input      1 Bit        Muxes := 4     
-	   3 Input      1 Bit        Muxes := 31    
+	   2 Input      1 Bit        Muxes := 38    
 Module Completer 
 Detailed RTL Component Info : 
 +---Muxes : 
@@ -450,70 +537,6 @@ Detailed RTL Component Info :
 	   3 Input      2 Bit        Muxes := 1     
 	   2 Input      1 Bit        Muxes := 15    
 	   5 Input      1 Bit        Muxes := 1     
-Module FIFO__parameterized3 
-Detailed RTL Component Info : 
-+---Registers : 
-	              514 Bit    Registers := 32    
-+---Muxes : 
-	   2 Input    514 Bit        Muxes := 96    
-	   2 Input      1 Bit        Muxes := 4     
-	   3 Input      1 Bit        Muxes := 31    
-Module BarrelShifter 
-Detailed RTL Component Info : 
-+---Adders : 
-	   3 Input     32 Bit       Adders := 3     
-	   2 Input     32 Bit       Adders := 1     
-	   3 Input      9 Bit       Adders := 1     
-	   2 Input      7 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 3     
-+---Registers : 
-	              512 Bit    Registers := 1     
-	               32 Bit    Registers := 2     
-	                6 Bit    Registers := 1     
-+---Muxes : 
-	   2 Input    512 Bit        Muxes := 10    
-	   5 Input    512 Bit        Muxes := 1     
-	   3 Input    512 Bit        Muxes := 1     
-	   2 Input     64 Bit        Muxes := 2     
-	   2 Input     32 Bit        Muxes := 2     
-	   3 Input      3 Bit        Muxes := 1     
-	   2 Input      3 Bit        Muxes := 5     
-	   2 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 10    
-	   3 Input      1 Bit        Muxes := 5     
-Module bytewrite_tdp_ram_rf 
-Detailed RTL Component Info : 
-+---Registers : 
-	              256 Bit    Registers := 2     
-+---RAMs : 
-	             256K Bit         RAMs := 1     
-+---Muxes : 
-	   2 Input    256 Bit        Muxes := 28    
-	   2 Input     32 Bit        Muxes := 2     
-Module Arbiter 
-Detailed RTL Component Info : 
-+---Muxes : 
-	   2 Input     10 Bit        Muxes := 2     
-Module Scheduler 
-Detailed RTL Component Info : 
-+---Adders : 
-	   3 Input     32 Bit       Adders := 1     
-	   2 Input     32 Bit       Adders := 3     
-+---Registers : 
-	               10 Bit    Registers := 1     
-+---Muxes : 
-	   2 Input     32 Bit        Muxes := 1     
-	   2 Input     10 Bit        Muxes := 1     
-	   3 Input      5 Bit        Muxes := 1     
-	   3 Input      2 Bit        Muxes := 1     
-	   2 Input      2 Bit        Muxes := 5     
-	   3 Input      1 Bit        Muxes := 5     
-Module ArbiterBRAM 
-Detailed RTL Component Info : 
-+---Muxes : 
-	   2 Input     32 Bit        Muxes := 16    
-	   2 Input     10 Bit        Muxes := 2     
-	   2 Input      8 Bit        Muxes := 2     
 ---------------------------------------------------------------------------------
 Finished RTL Hierarchical Component Statistics
 ---------------------------------------------------------------------------------
@@ -521,151 +544,194 @@ Finished RTL Hierarchical Component Statistics
 Start Part Resource Summary
 ---------------------------------------------------------------------------------
 Part Resources:
-DSPs: 2800 (col length:140)
-BRAMs: 2060 (col length: RAMB18 140 RAMB36 70)
+DSPs: 9024 (col length:94)
+BRAMs: 4032 (col length: RAMB18 288 RAMB36 144)
 ---------------------------------------------------------------------------------
 Finished Part Resource Summary
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5580] Multithreading enabled for synth_design using a maximum of 2 processes.
 ---------------------------------------------------------------------------------
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLITPEND driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[QoS][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[QoS][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[QoS][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TgtID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[SrcID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnNID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[StashNIDValid] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][7] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ReturnTxnID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Opcode][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Opcode][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Size][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][43] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][42] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][41] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][40] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][39] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][38] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][37] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][36] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][35] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][34] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][33] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][32] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Addr][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[NS] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LikelyShared] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[AllowRetry] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Order][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Order][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[PCrdType][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[PCrdType][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[PCrdType][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[PCrdType][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[MemAttr][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[MemAttr][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[LPID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[Excl] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[ExpCompAck] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port ReqChan\.TXREQFLIT[TraceTag] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLITPEND driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLITV driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[QoS][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TgtID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[SrcID][0] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][7] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][6] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][5] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][4] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][3] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][2] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][1] driven by constant 0
-WARNING: [Synth 8-3917] design CHI_DMA has port RspOutbChan\.TXRSPFLIT[TxnID][0] driven by constant 0
-INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+Warning: Parallel synthesis criteria is not met 
 INFO: [Synth 8-3971] The signal "i_0/myBRAM/ram_block_reg" was recognized as a true dual port RAM template.
-INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[33]' (FDRE) to 'ReadReqBytes_reg[34]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[34]' (FDRE) to 'ReadReqBytes_reg[35]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[35]' (FDRE) to 'ReadReqBytes_reg[36]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[36]' (FDRE) to 'ReadReqBytes_reg[37]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[37]' (FDRE) to 'ReadReqBytes_reg[38]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[38]' (FDRE) to 'ReadReqBytes_reg[39]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[39]' (FDRE) to 'ReadReqBytes_reg[40]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[40]' (FDRE) to 'ReadReqBytes_reg[41]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[41]' (FDRE) to 'ReadReqBytes_reg[42]'
-INFO: [Synth 8-3886] merging instance 'ReadReqBytes_reg[42]' (FDRE) to 'ReadReqBytes_reg[43]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[33]' (FDRE) to 'WriteReqBytes_reg[34]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[34]' (FDRE) to 'WriteReqBytes_reg[35]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[35]' (FDRE) to 'WriteReqBytes_reg[36]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[36]' (FDRE) to 'WriteReqBytes_reg[37]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[37]' (FDRE) to 'WriteReqBytes_reg[38]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[38]' (FDRE) to 'WriteReqBytes_reg[39]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[39]' (FDRE) to 'WriteReqBytes_reg[40]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[40]' (FDRE) to 'WriteReqBytes_reg[41]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[41]' (FDRE) to 'WriteReqBytes_reg[42]'
-INFO: [Synth 8-3886] merging instance 'WriteReqBytes_reg[42]' (FDRE) to 'WriteReqBytes_reg[43]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[33]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[34]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[34]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[35]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[35]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[36]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[36]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[37]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[37]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[38]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[38]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[39]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[39]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[40]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[40]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[41]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[41]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[42]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/ReadReqBytes_reg[42]' (FDRE) to 'i_0/CHI_Conv/ReadReqBytes_reg[43]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[33]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[34]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[34]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[35]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[35]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[36]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[36]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[37]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[37]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[38]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[38]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[39]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[39]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[40]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[40]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[41]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[41]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[42]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/WriteReqBytes_reg[42]' (FDRE) to 'i_0/CHI_Conv/WriteReqBytes_reg[43]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][73]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[15][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[15][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[14][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[14][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[13][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[13][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[12][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[12][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[11][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[11][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[10][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[10][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[9][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[9][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[8][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[8][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[7][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[7][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[6][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[6][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[5][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[5][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[4][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[4][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[3][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[3][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[2][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[2][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[1][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[1][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[0][74]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[0][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][75]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[15][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[15][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[14][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[14][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[13][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[13][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[12][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[12][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[11][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[11][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[10][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[10][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[9][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[9][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[8][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[8][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[7][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[7][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[6][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[6][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[5][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[5][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[4][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[4][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[3][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[3][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[2][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[2][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[1][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[1][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[0][73]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[0][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[31][76]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[30][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[29][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[28][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[27][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[26][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[25][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[24][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[23][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[22][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[21][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[20][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[19][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[18][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[17][95]'
+INFO: [Synth 8-3886] merging instance 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][75]' (FDRE) to 'i_0/CHI_Conv/CommandFIFO/MyQueue_reg[16][95]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[31][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[30][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[29][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[28][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[27][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[26][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[25][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[24][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[23][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[22][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[21][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[20][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[19][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[18][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[17][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[16][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[15][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[14][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[13][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[12][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[11][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[10][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[9][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[8][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[7][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[6][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[5][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[4][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[3][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[2][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[1][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/CHI_Conv/CommandFIFO/\MyQueue_reg[0][95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[31][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[30][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[29][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[28][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[27][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[26][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[25][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[24][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[23][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[22][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[21][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[20][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[19][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[18][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[17][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[16][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[15][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[14][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[13][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[12][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[11][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[10][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[9][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[8][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[7][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[6][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[5][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[4][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[3][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[2][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[1][94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (BSi_5/FIFOCmnd/\MyQueue_reg[0][94] )
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:06:53 ; elapsed = 00:08:13 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:22:05 ; elapsed = 03:10:38 . Memory (MB): peak = 2398.051 ; gain = 628.980
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 
 Block RAM: Preliminary Mapping	Report (see note below)
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
-|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
-|i_0/myBRAM  | ram_block_reg | 1 K x 256(READ_FIRST)  | W | R | 1 K x 256(READ_FIRST)  | W | R | Port A and B     | 0      | 8      | 
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|i_0/myBRAM  | ram_block_reg | 1 K x 256(READ_FIRST)  | W | R | 1 K x 256(READ_FIRST)  | W | R | Port A and B     | 0      | 8      |                 | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
 
 Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
 ---------------------------------------------------------------------------------
@@ -673,159 +739,54 @@ Finished ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
-+------+--------------------------+------------+----------+
-|      |RTL Partition             |Replication |Instances |
-+------+--------------------------+------------+----------+
-|1     |FIFO__GB0                 |           1|      9857|
-|2     |FIFO__GB1                 |           1|      6366|
-|3     |FIFO__GB2                 |           1|      6461|
-|4     |FIFO__GB3                 |           1|     11153|
-|5     |FIFO__parameterized0      |           2|     13833|
-|6     |CHIConverter__GC0         |           1|      3736|
-|7     |FIFO__parameterized3__GB0 |           1|     19834|
-|8     |FIFO__parameterized3__GB1 |           1|      4155|
-|9     |FIFO__parameterized3__GB2 |           1|      5195|
-|10    |FIFO__parameterized3__GB3 |           1|      6228|
-|11    |FIFO__parameterized3__GB4 |           1|      8281|
-|12    |BarrelShifter__GC0        |           1|      8774|
-|13    |CHI_DMA__GC0              |           1|       804|
-+------+--------------------------+------------+----------+
++------+-------------------+------------+----------+
+|      |RTL Partition      |Replication |Instances |
++------+-------------------+------------+----------+
+|1     |FIFO__GB0          |           1|     21322|
+|2     |FIFO__GB1          |           1|       688|
+|3     |BarrelShifter__GB0 |           1|     32931|
+|4     |BarrelShifter__GB1 |           1|      4135|
+|5     |BarrelShifter__GB2 |           1|      7480|
+|6     |CHI_DMA__GC0       |           1|      9158|
++------+-------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:07:37 ; elapsed = 00:08:59 . Memory (MB): peak = 1638.766 ; gain = 766.902
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:22:45 ; elapsed = 03:11:20 . Memory (MB): peak = 2712.023 ; gain = 942.953
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][73]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][74]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][74]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][75]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][75]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][76]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][76]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][77]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][77]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][78]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][78]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][79]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][79]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][80]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][80]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][81]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][81]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][82]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][82]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][83]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][83]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][84]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][84]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][85]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][85]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][86]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][86]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][87]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][87]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][88]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][88]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][89]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][89]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][90]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][90]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][91]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][91]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][92]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][92]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][93]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][93]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][94]'
-INFO: [Synth 8-3886] merging instance 'CHI_Conv/CommandFIFO/MyQueue_reg[31][94]' (FDRE) to 'CHI_Conv/CommandFIFO/MyQueue_reg[31][95]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\CHI_Conv/CommandFIFO /\MyQueue_reg[31][95] )
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][73]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][74]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][74]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][75]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][75]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][76]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][76]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][77]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][77]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][78]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][78]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][79]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][79]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][80]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][80]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][81]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][81]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][82]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][82]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][83]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][83]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][84]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][84]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][85]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][85]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][86]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][86]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][87]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][87]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][88]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][88]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][89]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][89]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][90]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][90]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][91]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][91]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][92]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][92]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][93]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][93]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][94]'
-INFO: [Synth 8-3886] merging instance 'BS/FIFOCmnd/MyQueue_reg[31][94]' (FDRE) to 'BS/FIFOCmnd/MyQueue_reg[31][95]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\BS/FIFOCmnd /\MyQueue_reg[31][95] )
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:12:44 ; elapsed = 00:14:13 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Timing Optimization : Time (s): cpu = 00:24:08 ; elapsed = 03:12:44 . Memory (MB): peak = 2983.102 ; gain = 1214.031
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 
 Block RAM: Final Mapping	Report
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
-|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
-|i_0/myBRAM  | ram_block_reg | 1 K x 256(READ_FIRST)  | W | R | 1 K x 256(READ_FIRST)  | W | R | Port A and B     | 0      | 8      | 
-+------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|i_0/myBRAM  | ram_block_reg | 1 K x 256(READ_FIRST)  | W | R | 1 K x 256(READ_FIRST)  | W | R | Port A and B     | 0      | 8      |                 | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
 
 ---------------------------------------------------------------------------------
 Finished ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
-+------+--------------------------+------------+----------+
-|      |RTL Partition             |Replication |Instances |
-+------+--------------------------+------------+----------+
-|1     |FIFO__GB0                 |           1|      9857|
-|2     |FIFO__GB1                 |           1|      6366|
-|3     |FIFO__GB2                 |           1|      6461|
-|4     |FIFO__GB3                 |           1|     11152|
-|5     |FIFO__parameterized0      |           1|     10935|
-|6     |FIFO__parameterized3__GB1 |           1|      4155|
-|7     |FIFO__parameterized3__GB2 |           1|      5195|
-|8     |FIFO__parameterized3__GB4 |           1|      8281|
-|9     |CHI_DMA__GC0              |           1|       446|
-|10    |FIFO__parameterized0__1   |           1|      4383|
-|11    |CHI_DMA_GT0               |           1|     36060|
-+------+--------------------------+------------+----------+
++------+-------------------+------------+----------+
+|      |RTL Partition      |Replication |Instances |
++------+-------------------+------------+----------+
+|1     |FIFO__GB0          |           1|     21322|
+|2     |FIFO__GB1          |           1|       688|
+|3     |BarrelShifter__GB0 |           1|     32931|
+|4     |CHI_DMA_GT0        |           1|     20721|
++------+-------------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start Technology Mapping
----------------------------------------------------------------------------------
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_5 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
-INFO: [Synth 8-7053] The timing for the instance i_0/myBRAM/ram_block_reg_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
----------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:13:33 ; elapsed = 00:15:11 . Memory (MB): peak = 2226.914 ; gain = 1355.051
----------------------------------------------------------------------------------
-
-Report RTL Partitions: 
-+------+--------------------------+------------+----------+
-|      |RTL Partition             |Replication |Instances |
-+------+--------------------------+------------+----------+
-|1     |FIFO__GB0                 |           1|      8024|
-|2     |FIFO__GB1                 |           1|      5163|
-|3     |FIFO__GB2                 |           1|      5252|
-|4     |FIFO__GB3                 |           1|      5368|
-|5     |FIFO__parameterized0      |           1|      5586|
-|6     |FIFO__parameterized3__GB1 |           1|      4123|
-|7     |FIFO__parameterized3__GB2 |           1|      5157|
-|8     |FIFO__parameterized3__GB4 |           1|      8244|
-|9     |CHI_DMA__GC0              |           1|       256|
-|10    |FIFO__parameterized0__1   |           1|      2258|
-|11    |CHI_DMA_GT0               |           1|     22356|
-+------+--------------------------+------------+----------+
----------------------------------------------------------------------------------
-Start IO Insertion
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
-Start Flattening Before IO Insertion
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
-Finished Flattening Before IO Insertion
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
-Start Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
@@ -841,16 +802,37 @@ INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_5 (impleme
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 INFO: [Synth 8-7053] The timing for the instance myBRAM/ram_block_reg_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
 ---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:24:44 ; elapsed = 03:13:19 . Memory (MB): peak = 3007.262 ; gain = 1238.191
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:14:36 ; elapsed = 00:16:19 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished IO Insertion : Time (s): cpu = 00:24:54 ; elapsed = 03:13:29 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:14:37 ; elapsed = 00:16:20 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Renaming Generated Instances : Time (s): cpu = 00:24:55 ; elapsed = 03:13:30 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -869,25 +851,25 @@ Report Check Netlist:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:15:01 ; elapsed = 00:16:45 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:25:14 ; elapsed = 03:13:49 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:15:02 ; elapsed = 00:16:46 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Renaming Generated Ports : Time (s): cpu = 00:25:14 ; elapsed = 03:13:50 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Handling Custom Attributes : Time (s): cpu = 00:25:16 ; elapsed = 03:13:52 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Renaming Generated Nets : Time (s): cpu = 00:25:17 ; elapsed = 03:13:52 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -903,60 +885,61 @@ Report Cell Usage:
 +------+---------+------+
 |      |Cell     |Count |
 +------+---------+------+
-|1     |CARRY4   |   228|
-|2     |LUT1     |   152|
-|3     |LUT2     |   990|
-|4     |LUT3     |  7930|
-|5     |LUT4     |   859|
-|6     |LUT5     | 10854|
-|7     |LUT6     | 18776|
-|8     |MUXF7    |     1|
-|9     |RAMB36E1 |     8|
-|10    |FDRE     | 32162|
-|11    |FDSE     |     3|
+|1     |CARRY8   |    93|
+|2     |LUT1     |   180|
+|3     |LUT2     |   593|
+|4     |LUT3     |   218|
+|5     |LUT4     |   358|
+|6     |LUT5     |  1146|
+|7     |LUT6     | 11757|
+|8     |MUXF7    |  3980|
+|9     |MUXF8    |   720|
+|10    |RAMB36E2 |     8|
+|11    |FDRE     | 32193|
+|12    |FDSE     |     7|
 +------+---------+------+
 
 Report Instance Areas: 
 +------+-------------------+-----------------------+------+
 |      |Instance           |Module                 |Cells |
 +------+-------------------+-----------------------+------+
-|1     |top                |                       | 71963|
-|2     |  AddrPointerFIFO  |FIFO                   | 23867|
-|3     |  BS               |BarrelShifter          | 39240|
-|4     |    FIFOCmnd       |FIFO__parameterized0_0 |  3415|
-|5     |    FIFOData       |FIFO__parameterized3   | 35200|
-|6     |  CHI_Conv         |CHIConverter           |  8384|
-|7     |    CommandFIFO    |FIFO__parameterized0   |  6212|
-|8     |    FIFODBID       |FIFO__parameterized1   |   816|
-|9     |    myCompleter    |Completer              |  1180|
-|10    |      FIFODescAddr |FIFO__parameterized2   |  1179|
-|11    |  myBRAM           |bytewrite_tdp_ram_rf   |   115|
-|12    |  mySched          |Scheduler              |   248|
+|1     |top                |                       | 51253|
+|2     |  AddrPointerFIFO  |FIFO                   | 16344|
+|3     |  BS               |BarrelShifter          | 28498|
+|4     |    FIFOCmnd       |FIFO__parameterized0_0 |  2891|
+|5     |    FIFOData       |FIFO__parameterized3   | 24947|
+|6     |  CHI_Conv         |CHIConverter           |  5969|
+|7     |    CommandFIFO    |FIFO__parameterized0   |  4464|
+|8     |    FIFODBID       |FIFO__parameterized1   |   547|
+|9     |    myCompleter    |Completer              |   782|
+|10    |      FIFODescAddr |FIFO__parameterized2   |   781|
+|11    |  myBRAM           |bytewrite_tdp_ram_rf   |   117|
+|12    |  mySched          |Scheduler              |   274|
 +------+-------------------+-----------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:16:21 ; elapsed = 00:18:07 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Finished Writing Synthesis Report : Time (s): cpu = 00:25:17 ; elapsed = 03:13:52 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 578 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:14:43 ; elapsed = 00:17:26 . Memory (MB): peak = 2226.914 ; gain = 1089.867
-Synthesis Optimization Complete : Time (s): cpu = 00:16:21 ; elapsed = 00:18:13 . Memory (MB): peak = 2226.914 ; gain = 1355.051
+Synthesis finished with 0 errors, 0 critical warnings and 193 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:24:09 ; elapsed = 03:13:00 . Memory (MB): peak = 3007.262 ; gain = 1017.602
+Synthesis Optimization Complete : Time (s): cpu = 00:25:17 ; elapsed = 03:13:52 . Memory (MB): peak = 3007.262 ; gain = 1238.191
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2226.914 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 237 Unisim elements for replacement
-INFO: [Netlist 29-28] Unisim Transformation completed in 2 CPU seconds
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.970 . Memory (MB): peak = 3007.262 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 4793 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.059 . Memory (MB): peak = 2226.914 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.015 . Memory (MB): peak = 3041.133 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-165 Infos, 201 Warnings, 0 Critical Warnings and 0 Errors encountered.
+248 Infos, 101 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:17:23 ; elapsed = 00:19:19 . Memory (MB): peak = 2226.914 ; gain = 1813.723
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.059 . Memory (MB): peak = 2226.914 ; gain = 0.000
+synth_design: Time (s): cpu = 00:26:22 ; elapsed = 03:15:05 . Memory (MB): peak = 3041.133 ; gain = 2628.238
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.015 . Memory (MB): peak = 3041.133 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint 'C:/Users/Aggelos/Desktop/github/Chi-DMA/CHI-DMA/CHI-DMA.runs/synth_1/CHI_DMA.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:18 ; elapsed = 00:00:13 . Memory (MB): peak = 2226.914 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:07 . Memory (MB): peak = 3041.133 ; gain = 0.000
 INFO: [runtcl-4] Executing : report_utilization -file CHI_DMA_utilization_synth.rpt -pb CHI_DMA_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Wed Dec 14 11:19:31 2022...
+INFO: [Common 17-206] Exiting Vivado at Tue Dec 20 21:09:44 2022...

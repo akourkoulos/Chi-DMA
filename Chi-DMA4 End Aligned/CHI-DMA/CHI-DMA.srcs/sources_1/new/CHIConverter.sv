@@ -44,14 +44,17 @@ import CompleterPkg::*;
 
 module CHIConverter#(    
 //--------------------------------------------------------------------------
+//-----------------------------BRAM-Parameters------------------------------  
   parameter BRAM_ADDR_WIDTH   = 10                                     ,
   parameter BRAM_NUM_COL      = 8                                      , //As the Data_packet fields
   parameter BRAM_COL_WIDTH    = 32                                     ,
-  parameter MEM_ADDR_WIDTH    = 44                                     , 
-  parameter CMD_FIFO_LENGTH   = 32                                     ,
+//-----------------------------FIFOs-Parameters--------------------------- 
+  parameter CMD_FIFO_LENGTH   = 32                                      ,
   parameter DATA_FIFO_LENGTH  = 32                                     ,
   parameter SIZE_WIDTH        = BRAM_ADDR_WIDTH + 7 + 1                , //DescAddr*BRAM_ADDR_WIDTH + Size*(log2(CHI_DATA_WIDTH) + 1) + LastDescTrans*1 
-  parameter COUNTER_WIDTH     = 6                                      , //log2(DATA_FIFO_LENGTH) + 1
+  parameter COUNTER_WIDTH     = $clog2(DATA_FIFO_LENGTH) + 1           , //log2(DATA_FIFO_LENGTH) + 1 , Width of counter that counts free space of Data-DBID FIFO
+//-----------------------------CHI-Parameters----------------------------- 
+  parameter MEM_ADDR_WIDTH    = 44                                     , 
   parameter CHI_DATA_WIDTH    = 64                                     , //Bytes
   parameter QoS               = 8                                      , //??
   parameter TgtID             = 2                                      , //??

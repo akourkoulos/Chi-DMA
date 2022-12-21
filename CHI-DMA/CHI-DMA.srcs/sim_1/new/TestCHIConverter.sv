@@ -51,7 +51,7 @@ module TestCHIConverter#(
   parameter CHI_DATA_WIDTH     = 64  , //Bytes
   parameter Chunk              = 5   ,
   parameter NUM_OF_REPETITIONS = 500 ,
-  parameter FIFO_Length        = 120
+  parameter FIFO_Length        = 128
 //----------------------------------------------------------------------
   );
    reg                                              Clk               ;                                                                                        
@@ -76,10 +76,10 @@ module TestCHIConverter#(
     // signals BS                                                                                                                                       
     CHI_Command                            CommandIn     ;
     wire                                   EnqueueIn     ;
-    wire                                   DequeueBS     ;
+    wire                                   ValidDataBS   ;
     wire        [CHI_DATA_WIDTH   - 1 : 0] BEOut         ;
     wire        [CHI_DATA_WIDTH*8 - 1 : 0] DataOut       ;
-    wire                                   EmptyBS       ;
+    wire                                   ReadyDataBS   ;
     wire                                   FULLCmndBS    ;
     wire        [`RspErrWidth     - 1 : 0] DataError     ;
     wire                                   LastDescTrans ;
@@ -97,7 +97,7 @@ module TestCHIConverter#(
      .BE                 (BEOut                    ) ,                                       
      .ShiftedData        (DataOut                  ) ,                                       
      .DataErr            (DataError                ) ,
-     .EmptyBS            (EmptyBS                  ) ,
+     .ReadyDataBS        (ReadyDataBS              ) ,
      .FULLCmndBS         (FULLCmndBS               ) ,
      .ReqChan            (ReqChan      .OUTBOUND   ) ,
      .RspOutbChan        (RspOutbChan  .OUTBOUND   ) ,
@@ -111,7 +111,7 @@ module TestCHIConverter#(
      .WEBRAM             (WEBRAM                   ) ,
      .EnqueueBS          (EnqueueIn                ) ,
      .CommandBS          (CommandIn                ) ,
-     .DequeueBS          (DequeueBS                )
+     .ValidDataBS        (ValidDataBS              )
     );
     
      BarrelShifter BS (
@@ -119,14 +119,14 @@ module TestCHIConverter#(
      .  Clk              ( Clk                       ),
      .  CommandIn        ( CommandIn                 ),
      .  EnqueueIn        ( EnqueueIn                 ),
-     .  DequeueBS        ( DequeueBS                 ),
+     .  ValidDataBS      ( ValidDataBS               ),
      .  DatInbChan       ( DatInbChan      . INBOUND ),
      .  BEOut            ( BEOut                     ),
      .  DataOut          ( DataOut                   ),
      .  DataError        ( DataError                 ),
      .  DescAddr         ( DescAddr                  ),
      .  LastDescTrans    ( LastDescTrans             ),
-     .  EmptyBS          ( EmptyBS                   ),
+     .  ReadyDataBS      ( ReadyDataBS               ),
      .  FULLCmndBS       ( FULLCmndBS                )
     );      
     

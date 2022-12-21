@@ -358,7 +358,7 @@ module TestRegSpaceAndSched#(
               end
             end
             // if every Descriptor has been scheduled then call task that checks the results
-            if(Command.LastDescTrans & UUT.DequeueFIFO & UUT.AddrPointerFIFO.state == 1) begin
+            if(Command.LastDescTrans & UUT.DequeueFIFO & UUT.AddrPointerFIFO.wraddr - UUT.AddrPointerFIFO.rdaddr == 1) begin
               printCheckList ;
             end
           end

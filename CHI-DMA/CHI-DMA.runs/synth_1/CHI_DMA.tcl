@@ -17,7 +17,13 @@ proc create_report { reportName command } {
     send_msg_id runtcl-5 warning "$msg"
   }
 }
-create_project -in_memory -part xc7vx485tffg1157-1
+set_param power.BramSDPPropagationFix 1
+set_param power.enableUnconnectedCarry8PinPower 1
+set_param power.enableCarry8RouteBelPower 1
+set_param power.enableLutRouteBelPower 1
+set_msg_config -id {Synth 8-256} -limit 10000
+set_msg_config -id {Synth 8-638} -limit 10000
+create_project -in_memory -part xcvu37p-fsvh2892-2L-e
 
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
@@ -54,7 +60,7 @@ set_property used_in_implementation false [get_files C:/Users/Aggelos/Desktop/gi
 set_param ips.enableIPCacheLiteLoad 1
 close [open __synthesis_is_running__ w]
 
-synth_design -top CHI_DMA -part xc7vx485tffg1157-1 -mode out_of_context
+synth_design -top CHI_DMA -part xcvu37p-fsvh2892-2L-e -mode out_of_context
 
 
 # disable binary constraint mode for synth run checkpoints

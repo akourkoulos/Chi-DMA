@@ -43,7 +43,7 @@ module Simple_CHI_Responser#(
 //-------------------------------------------------------------------------- 
   parameter TIME_DELAY         = 11             ,
   parameter TIME_DELAY_WIDTH   = 4              ,  
-  parameter FIFO_Length        = TIME_DELAY + 2 ,
+  parameter FIFO_Length        = 8              ,
   parameter BRAM_COL_WIDTH     = 32             ,        
   parameter CHI_DATA_WIDTH     = 64                        
 //--------------------------------------------------------------------------
