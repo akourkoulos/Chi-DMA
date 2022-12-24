@@ -44,9 +44,8 @@ module TestFULLSystem#(
   parameter BRAM_COL_WIDTH      = 32   , // As the Data_packet field width
   parameter BRAM_ADDR_WIDTH     = 10   , // Addr Width in bits : 2 **BRAM_ADDR_WIDTH = RAM Depth
   parameter CHI_DATA_WIDTH      = 64   ,
-  parameter MEM_ADDR_WIDTH      = 44   , 
   parameter ADDR_WIDTH_OF_DATA  = 6    , // log2(CHI_DATA_WIDTH)  
-  parameter MAX_BytesToSend     = 5000 ,
+  parameter MAX_BytesToSend     = 3500 ,
   parameter P1_NUM_OF_TRANS     = 1    , // Number of inserted transfers for each phase
   parameter P2_NUM_OF_TRANS     = 1    ,  
   parameter P3_NUM_OF_TRANS     = 1    ,  
@@ -132,11 +131,11 @@ module TestFULLSystem#(
     );  
    
    // Fully correctly transfered Descriptors
-   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [P6_NUM_OF_TRANS - 1 : 0] ;
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectTransfer  [P9_NUM_OF_TRANS - 1 : 0] ;
    int                           CTpointer        = 0                       ;
 
    // Fully correctly scheduled Descriptors
-   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectSched    [P6_NUM_OF_TRANS - 1 : 0]  ;
+   reg [BRAM_ADDR_WIDTH - 1 : 0] CorrectSched    [P9_NUM_OF_TRANS - 1 : 0]  ;
    int                           CSpointer       = 0                        ;
    wire                          PhaseReqOver                               ;
    
@@ -661,23 +660,23 @@ module TestFULLSystem#(
    
    //########################## End of CHI functionality Checking ##########################
    
-   //********************************* check if Data of finished transfer has sent correctly *********************************
+   //********************************* check if Data of finished transfer has sent correctly ********************************
    always_ff@(posedge Clk) begin
      if(DequeueCmnd & SigCommand.LastDescTrans)begin
+       automatic int errorf = 0;
        for(int i = 0 ; i < TestVectorBRAM[2][SigCommand.DescAddr] * 8 ; i ++)begin
-         automatic int errorf = 0;
-         if(!(Simp_CHI_RSP.myDDR[(TestVectorBRAM[0][SigCommand.DescAddr] * 8) + i] == Simp_CHI_RSP.myDDR[(TestVectorBRAM[1][SigCommand.DescAddr] * 8) + i]))
+         if(!(Simp_CHI_RSP.myDDR[(TestVectorBRAM[0][SigCommand.DescAddr] + i/8)/CHI_DATA_WIDTH][(TestVectorBRAM[0][SigCommand.DescAddr] * 8 + i) % (CHI_DATA_WIDTH*8)] == Simp_CHI_RSP.myDDR[(TestVectorBRAM[1][SigCommand.DescAddr] + i/8)/CHI_DATA_WIDTH][(TestVectorBRAM[1][SigCommand.DescAddr] * 8 + i) % (CHI_DATA_WIDTH*8)]))begin
            errorf = 1 ;
-       
-         if(errorf == 0 & i == TestVectorBRAM[2][SigCommand.DescAddr] - 1)begin
-           $display("Correct Data Transfer for Desc %d",SigCommand.DescAddr);
-           $display("DataSrc : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[0][SigCommand.DescAddr] * 8)));
-           $display("DataDst : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[1][SigCommand.DescAddr] * 8)));
          end
-         else if(i == TestVectorBRAM[2][SigCommand.DescAddr] - 1)begin
-           $display("--Error :: Data for Desc %d havent transfered correctly",SigCommand.DescAddr) ;
-           $display("DataSrc : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[0][SigCommand.DescAddr] * 8)));
-           $display("DataDst : %h",(Simp_CHI_RSP.myDDR >> (TestVectorBRAM[1][SigCommand.DescAddr] * 8)));
+         if(errorf == 0 & i == TestVectorBRAM[2][SigCommand.DescAddr]* 8 - 1)begin
+           $display("Correct :: For Desc %d all Data have been Transfered successfully from Addr : %d to Addr : %d of DDR",SigCommand.DescAddr,(TestVectorBRAM[0][SigCommand.DescAddr]),(TestVectorBRAM[1][SigCommand.DescAddr]));
+      //     $display("DataSrc : %h",Simp_CHI_RSP.myDDR[(TestVectorBRAM[0][SigCommand.DescAddr])/CHI_DATA_WIDTH]);
+      //     $display("DataDst : %h",Simp_CHI_RSP.myDDR[(TestVectorBRAM[1][SigCommand.DescAddr])/CHI_DATA_WIDTH]);
+         end
+         else if(errorf == 1 & i == TestVectorBRAM[2][SigCommand.DescAddr]* 8 - 1)begin
+           $display("Correct :: For Desc %d all Data have not been Transfered successfully from Addr : %d to Addr : %d of DDR",SigCommand.DescAddr,(TestVectorBRAM[0][SigCommand.DescAddr]),(TestVectorBRAM[1][SigCommand.DescAddr]));
+           $display("DataSrc : %h",Simp_CHI_RSP.myDDR[(TestVectorBRAM[0][SigCommand.DescAddr]+CHI_DATA_WIDTH)/CHI_DATA_WIDTH]);    
+           $display("DataDst : %h",Simp_CHI_RSP.myDDR[(TestVectorBRAM[1][SigCommand.DescAddr])/CHI_DATA_WIDTH]);    
            $stop ;
          end
        end
@@ -728,7 +727,7 @@ module TestFULLSystem#(
        CorrectTransfer.reverse();
        CorrectSched   .reverse();
        NZ = 1 ;
-       for(int i = 0 ; i < P6_NUM_OF_TRANS ; i++)begin
+       for(int i = 0 ; i < P9_NUM_OF_TRANS ; i++)begin
          if(CorrectSched[i] != 0)begin
            $write  ("%d Correct Sheduled Desc : %d",NZ , CorrectSched[i]);
            $display("!!Correct Transfer for Desc : %d",CorrectTransfer[i]);

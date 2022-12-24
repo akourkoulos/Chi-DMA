@@ -62,24 +62,24 @@ module Simple_CHI_Responser#(
     localparam period = 20;
     
     
-    reg     [2**(MEM_ADDR_WIDTH - 20) : 0] myDDR                  ;
-    reg     [2**(MEM_ADDR_WIDTH - 20) : 0] ShiftedDDR             ;
-    //Crds signals
-    reg     [`CrdRegWidth        - 1 : 0] CountDataCrdsInb  = 0  ; 
-    reg     [`CrdRegWidth        - 1 : 0] CountRspCrdsInb   = 0  ;
-    reg     [`CrdRegWidth        - 1 : 0] CountReqCrdsOutb  = 0  ; 
-    reg     [`CrdRegWidth        - 1 : 0] CountDataCrdsOutb = 0  ;
-    reg     [`CrdRegWidth        - 1 : 0] CountRspCrdsOutb  = 0  ;
-    //FIFO signals
-    reg                                   SigDeqReq              ;
-    reg                                   SigReqEmpty            ;
-    ReqFlit                               SigTXREQFLIT           ;
-    reg     [MEM_ADDR_WIDTH      - 1 : 0] SigAddr                ;
+    reg     [CHI_DATA_WIDTH * 8      - 1 : 0] myDDR       [2**(15) - 1 : 0]  ;
     
-    reg     [`DBIDRespWidth      - 1 : 0] DBID_Count             ; // NextDBID field for DBID RSP
-    
-    reg     [TIME_DELAY          - 1 : 0] Delayer                ; // delay Req for TIME_DEALY
-    reg     [TIME_DELAY_WIDTH    - 1 : 0] SigResp                ;
+    //Crds signal
+    reg     [`CrdRegWidth            - 1 : 0] CountDataCrdsInb  = 0                                               ; 
+    reg     [`CrdRegWidth            - 1 : 0] CountRspCrdsInb   = 0                                               ;
+    reg     [`CrdRegWidth            - 1 : 0] CountReqCrdsOutb  = 0                                               ; 
+    reg     [`CrdRegWidth            - 1 : 0] CountDataCrdsOutb = 0                                               ;
+    reg     [`CrdRegWidth            - 1 : 0] CountRspCrdsOutb  = 0                                               ;
+    //FIFO signal
+    reg                                       SigDeqReq                                                           ;
+    reg                                       SigReqEmpty                                                         ;
+    ReqFlit                                   SigTXREQFLIT                                                        ;
+    reg     [MEM_ADDR_WIDTH          - 1 : 0] SigAddr                                                             ;
+   
+    reg     [`DBIDRespWidth          - 1 : 0] DBID_Count                                                          ; // NextDBID field for DBID RSP
+   
+    reg     [TIME_DELAY              - 1 : 0] Delayer                                                             ; // delay Req for TIME_DEALY
+    reg     [TIME_DELAY_WIDTH        - 1 : 0] SigResp                                                             ;
     
    // Req FIFO (keeps all the uncomplete Requests)
    FIFO #(      
@@ -98,14 +98,14 @@ module Simple_CHI_Responser#(
        );
    // Write Addr FIFO (keeps the address where data will be writen in DDR)
    FIFO #(             
-       .FIFO_WIDTH  ( MEM_ADDR_WIDTH ) ,       
-       .FIFO_LENGTH ( 2*FIFO_Length  )   
+       .FIFO_WIDTH  ( MEM_ADDR_WIDTH     ) ,       
+       .FIFO_LENGTH ( 2*FIFO_Length      )   
        )     
        AddrFIFO  (     
        .RST      ( RST                                                              ) ,      
        .Clk      ( Clk                                                              ) ,      
        .Inp      ( SigTXREQFLIT .Addr                                               ) , 
-       .Enqueue  ( SigDeqReqW & SigTXREQFLIT.Opcode == `WriteUniquePtl              ) , 
+       .Enqueue  ( SigDeqReq & SigTXREQFLIT.Opcode == `WriteUniquePtl               ) , 
        .Dequeue  ( DatOutbChan.TXDATFLITV & CountDataCrdsOutb != 0                  ) , 
        .Outp     ( SigAddr                                                          ) , 
        .FULL     (                                                                  ) , 
@@ -115,12 +115,12 @@ module Simple_CHI_Responser#(
      //initialize DDR
     genvar i ;
     generate 
-    for(i = 0 ; i < 2**(MEM_ADDR_WIDTH) ; i++)
+    for(i = 0 ; i < CHI_DATA_WIDTH ; i++)
       always@(posedge Clk)  
       begin
         if(RST)begin
-          myDDR[(i+1)*8 - 1:i*8] <= $urandom_range(0,2**8);
-          $display("%d",myDDR);
+          for(int j = 0 ; j < 2**(15) ; j++)
+            myDDR[j][(i+1)*8 - 1 : i*8] <= ($urandom_range(0,2**8));
         end
       end 
     endgenerate;
@@ -223,26 +223,25 @@ module Simple_CHI_Responser#(
     always_comb begin     
       if(!SigReqEmpty & SigTXREQFLIT.Opcode == `ReadOnce & CountDataCrdsInb != 0 & SigResp)begin
         // used to take hte correct bytes from DDR for read Rsponse
-        assign ShiftedDDR = myDDR >> (SigTXREQFLIT.Addr[MEM_ADDR_WIDTH - 1 : 0]* 8);
         // Data Response
         DatInbChan.RXDATFLITV = 1;
-        DatInbChan.RXDATFLIT = '{default     : 0                                            ,                       
-                                  QoS        : 0                                            ,
-                                  TgtID      : 1                                            ,
-                                  SrcID      : 2                                            ,
-                                  TxnID      : SigTXREQFLIT.TxnID                           ,
-                                  HomeNID    : 0                                            ,
-                                  Opcode     : `CompData                                    ,
-                                  RespErr    : `StatusError*(($urandom_range(0,100)) == 1)  , // samll probability to be an error
-                                  Resp       : 0                                            , // Resp should be 0 when NonCopyBackWrData Rsp
-                                  DataSource : 0                                            , 
-                                  DBID       : 0                                            ,
-                                  CCID       : 0                                            , 
-                                  DataID     : 0                                            ,
-                                  TraceTag   : 0                                            ,
-                                  BE         : {64{1'b1}}                                   ,
-                                  Data       : ShiftedDDR[CHI_DATA_WIDTH * 8 - 1 : 0]       ,  //512 width of data
-                                  DataCheck  : 0                                            ,
+        DatInbChan.RXDATFLIT = '{default     : 0                                                                 ,                       
+                                  QoS        : 0                                                                 ,
+                                  TgtID      : 1                                                                 ,
+                                  SrcID      : 2                                                                 ,
+                                  TxnID      : SigTXREQFLIT.TxnID                                                ,
+                                  HomeNID    : 0                                                                 ,
+                                  Opcode     : `CompData                                                         ,
+                                  RespErr    : `StatusError*(($urandom_range(0,100)) == 1)                       , // samll probability to be an error
+                                  Resp       : 0                                                                 , // Resp should be 0 when NonCopyBackWrData Rsp
+                                  DataSource : 0                                                                 , 
+                                  DBID       : 0                                                                 ,
+                                  CCID       : 0                                                                 , 
+                                  DataID     : 0                                                                 ,
+                                  TraceTag   : 0                                                                 ,
+                                  BE         : {64{1'b1}}                                                        ,
+                                  Data       : myDDR[SigTXREQFLIT.Addr[MEM_ADDR_WIDTH - 1 : ADDR_WIDTH_OF_DATA]] ,  //512 width of data
+                                  DataCheck  : 0                                                                 ,
                                   Poison     : 0                                        
                                   }; 
         SigDeqReq    = 1 ;
@@ -293,16 +292,15 @@ module Simple_CHI_Responser#(
           DBID_Count <= DBID_Count + 1 ; //increase DBID pointer
     end
     
-    // Store Data in DDR4
+    // Store Data in DDR
     genvar j ;
     generate 
     for(j = 0 ; j < CHI_DATA_WIDTH ; j++)
     always_ff@(posedge Clk)begin
-      if(DatOutbChan.TXDATFLIT & CountDataCrdsOutb != 0)begin
-        if(DatOutbChan.TXDATFLIT.BE[j])
-          for(int k = 0 ; k < 8 ; k++) begin
-            myDDR[SigAddr * 8 * j + k] <= DatOutbChan.TXDATFLIT.Data[8*(j) + k] ;
-          end
+      if(DatOutbChan.TXDATFLITV & CountDataCrdsOutb != 0)begin
+        if(DatOutbChan.TXDATFLIT.BE[j]) begin
+          myDDR[SigAddr[MEM_ADDR_WIDTH - 1 : ADDR_WIDTH_OF_DATA]][8*(j+1)- 1 :8*j] <= DatOutbChan.TXDATFLIT.Data[8*(j+1) - 1 : 8*j] ;
+        end
       end
     end
     endgenerate ;

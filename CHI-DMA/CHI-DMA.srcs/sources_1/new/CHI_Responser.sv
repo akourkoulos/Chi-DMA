@@ -116,9 +116,9 @@ module CHI_Responser#(
     genvar i ;
     generate 
     for(i = 0 ; i < 2**(MEM_ADDR_WIDTH) ; i++)
-      always_ff@(posedge Clk)  
+      always_ff@(posedge Clk) 
+      begin 
         if(RST)
-          begin
             myDDR[(i+1)*8 - 1:i*8] <= $urandom();
       end 
     endgenerate;
